@@ -43,14 +43,14 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'mysql' => [
+        'portal' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => env('DATABASE_URL_PORTAL'),
+            'host' => env('DB_HOST_PORTAL', '127.0.0.1'),
+            'port' => env('DB_PORT_PORTAL', '3306'),
+            'database' => env('DB_DATABASE_PORTAL', 'forge'),
+            'username' => env('DB_USERNAME_PORTAL', 'forge'),
+            'password' => env('DB_PASSWORD_PORTAL', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -63,14 +63,14 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
+        'voalle' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => env('DATABASE_URL_VOALLE'),
+            'host' => env('DB_HOST_VOALLE', '127.0.0.1'),
+            'port' => env('DB_PORT_VOALLE', '5432'),
+            'database' => env('DB_DATABASE_VOALLE', 'forge'),
+            'username' => env('DB_USERNAME_VOALLE', 'forge'),
+            'password' => env('DB_PASSWORD_VOALLE', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
