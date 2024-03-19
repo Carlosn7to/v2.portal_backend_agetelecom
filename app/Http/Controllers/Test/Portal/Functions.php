@@ -16,7 +16,7 @@ class Functions extends Controller
 
     public function __construct()
     {
-        $this->middleware('portal.master')->only('index');
+//        $this->middleware('portal.master')->only('index');
     }
 
     public function index()

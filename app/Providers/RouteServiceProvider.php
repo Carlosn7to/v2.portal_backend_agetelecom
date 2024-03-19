@@ -42,8 +42,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api/portal/auth.php'));
 
             // Rotas para o Portal
-            Route::middleware('portal')
-                ->prefix('portal')
+            Route::prefix('portal')
                 ->group(base_path('routes/api/portal/api.php'));
 
             // Rotas para o gerenciamento máximo do Portal

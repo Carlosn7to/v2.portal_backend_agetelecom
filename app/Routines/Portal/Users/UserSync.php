@@ -39,7 +39,8 @@ class UserSync
                     'login' => $item->samaccountname !== null ? $item->samaccountname[0] : "",
                     'name' => $item->displayname !== null ? $item->displayname[0] : "",
                 ];
-            })->toArray();
+            });
+
 
         foreach ($ldapUsers as $key => $value) {
             // Verificar se o usuário já existe no banco de dados
@@ -52,7 +53,7 @@ class UserSync
                     $existingUser->update([
                         'nome' => $value['name'],
                         'email' => $value['email'],
-                        'modificado_por' => 7,
+                        'modificado_por' => 1,
                     ]);
 
                     $this->report['users_updated']++;
@@ -67,8 +68,8 @@ class UserSync
                     'login' => $value['login'],
                     'email' => $value['email'],
                     'password' => Hash::make("hW*nN'v_*Pl8T8$36|L_LC!!I3}VC)f6:\9Jw"),
-                    'criado_por' => 7,
-                    'modificado_por' => 7,
+                    'criado_por' => 1,
+                    'modificado_por' => 1,
                 ]);
 
                 if ($userCreated) {
@@ -80,6 +81,8 @@ class UserSync
                 }
             }
         }
+
+
 
         // Enviar o relatório de estatísticas da sincronização
         $this->sendingReport();
