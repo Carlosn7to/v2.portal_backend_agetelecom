@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Ldap\Models\Ldap;
+
+use LdapRecord\Models\Model;
+
+class User extends Model
+{
+
+    protected ?string $connection = 'ldap_new';
+
+
+    /**
+     * The object classes of the LDAP model.
+     */
+    public static array $objectClasses = [
+        'top',
+        'person',
+        'organizationalperson',
+        'user',
+    ];
+}

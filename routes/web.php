@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return '<h1>Olá mundo</h1>';
-});
+Route::get('/order/{id}', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'getOrder']);
+Route::get('/order', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'store']);
+Route::get('/order/edit/{id}', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'edit']);

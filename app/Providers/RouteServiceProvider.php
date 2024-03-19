@@ -29,14 +29,38 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+
 
             // Rotas para o login AppClient
             Route::middleware('api')
                 ->prefix('app_client')
                 ->group(base_path('routes/api/appClient/api.php'));
+
+
+            // Rotas para o login Portal
+            Route::prefix('portal/auth')
+                ->group(base_path('routes/api/portal/auth.php'));
+
+            // Rotas para o Portal
+            Route::middleware('portal')
+                ->prefix('portal')
+                ->group(base_path('routes/api/portal/api.php'));
+
+            // Rotas para o gerenciamento máximo do Portal
+            Route::middleware(['portal', 'portal.master'])
+                ->prefix('portal/management/master/')
+                ->group(base_path('routes/api/portal/management/master.php'));
+
+            // Rotas para o gerenciamento administrativo do Portal
+            Route::middleware(['portal', 'portal.admin'])
+                ->prefix('portal/management/admin/')
+                ->group(base_path('routes/api/portal/management/admin.php'));
+
+
+            // Rotas para o AgeRv
+            Route::middleware('portal')
+                ->prefix('portal/agerv/b2b/')
+                ->group(base_path('routes/api/portal/agerv/b2b/api.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

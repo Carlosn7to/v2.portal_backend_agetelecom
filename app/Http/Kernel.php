@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Portal\Magement\AdminAccessMiddleware;
+use App\Http\Middleware\Portal\Magement\MasterAccessMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,6 +66,11 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'appClient.auth' => \App\Http\Middleware\AppClient\Autheticate::class,
+        'portal' => \App\Http\Middleware\Portal\Authenticate::class,
+        'portal.master' => MasterAccessMiddleware::class,
+        'portal.admin' => AdminAccessMiddleware::class,
+        'portal.agerv.b2b.financial.access' => \App\Http\Middleware\Portal\AgeRv\B2b\Commission\FinancialAccess::class,
     ];
+
+
 }
