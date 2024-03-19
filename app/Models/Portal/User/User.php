@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
 
-    protected $connection = 'local';
+    protected $connection = 'portal';
     protected $table = 'portal_usuarios';
     protected $guard = 'portal';
 

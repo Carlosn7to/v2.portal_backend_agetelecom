@@ -12,7 +12,7 @@ class Sector extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $connection = 'local';
+    protected $connection = 'portal';
     protected $table = 'portal_setores';
 
     protected $fillable = [

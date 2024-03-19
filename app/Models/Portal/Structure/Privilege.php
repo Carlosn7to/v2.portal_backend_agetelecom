@@ -10,7 +10,7 @@ class Privilege extends Model
 {
     use HasFactory;
 
-    protected $connection = 'local';
+    protected $connection = 'portal';
     protected $table = 'portal_privilegios';
 
     protected $fillable = [
