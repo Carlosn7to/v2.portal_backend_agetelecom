@@ -52,7 +52,6 @@ class AuthController extends Controller
 
             return $this->login($user);
         }
-        return 10;
 
         $message = '';
 
