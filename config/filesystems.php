@@ -56,6 +56,14 @@ return [
             'throw' => false,
         ],
 
+        'public_agecommunicate_rule_billing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/portal/agecommunicate/rule/billing'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
     ],
 
     /*

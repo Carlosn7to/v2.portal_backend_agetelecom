@@ -28,10 +28,10 @@ class AuthController extends Controller
     {
 
         $connection = new Connection([
-            'hosts' => [env('LDAP_OLD_HOST')],
-            'base_dn' => 'dc=tote, dc=local',
-            'username' => env('LDAP_OLD_USERNAME'),
-            'password' => env('LDAP_OLD_PASSWORD'),
+            'hosts' => [config('services.ldapOld.host')],
+            'base_dn' => config('services.ldapOld.base_dn'),
+            'username' => config('services.ldapOld.username'),
+            'password' => config('services.ldapOld.password'),
 
             // Optional Configuration Options
             'port' => 389,
@@ -59,6 +59,7 @@ class AuthController extends Controller
 
         try {
             $connection->connect();
+
 
 
             $username = $request->input('user') . '@tote.local';
@@ -100,12 +101,11 @@ class AuthController extends Controller
     public function ldapAdNew($username, $password)
     {
 
-
         $connection = new Connection([
-            'hosts' => [env('LDAP_NEW_HOST')],
-            'base_dn' => 'dc=age, dc=corp',
-            'username' => env('LDAP_NEW_USERNAME'),
-            'password' => env('LDAP_NEW_PASSWORD'),
+            'hosts' => [config('services.ldapNew.host')],
+            'base_dn' => config('services.ldapNew.base_dn'),
+            'username' => config('services.ldapNew.username'),
+            'password' => config('services.ldapNew.password'),
 
             // Optional Configuration Options
             'port' => 389,
@@ -180,7 +180,7 @@ class AuthController extends Controller
 
         $credentials = [
             'login' => $user->login,
-            'password' => env('USER_KEY_PORTAL')
+            'password' => config('services.portal.user_key')
         ];
 
 

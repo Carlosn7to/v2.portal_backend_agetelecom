@@ -20,6 +20,6 @@ Route::prefix('seller/dashboard')->controller(\App\Http\Controllers\Portal\AgeRv
 });
 
 
-Route::prefix('commission/financial/builder')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Commission\Financial\BuilderController::class)->group(function () {
+Route::prefix('commission/financial/builder')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Commission\Financial\Provisory2BuilderController::class)->group(function () {
     Route::get('/', 'builder');
 });

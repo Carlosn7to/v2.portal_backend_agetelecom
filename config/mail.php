@@ -60,6 +60,20 @@ return [
                 'name' => env('MAIL_FROM_NAME_PORTAL', ''),
             ]
         ],
+        'fat' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST_FAT', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT_FAT', 587),
+            'encryption' => env('MAIL_ENCRYPTION_FAT', 'tls'),
+            'username' => env('MAIL_USERNAME_FAT'),
+            'password' => env('MAIL_PASSWORD_FAT'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS_FAT'),
+                'name' => 'Aviso Age Telecom'
+            ]
+        ],
 
         'ses' => [
             'transport' => 'ses',

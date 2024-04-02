@@ -103,7 +103,7 @@ class Raised
 
         $this->invoices = $uniqueContracts->map(function($invoices) {
            return [
-                'contract_id' => $invoices->first()->contract_id,
+               'contract_id' => $invoices->first()->contract_id,
                'invoicesCount' => $invoices->count(),
                'invoices' => $invoices->toArray(),
            ];

@@ -30,5 +30,25 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'voalle' => [
+        'client_id' => env('VOALLE_API_CLIENT_ID'),
+        'client_secret' => env('VOALLE_API_CLIENT_SECRET'),
+        'syndata' => env('VOALLE_API_SYNDATA'),
+    ],
+    'ldapOld' => [
+        'host' => env('LDAP_OLD_HOST'),
+        'base_dn' => env('LDAP_OLD_BASE_DN'),
+        'username' => env('LDAP_OLD_USERNAME'),
+        'password' => env('LDAP_OLD_PASSWORD'),
+    ],
+    'ldapNew' => [
+        'host' => env('LDAP_NEW_HOST'),
+        'base_dn' => env('LDAP_NEW_BASE_DN'),
+        'username' => env('LDAP_NEW_USERNAME'),
+        'password' => env('LDAP_NEW_PASSWORD'),
+    ],
+    'portal' => [
+        'user_key' => env('USER_KEY_PORTAL'),
+    ]
 
 ];
