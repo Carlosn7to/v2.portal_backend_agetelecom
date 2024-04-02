@@ -8,8 +8,12 @@ use Carbon\Carbon;
 
 class ProvisoryBuilderController extends Controller
 {
-    public function builder()
+    public function builder($period)
     {
+
+        $this->period = Carbon::parse($period);
+
+
         $this->getData();
         $this->getSellers();
         $this->groupDataSellers();
@@ -217,7 +221,7 @@ class ProvisoryBuilderController extends Controller
             INNER JOIN erp.people p2 ON p2.id = c.seller_2_id
             LEFT JOIN erp.contract_types ct ON ct.id = c.contract_type_id
             WHERE p2.id = 73512 and c.v_stage = \'Aprovado\'
-            AND c.approval_date >= \'2024-01-01\' and c.approval_date < \'2024-02-01\'
+            AND c.approval_date >= \''.clone($this->period).'\' and c.approval_date < \''.clone($this->period->addMonth()->startOfMonth()).'\'
             ';
 
         return $query;

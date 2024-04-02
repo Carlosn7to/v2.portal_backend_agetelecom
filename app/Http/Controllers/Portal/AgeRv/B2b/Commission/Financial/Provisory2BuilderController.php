@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class Provisory2BuilderController extends Controller
 {
-    public function builder()
+    public function builder(Request $request)
     {
-        $this->data = (new ProvisoryBuilderController())->builder();
+        $this->data = (new ProvisoryBuilderController())->builder($request->period);
 
 
        $this->levelCommission();
