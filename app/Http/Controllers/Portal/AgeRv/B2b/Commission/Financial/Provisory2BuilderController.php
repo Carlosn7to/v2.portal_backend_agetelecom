@@ -47,12 +47,12 @@ class Provisory2BuilderController extends Controller
             'business' => [
                 [
                     'level' => 1,
-                    'rule' => [10, 14],
+                    'rule' => [1, 10],
                     'percentInvoice' => 0.3
                 ],
                 [
                     'level' => 2,
-                    'rule' => [15, 24],
+                    'rule' => [11, 24],
                     'percentInvoice' => 0.5
                 ],
                 [

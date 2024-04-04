@@ -31,9 +31,11 @@ class Functions extends Controller
 
         $data = collect(\DB::connection('voalle')->select($this->getQuery()));
 
+        return $data;
+
         $data = $data->map(function ($item) {
 //             $item->email = 'carlos.neto@agetelecom.com.br';
-             $item->days_until_expiration = -5;
+             $item->days_until_expiration = -4;
 
              return $item;
         });
@@ -44,8 +46,8 @@ class Functions extends Controller
 
     private function getQuery(): string
     {
-        $query = '
-            SELECT
+        return <<<SQL
+                SELECT
                 c.id AS "contract_id",
                 p.email AS "email",
                 p.v_name AS "name",
@@ -67,19 +69,18 @@ class Functions extends Controller
             LEFT JOIN erp.people p ON p.id = c.client_id
             LEFT JOIN erp.financial_receivable_titles frt ON frt.contract_id = c.id
             WHERE
-                c.v_stage = \'Aprovado\'
-                and c.v_status != \'Cancelado\'
-                AND frt.competence >= \'2023-05-01\'
+                c.v_stage = 'Aprovado'
+                and c.v_status != 'Cancelado'
+                AND frt.competence >= '2023-05-01'
                 AND frt.deleted IS FALSE
                 AND frt.finished IS FALSE
-                AND frt.title LIKE \'%FAT%\'
+                AND frt.title LIKE '%FAT%'
                 and frt.p_is_receivable is true
                 and frt.typeful_line is not null
                 and c.id = 34263
             limit 100
-            ';
+            SQL;
 
-        return $query;
 
     }
 
@@ -182,7 +183,7 @@ class Functions extends Controller
         foreach ($templates as &$template) {
             if ($this->matchRule($customerData, $template['rule'])) {
                 // Implement email sending logic here. Example:
-                \Mail::mailer('fat')->to($customerData->email)->send(new SendBilling($template['view'], $template['subject'], $customerData, $billetPath));
+                \Mail::mailer('fat')->to('carlos.neto@agetelecom.com.br')->send(new SendBilling($template['view'], $template['subject'], $customerData, $billetPath));
 
                 $template['sendings']++;
                 $sendings['success'][] = ['template' => $template['view'], 'client' => $customerData];
