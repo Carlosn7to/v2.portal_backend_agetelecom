@@ -12,6 +12,14 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Infobip\Api\SmsApi;
+use Infobip\Api\WhatsAppApi;
+use Infobip\Configuration;
+use Infobip\ApiException;
+use Infobip\Model\SmsAdvancedTextualRequest;
+use Infobip\Model\SmsDestination;
+use Infobip\Model\SmsTextualMessage;
+use Infobip\Model\WhatsAppBulkMessage;
 
 class Functions extends Controller
 {
@@ -27,20 +35,52 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+        $configuration = new Configuration(
+            host: 'http://j36lvj.api-us.infobip.com/',
+            apiKey: 'b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd'
+        );
+
+//        $whatsAppApi = new WhatsAppApi(config: $configuration);
+//
+//        $message = new WhatsAppMessage(
+//            from: '5561984700440',
+//            to: '',
+//            content: new WhatsAppTemplateContent(
+//                templateName: 'welcome_multiple_languages',
+//                templateData: new WhatsAppTemplateDataContent(
+//                    body: new WhatsAppTemplateBodyContent(
+//                        placeholders: ['Age Telecom']
+//                    )
+//                ),
+//                language: 'en'
+//            ));
+//
+//        $bulkMessage = new WhatsAppBulkMessage(messages: [$message]);
+//
+//        $messageInfo = $whatsAppApi->sendWhatsAppTemplateMessage($bulkMessage);
 
 
-        $data = collect(\DB::connection('voalle')->select($this->getQuery()));
+        $sendSmsApi = new SmsApi(config: $configuration);
 
-        return $data;
+        $message = new SmsTextualMessage(
+            destinations: [
+                new SmsDestination(to: '5561981069695')
+            ],
+            from: 'InfoSMS',
+            text: 'Teste de SMS usando InfoBip - Hora do envio 14:24'
+        );
 
-        $data = $data->map(function ($item) {
-//             $item->email = 'carlos.neto@agetelecom.com.br';
-             $item->days_until_expiration = -4;
+        $request = new SmsAdvancedTextualRequest(messages: [$message]);
 
-             return $item;
-        });
+        try {
+            $smsResponse = $sendSmsApi->sendSmsMessage($request);
+        } catch (ApiException $apiException) {
+            // HANDLE THE EXCEPTION
+        }
 
-        return $this->sendEmail($data);
+
+        dd($smsResponse);
+
 
     }
 

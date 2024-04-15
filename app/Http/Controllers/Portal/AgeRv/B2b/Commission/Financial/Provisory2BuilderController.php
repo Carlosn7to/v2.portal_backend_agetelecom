@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class Provisory2BuilderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('portal.agerv.b2b.financial.access');
+    }
+
     public function builder(Request $request)
     {
         $this->data = (new ProvisoryBuilderController())->builder($request->period);

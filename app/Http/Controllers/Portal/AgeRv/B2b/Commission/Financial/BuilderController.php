@@ -43,6 +43,7 @@ class BuilderController extends Controller
      */
     public function builder(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'period' => 'required|date'
         ]);

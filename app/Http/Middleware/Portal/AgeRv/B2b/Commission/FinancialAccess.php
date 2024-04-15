@@ -15,10 +15,13 @@ class FinancialAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth('portal')->user()->privilegio_id !== 4) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+        $userPrivilege = auth('portal')->user()->privilegio_id;
+
+        if($userPrivilege === 4) {
+            return $next($request);
         }
 
-        return $next($request);
+        return response()->json(['message' => 'Unauthorized'], 401);
+
     }
 }
