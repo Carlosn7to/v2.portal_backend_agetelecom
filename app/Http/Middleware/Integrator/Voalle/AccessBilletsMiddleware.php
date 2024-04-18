@@ -15,7 +15,7 @@ class AccessBilletsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth('portal')->user()->login == 'digitro'){
+        if(auth('portal')->user()->login == 'digitro.pabx'){
             return $next($request);
         }
 
