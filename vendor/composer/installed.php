@@ -3,13 +3,31 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'a565501bb07d05fb5c476fc42c6a8885d19e9e8f',
+        'reference' => '086af284fd60a6022fc341613f3591af286f6050',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'aws/aws-crt-php' => array(
+            'pretty_version' => 'v1.2.4',
+            'version' => '1.2.4.0',
+            'reference' => 'eb0c6e4e142224a10b08f49ebf87f32611d162b2',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../aws/aws-crt-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'aws/aws-sdk-php' => array(
+            'pretty_version' => '3.304.7',
+            'version' => '3.304.7.0',
+            'reference' => 'b01905670e952b5c5cdc4902973120f62a14a7f4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../aws/aws-sdk-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'brick/math' => array(
             'pretty_version' => '0.11.0',
             'version' => '0.11.0.0',
@@ -445,7 +463,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'a565501bb07d05fb5c476fc42c6a8885d19e9e8f',
+            'reference' => '086af284fd60a6022fc341613f3591af286f6050',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -559,6 +577,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'league/flysystem-aws-s3-v3' => array(
+            'pretty_version' => '3.27.0',
+            'version' => '3.27.0.0',
+            'reference' => '3e6ce2f972f1470db779f04d29c289dcd2c32837',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/flysystem-aws-s3-v3',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'league/flysystem-local' => array(
             'pretty_version' => '3.23.1',
             'version' => '3.23.1.0',
@@ -636,6 +663,15 @@
             'replaced' => array(
                 0 => '^1.0',
             ),
+        ),
+        'mtdowling/jmespath.php' => array(
+            'pretty_version' => '2.7.0',
+            'version' => '2.7.0.0',
+            'reference' => 'bbb69a935c2cbb0c03d7f481a238027430f6440b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mtdowling/jmespath.php',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'myclabs/deep-copy' => array(
             'pretty_version' => '1.11.1',

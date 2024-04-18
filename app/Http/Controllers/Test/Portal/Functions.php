@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Test\Portal;
 
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Portal\User\User;
@@ -35,10 +36,44 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+        $syncClient = new UserSync();
+
+        return $syncClient->builder();
+
+
+
+        $client = new Client();
+
+//        $responseTest = $client->get('https://www.orimi.com/pdf-test.pdf',[]);
+//
+//        return $responseTest->getBody();
+
+        $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/5541623',[
+            'headers' => [
+                'Authorization' => 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBBRjZDREEyRDU0MTRDRTY1MUM0RTk3NTM3QTFGNEY0QTMyNUQ5QTMiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJDdmJOb3RWQlRPWlJ4T2wxTjZIMDlLTWwyYU0ifQ.eyJuYmYiOjE3MTM0NTkxMDAsImV4cCI6MTcxMzQ2MjcwMCwiaXNzIjoiaHR0cHM6Ly9lcnAuYWdldGVsZWNvbS5jb20uYnI6NDU3MDAiLCJhdWQiOlsiaHR0cHM6Ly9lcnAuYWdldGVsZWNvbS5jb20uYnI6NDU3MDAvcmVzb3VyY2VzIiwic3luZ3ciXSwiY2xpZW50X2lkIjoiMWZhODYzOTEtZTQ3ZC00YWFiLWEzZjAtM2M0NWY2OTI3Yzg4IiwiaWQiOiIxMTg5IiwibG9naW4iOiJkZWllZ29AYWdldGVsZWNvbS5jb20uYnIiLCJtb2RlIjoic3lzdGVtIiwibmFtZSI6IkRlaWVnbyIsInBlcnNvbmVtYWlsIjoiZGllZ28ubGltYUBhZ2V0ZWxlY29tLmNvbS5iciIsInBlcnNvbmlkIjoiMTMwMTkxIiwicGVyc29ubmFtZSI6IkRlaWVnbyIsInBsYWNlaWQiOiIiLCJwcm9maWxlaWQiOiI2MiIsInN5bmRhdGEiOiJUV3BOTVU5RVl6VmFha2sxVDBkU2FVMVVTbXhhYWxwcldsZEZkMDB5U1RGWlYxSnNUVEpSTUZwdFVUMDZXbGhzUzFaSFZsaE9WV3hwVFRBMGQxTlhjSFpoVlRGeFVWUktUV0ZyYkROVWEwMHdaVlUxUlZvelZsQlNSbXh3VkVWT1MxWkhWbGhPVlZaYVlWVnJNbE5YTVZOaFZuQllUVmhrVGxKRlJYZFVNRkp5WVZkYVVsQlVNRDA2V2xSb2EwMXFUVEZaYW1zd1dYcHNhVTVFVG0xYVJHY3pUVVJzYTAxcVdUSlpla0Y0VFVkTk0wMUhWVDA9IiwidHhpZCI6Ijk2ODE3NTY5MDg3IiwidHlwZXR4aWQiOiIyIiwibW9kdWxlcyI6IjEsMyw0LDUsNiw4LDEwLDEyLDE1LDE2LDIxLDI2LDI3LDI4LDMxLDMyLDUwLDUzLDU1LDU2LDU4LDU5LDk5LDE1MywxNjEsMTcwLDE3NSIsImlzT21uaSI6IkZhbHNlIiwidHlwZSI6ImludGVncmF0aW9uIiwiaW50ZWdyYXRpb24iOiJ0aGlyZHBhcnR5Iiwic3ViIjoiZGVpZWdvQGFnZXRlbGVjb20uY29tLmJyIiwic2NvcGUiOlsic3luZ3ciXX0.dYxdYYlEKJ4VD-tSifilx7vXknQTeiHz9hpyQlzOnx9_WdbRt7iPtJa5zf3_AmfdFYbzyNTG7JolIESTJDC8Pa-hEdSys51oVGs5a-d5kAq5BZRQ5OtCg7Ajl8D5uhzFzItasQ1hoBgA2HOY_mZ-s8QfBGpcIPRK7imfQqcrHSKq26zZeFwhlq4oJiQQLbAnpMTUX2iNzfu6d3bfomDHcYnCO3wGT3QHySrzWV9rvNl48q8bJ02_oAzzebwS4xzwMMRIwt7DsKKNN0qletRAxMKEctOksXebHXFvUVk2pzlhH95X9Nbm3S4jOCaTNX2R7kkoaNVOHHu_J5ChmkFRqspTRTmzBNglrm7kPcBid_0mUQzckOLaE4hkiagBo8qW-lAq4Pw7FFFGsF9Q3fKxTWOMrq7nlHQ_J3hvyiOXS8hTzeqOv--9EKBCdNIRrjZMGo6qDHnarDDFaEDCpyz0j3Ebz_WeYFLfZKIVp4A5WYtTMOV-16RKZJxYqb3J6YwPz_MgziSp2OdFx-rxaTGro8W0WCdXHz15kdpkcHjjH1UrQEj49U8qTbFiQnQCcnUN7YFDo_dekqiQrLOJw2PHnD09t-lcQwNv-rtumLtqdXW127X70fsQLG5gqSCrviyfGGNGrx63jrQ38XIWfWlpqXc1RMGW6mcBM0Es-CnR73g'
+            ]
+        ]);
+
+        return $responseBillet->getBody()->getContents();
+
+        $billingRule = new BuilderBillingRuleController();
+
+        return $billingRule->builder();
+
+
+
+
+
+        return true;
+
+
         $configuration = new Configuration(
             host: 'http://j36lvj.api-us.infobip.com/',
             apiKey: 'b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd'
         );
+
+
+
 
 //        $whatsAppApi = new WhatsAppApi(config: $configuration);
 //
@@ -60,24 +95,24 @@ class Functions extends Controller
 //        $messageInfo = $whatsAppApi->sendWhatsAppTemplateMessage($bulkMessage);
 
 
-        $sendSmsApi = new SmsApi(config: $configuration);
-
-        $message = new SmsTextualMessage(
-            destinations: [
-                new SmsDestination(to: '5561981069695')
-            ],
-            from: 'InfoSMS',
-            text: 'Teste de SMS usando InfoBip - Hora do envio 14:24'
-        );
-
-        $request = new SmsAdvancedTextualRequest(messages: [$message]);
-
-        try {
-            $smsResponse = $sendSmsApi->sendSmsMessage($request);
-        } catch (ApiException $apiException) {
-            // HANDLE THE EXCEPTION
-        }
-
+//        $sendSmsApi = new SmsApi(config: $configuration);
+//
+//        $message = new SmsTextualMessage(
+//            destinations: [
+//                new SmsDestination(to: '+536184700440')
+//            ],
+//            from: 'InfoSMS',
+//            text: 'Teste de SMS usando InfoBip - Hora do envio'. Carbon::now()->format('d/m/Y H:i:s')
+//        );
+//
+//        $request = new SmsAdvancedTextualRequest(messages: [$message]);
+//
+//        try {
+//            $smsResponse = $sendSmsApi->sendSmsMessage($request);
+//        } catch (ApiException $apiException) {
+//            // HANDLE THE EXCEPTION
+//        }
+//
 
         dd($smsResponse);
 

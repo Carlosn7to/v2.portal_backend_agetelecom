@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "aws/aws-sdk-php": "^3.304",
         "directorytree/ldaprecord-laravel": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
         "infobip/infobip-api-php-client": "^5.1.4",
@@ -13,6 +14,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
+        "league/flysystem-aws-s3-v3": "^3.27",
         "maatwebsite/excel": "^3.1",
         "tymon/jwt-auth": "^2.0"
     },

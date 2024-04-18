@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
         'portal.master' => MasterAccessMiddleware::class,
         'portal.admin' => AdminAccessMiddleware::class,
         'portal.agerv.b2b.financial.access' => \App\Http\Middleware\Portal\AgeRv\B2b\Commission\FinancialAccess::class,
+        'portal.integrator.voalle.billets.access' => \App\Http\Middleware\Integrator\Voalle\AccessBilletsMiddleware::class,
     ];
 
 

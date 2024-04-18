@@ -7,7 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku'),
-    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
@@ -77,6 +77,7 @@ return array(
     'Maatwebsite\\Excel\\' => array($vendorDir . '/maatwebsite/excel/src'),
     'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
     'League\\Flysystem\\Local\\' => array($vendorDir . '/league/flysystem-local'),
+    'League\\Flysystem\\AwsS3V3\\' => array($vendorDir . '/league/flysystem-aws-s3-v3'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'League\\Config\\' => array($vendorDir . '/league/config/src'),
     'League\\CommonMark\\' => array($vendorDir . '/league/commonmark/src'),
@@ -91,6 +92,7 @@ return array(
     'Laravel\\Sanctum\\' => array($vendorDir . '/laravel/sanctum/src'),
     'Laravel\\Sail\\' => array($vendorDir . '/laravel/sail/src'),
     'Laravel\\Prompts\\' => array($vendorDir . '/laravel/prompts/src'),
+    'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),
     'Infobip\\' => array($vendorDir . '/infobip/infobip-api-php-client/Infobip'),
     'Illuminate\\Support\\' => array($vendorDir . '/laravel/framework/src/Illuminate/Macroable', $vendorDir . '/laravel/framework/src/Illuminate/Collections', $vendorDir . '/laravel/framework/src/Illuminate/Conditionable'),
     'Illuminate\\' => array($vendorDir . '/laravel/framework/src/Illuminate'),
@@ -117,5 +119,6 @@ return array(
     'Carbon\\Doctrine\\' => array($vendorDir . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
+    'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
     'App\\' => array($baseDir . '/app', $vendorDir . '/laravel/pint/app'),
 );
