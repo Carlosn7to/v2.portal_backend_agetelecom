@@ -90,9 +90,12 @@ class BilletController extends Controller
 
             $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
-            dd($aws);
 
-            return true;
+            if($aws){
+                return true;
+            }
+
+            return false;
         }
 
         return false;
