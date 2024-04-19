@@ -49,12 +49,6 @@ return [
     ],
     'portal' => [
         'user_key' => env('USER_KEY_PORTAL'),
-    ],
-    'digitro' => [
-        'key' => env('AWS_ACCESS_KEY_ID_2'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY_2'),
-        'region' => env('AWS_DEFAULT_REGION_2'),
-        'bucket' => env('AWS_BUCKET_2'),
     ]
 
 ];

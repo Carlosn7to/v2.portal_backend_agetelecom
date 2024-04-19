@@ -46,14 +46,14 @@ return [
 
         'aws_digitro' => [
             'driver' => 's3',
-            'key' => config('services.digitro.key'),
-            'secret' => config('services.digitro.secret'),
-            'region' => 'sa-east-1',
-            'bucket' => 'digitro2',
+            'key' => env('AWS_ACCESS_KEY_ID_2'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY_2'),
+            'region' => env('AWS_DEFAULT_REGION_2'),
+            'bucket' => env('AWS_BUCKET_2'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => true,
+            'throw' => false,
         ],
 
         'public_agecommunicate_rule_billing' => [
