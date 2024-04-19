@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrator\Voalle\Billets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Integrator\Voalle\BilletLog;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -78,6 +79,7 @@ class BilletController extends Controller
 
         $billetPath = [];
 
+        $billetLog = new BilletLog();
 
         // Verifique se a requisição foi bem-sucedida (código de status 200)
         if ($responseBillet->getStatusCode() == 200) {
@@ -91,11 +93,27 @@ class BilletController extends Controller
             $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
             if($aws){
+
+                $billetLog->create([
+                   'fatura_id' => $id,
+                   'status' => 1
+                ]);
+
                 return true;
             }
 
+            $billetLog->create([
+                'fatura_id' => $id,
+                'status' => 2
+            ]);
+
             return false;
         }
+
+        $billetLog->create([
+            'fatura_id' => $id,
+            'status' => 2
+        ]);
 
         return false;
 
