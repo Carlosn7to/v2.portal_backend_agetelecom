@@ -50,9 +50,9 @@ class BilletController extends Controller
         $dataForm = [
             "grant_type" => "client_credentials",
             "scope" => "syngw",
-            "client_id" => config('voalle.client_id'),
-            "client_secret" => config('voalle.client_secret'),
-            "syndata" => config('voalle.syndata')
+            "client_id" => config('services.voalle.client_id'),
+            "client_secret" => config('services.voalle.client_secret'),
+            "syndata" => config('services.voalle.syndata')
         ];
 
         $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
