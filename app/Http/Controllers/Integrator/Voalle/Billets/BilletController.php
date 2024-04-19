@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Integrator\Voalle\Billets;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Nette\FileNotFoundException;
 
 class BilletController extends Controller
 {
@@ -80,20 +82,30 @@ class BilletController extends Controller
         // Verifique se a requisição foi bem-sucedida (código de status 200)
         if ($responseBillet->getStatusCode() == 200) {
 
+            try {
+                $pdfContent = $responseBillet->getBody()->getContents();
 
-            // Obtenha o conteúdo do PDF
-            $pdfContent = $responseBillet->getBody()->getContents();
+                $options = [
+                    'ACL' => 'public-read'
+                ];
 
-            $options = [
-                'ACL' => 'public-read' // Define a ACL como public-read
-            ];
+                $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
-            $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
+            } catch (FileNotFoundException $e) {
+                // Lidar com a exceção de arquivo não encontrado
+                $error = Log::error('O arquivo não pôde ser encontrado: ' . $e->getMessage());
 
+                return $error;
 
-            if($aws){
-                return true;
+            } catch (\Exception $e) {
+                // Lidar com outras exceções
+                $error = Log::error('Ocorreu um erro ao salvar o arquivo: ' . $e->getMessage());
+
+                return $error;
+
             }
+
+
 
             return false;
         }
