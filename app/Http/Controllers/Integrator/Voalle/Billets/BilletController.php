@@ -55,8 +55,6 @@ class BilletController extends Controller
             "syndata" => config('services.voalle.syndata')
         ];
 
-        dd($dataForm);
-
         $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
             'headers' => [
                 'Content-Type' => 'application/x-www-form-urlencoded'
@@ -90,7 +88,7 @@ class BilletController extends Controller
                 'ACL' => 'public-read'
             ];
 
-            $bucket = env('AWS_BUCKET');
+            $bucket = config('filesystems.disks.aws_digitro.bucket');
             dd($bucket);
 
             $aws = Storage::disk('aws_digitro')->put('/boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
