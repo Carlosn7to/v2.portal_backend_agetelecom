@@ -49,7 +49,7 @@ return [
             'key' => config('services.digitro.key'),
             'secret' => config('services.digitro.secret'),
             'region' => 'sa-east-1',
-            'bucket' => config('services.digitro.bucket'),
+            'bucket' => 'digitro2',
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
