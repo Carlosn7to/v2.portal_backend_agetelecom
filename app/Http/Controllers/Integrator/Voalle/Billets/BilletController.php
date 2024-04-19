@@ -91,23 +91,19 @@ class BilletController extends Controller
 
                 $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
-                dd($aws);
+                if($aws){
+                    return true;
+                } else {
+//                    $lastError = Storage::disk('aws_digitro')->lastModified($path);
 
-            } catch (FileNotFoundException $e) {
-                // Lidar com a exceção de arquivo não encontrado
-                $error = Log::error('O arquivo não pôde ser encontrado: ' . $e->getMessage());
-
-                dd($error);
+                }
 
             } catch (\Exception $e) {
                 // Lidar com outras exceções
                 $error = Log::error('Ocorreu um erro ao salvar o arquivo: ' . $e->getMessage());
 
-                dd($error);
-
+                return false;
             }
-
-
 
             return false;
         }
