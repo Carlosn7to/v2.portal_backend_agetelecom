@@ -82,29 +82,16 @@ class BilletController extends Controller
         // Verifique se a requisição foi bem-sucedida (código de status 200)
         if ($responseBillet->getStatusCode() == 200) {
 
-            try {
-                $pdfContent = $responseBillet->getBody()->getContents();
+            $pdfContent = $responseBillet->getBody()->getContents();
 
-                $options = [
-                    'ACL' => 'public-read'
-                ];
+            $options = [
+                'ACL' => 'public-read'
+            ];
 
-                $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
+            $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
-                if($aws){
-                    return true;
-                } else {
-                    $lastError = Storage::disk('aws_digitro')->lastModified('boletos/' . 'boleto_' . $id . '.pdf');
-
-                    dd($lastError);
-
-                }
-
-            } catch (\Exception $e) {
-                // Lidar com outras exceções
-                $error = Log::error('Ocorreu um erro ao salvar o arquivo: ' . $e->getMessage());
-
-                return false;
+            if($aws){
+                return true;
             }
 
             return false;
