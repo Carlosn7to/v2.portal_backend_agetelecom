@@ -55,6 +55,8 @@ class BilletController extends Controller
             "syndata" => config('services.voalle.syndata')
         ];
 
+        dd($dataForm);
+
         $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
             'headers' => [
                 'Content-Type' => 'application/x-www-form-urlencoded'
