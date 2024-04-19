@@ -52,9 +52,9 @@ return [
     ],
     'digitro' => [
         'key' => env('AWS_ACCESS_KEY_ID_2'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION'),
-        'bucket' => env('AWS_BUCKET'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY_2'),
+        'region' => env('AWS_DEFAULT_REGION_2'),
+        'bucket' => env('AWS_BUCKET_2'),
     ]
 
 ];
