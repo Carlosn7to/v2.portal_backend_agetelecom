@@ -18,7 +18,3 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('test')->controller(\App\Http\Controllers\Test\Portal\Functions::class)->group(function () {
     Route::post('/', 'index');
 });
-
-Route::middleware('portal.telescope.access')->prefix('/telescope')->group(function () {
-    Route::get('/{view?}', 'Laravel\Telescope\Http\Controllers\HomeController@index')->where('view', '(.*)');
-});
