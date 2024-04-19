@@ -48,7 +48,7 @@ return [
             'driver' => 's3',
             'key' => config('services.digitro.key'),
             'secret' => config('services.digitro.secret'),
-            'region' => config('services.digitro.region'),
+            'region' => 'sa-east-1',
             'bucket' => config('services.digitro.bucket'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
