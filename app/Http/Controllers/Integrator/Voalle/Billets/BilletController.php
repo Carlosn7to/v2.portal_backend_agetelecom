@@ -94,7 +94,9 @@ class BilletController extends Controller
                 if($aws){
                     return true;
                 } else {
-//                    $lastError = Storage::disk('aws_digitro')->lastModified($path);
+                    $lastError = Storage::disk('aws_digitro')->lastModified('boletos/' . 'boleto_' . $id . '.pdf');
+
+                    dd($lastError);
 
                 }
 
