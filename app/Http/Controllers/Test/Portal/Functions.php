@@ -21,6 +21,7 @@ use Infobip\Model\SmsAdvancedTextualRequest;
 use Infobip\Model\SmsDestination;
 use Infobip\Model\SmsTextualMessage;
 use Infobip\Model\WhatsAppBulkMessage;
+use Illuminate\Http\Request;
 
 class Functions extends Controller
 {
@@ -32,8 +33,19 @@ class Functions extends Controller
 //        $this->middleware('portal.master')->only('index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+
+
+        $arquivoJson = $request->file('json');
+
+        $json = json_decode(file_get_contents($arquivoJson), true);
+
+        $data = $json;
+
+        dd($data);
+
+
         set_time_limit(20000000000);
 
         $syncClient = new UserSync();

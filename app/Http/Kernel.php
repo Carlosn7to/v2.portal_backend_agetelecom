@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\BlockTelescopeInProduction;
 use App\Http\Middleware\Portal\Magement\AdminAccessMiddleware;
 use App\Http\Middleware\Portal\Magement\MasterAccessMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -38,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            BlockTelescopeInProduction::class,
         ],
 
         'api' => [
@@ -71,6 +73,7 @@ class Kernel extends HttpKernel
         'portal.admin' => AdminAccessMiddleware::class,
         'portal.agerv.b2b.financial.access' => \App\Http\Middleware\Portal\AgeRv\B2b\Commission\FinancialAccess::class,
         'portal.integrator.voalle.billets.access' => \App\Http\Middleware\Integrator\Voalle\AccessBilletsMiddleware::class,
+        'portal.telescope.access' => BlockTelescopeInProduction::class,
     ];
 
 
