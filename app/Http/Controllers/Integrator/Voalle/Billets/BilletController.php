@@ -88,7 +88,7 @@ class BilletController extends Controller
                 'ACL' => 'public-read'
             ];
 
-            $bucket = config('services.digitro');
+            $bucket = config('services.voalle');
             dd($bucket);
 
             $aws = Storage::disk('aws_digitro')->put('/boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
