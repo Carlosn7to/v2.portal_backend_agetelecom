@@ -88,7 +88,7 @@ class BilletController extends Controller
                 'ACL' => 'public-read'
             ];
 
-            $aws = Storage::disk('aws_digitro')->put('/boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
+            $aws = Storage::disk('aws_digitro')->put('boletos/' . 'boleto_' . $id . '.pdf', $pdfContent, $options);
 
             if($aws){
                 return true;
