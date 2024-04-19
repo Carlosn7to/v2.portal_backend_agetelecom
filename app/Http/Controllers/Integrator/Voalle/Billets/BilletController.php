@@ -95,13 +95,13 @@ class BilletController extends Controller
                 // Lidar com a exceção de arquivo não encontrado
                 $error = Log::error('O arquivo não pôde ser encontrado: ' . $e->getMessage());
 
-                return $error;
+                dd($error);
 
             } catch (\Exception $e) {
                 // Lidar com outras exceções
                 $error = Log::error('Ocorreu um erro ao salvar o arquivo: ' . $e->getMessage());
 
-                return $error;
+                dd($error);
 
             }
 
