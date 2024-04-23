@@ -2,62 +2,117 @@
 
 namespace App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms;
 
+use Infobip\Api\SmsApi;
+use Infobip\ApiException;
+use Infobip\Configuration;
+use Infobip\Model\SmsAdvancedTextualRequest;
+use Infobip\Model\SmsDestination;
+use Infobip\Model\SmsTextualMessage;
+use Infobip\Model\SmsReportResponse;
+use Infobip\ObjectSerializer;
+
 class BuilderSms
 {
 
-    private $cellPhone;
-    private $day;
     private $templates;
+    private $data;
 
-    public function __construct($cellPhone, $day)
+    public function __construct($data)
     {
-        $this->cellPhone = $cellPhone;
-        $this->day = $day;
+        $this->data = $data;
     }
 
     public function builder()
     {
 
-        $this->sanitizeCellphone();
-        $this->formatCellphone();
+        $this->templates = new TemplatesSms();
 
-        $this->templates = (new TemplatesSms())->templates();
+        foreach($this->data as $key => $value){
+
+            $template = $this->templates->getTemplate($value['segmentation'], $value['days_until_expiration']);
+
+            if($template != null){
+
+                $dataSending = [
+                    'clientKey' => $key,
+                    'template' => $template
+                ];
+
+                $this->chooseIntegrator($dataSending);
+
+            }
+
+        }
 
 
-        $excel = [];
 
-        foreach($this->templates as $template)
-        {
-            $excel[] = [
-                'titulo' => $template->titulo,
-                'conteudo' => $template->conteudo,
-                'regra' => $template->regra,
-                'status' => $template->status,
-                'celular' => $this->cellPhone,
-                'dia' => $this->day
-            ];
+    }
+
+    private function chooseIntegrator($dataSending)
+    {
+
+        switch($dataSending['template']['integrator']['titulo']){
+
+            case 'InfoBip':
+                $this->infoBip($dataSending);
+                break;
+
+            default:
+                dd('Integrador não encontrado');
+                break;
+
         }
 
     }
 
-    private function sanitizeCellphone() : void
-    {
-        $this->cellPhone = preg_replace('/[^0-9]/', '', $this->cellPhone);
-    }
-
-    private function formatCellphone() : void
+    public function smsReport()
     {
 
-        //Verifica se o telefone é igual ou menos à 11 digitos , se for, adiciona o 55 no inicio pois indica
-        // que não foi inserido o código do país
-        $this->cellPhone = strlen($this->cellPhone) <= 11 ? '55' . $this->cellPhone : $this->cellPhone;
-
-        // Verifica se o número já está com o 9 inserido no início, se não estiver, insere
-        $this->cellPhone = strlen($this->cellPhone) == 12 ?
-        substr_replace($this->cellPhone, '9', 4, 0) :
-        $this->cellPhone;
 
     }
 
+    private function infoBip($dataSending)
+    {
+
+
+        $integrator = $dataSending['template']['integrator']['configuracao'];
+
+        $configuration = new Configuration(
+            host: $integrator['configuration']['host'],
+            apiKey: $integrator['configuration']['apiKey']
+        );
+
+        $sendSmsApi = new SmsApi(config: $configuration);
+
+        $message = new SmsTextualMessage(
+            destinations: [
+                new SmsDestination(to: '+'.'5561984700440')// $this->data[$dataSending['clientKey']]['phone'])
+            ],
+            from: 'InfoSMS',
+            text: `${}`,
+            notifyUrl: 'http://localhost:8000/infobip/report/sms/'
+        );
+
+
+        $request = new SmsAdvancedTextualRequest(messages: [$message]);
+
+        try {
+            $smsResponse = $sendSmsApi->sendSmsMessage($request);
+
+            $this->smsReport();
+
+            return;
+
+        } catch (ApiException $apiException) {
+            // HANDLE THE EXCEPTION
+        }
+
+    }
+
+    private function buildingReport()
+    {
+
+
+    }
 
 }

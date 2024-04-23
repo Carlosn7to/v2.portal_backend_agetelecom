@@ -23,4 +23,10 @@ class Integrator extends Model
         'atualizado_por',
         'deletado_por',
     ];
+
+
+    public function getConfiguracaoAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 }

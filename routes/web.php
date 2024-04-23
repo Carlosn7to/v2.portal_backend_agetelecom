@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/order/{id}', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'getOrder']);
 Route::get('/order', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'store']);
 Route::get('/order/edit/{id}', [\App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController::class, 'edit']);
+
+
+Route::get('/infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'report']);
+
+
+Route::get('bi/voalle/financial/b2b/good-payer', [\App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController::class, 'builderForBI']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Test\Portal;
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
+use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Portal\User\User;
@@ -35,22 +36,85 @@ class Functions extends Controller
 
     public function index(Request $request)
     {
-
-
-        $arquivoJson = $request->file('json');
-
-        $json = json_decode(file_get_contents($arquivoJson), true);
-
-        $data = $json;
-
-        dd($data);
-
-
         set_time_limit(20000000000);
 
-        $syncClient = new UserSync();
+        $bi = new GoodPayerController();
 
-        return $syncClient->builder();
+        return $bi->builderForBI();
+
+
+        return true;
+
+
+        // Configurar o cliente Guzzle
+        $client = new Client([
+            'base_uri' => 'https://j36lvj.api-us.infobip.com/',
+            'timeout' => 10.0,
+        ]);
+
+        // Obter o token de autorização
+        $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
+
+        $response = $client->get(
+            'sms/1/inbox/reports',
+            [
+                'headers' => [
+                    'Authorization' => $authorization,
+                    'Accept' => 'application/json',
+                ],
+                'query' => [
+                    'limit' => 10,
+                    'bulkId' => 'Confirmação SMS 1 - 23/04/2024 15:46:41'
+                ],
+            ]
+        );
+
+
+        // Obter a resposta como JSON
+        $responseData = json_decode($response->getBody(), true);
+
+        return response()->json([
+            'status' => $response->getStatusCode(),
+            'data' => $responseData,
+        ]);
+
+        // Enviar a solicitação POST com Guzzle
+        $response = $client->post('sms/2/text/advanced', [
+            'headers' => [
+                'Authorization' => $authorization,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'bulkId' => 'Confirmação SMS 1',
+                'messages' => [
+                    [
+                        'destinations' => [
+                            ['to' => '+5561984700440'],
+                            ['to' => '+5561991659351'],
+                            ['to' => '+5561999225832'],
+                            ['to' => '+5561998003186'],
+                        ],
+                        'from' => 'Age Telecom',
+                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
+                    ],
+                ],
+            ],
+        ]);
+
+        // Obter a resposta como JSON
+        $responseData = json_decode($response->getBody(), true);
+
+        return response()->json([
+            'status' => $response->getStatusCode(),
+            'data' => $responseData,
+        ]);
+
+
+        return true;
+        $billingRule = new BuilderBillingRuleController();
+
+        return $billingRule->builder();
 
 
 

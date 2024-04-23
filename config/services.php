@@ -50,5 +50,4 @@ return [
     'portal' => [
         'user_key' => env('USER_KEY_PORTAL'),
     ]
-
 ];

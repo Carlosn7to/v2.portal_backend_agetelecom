@@ -76,7 +76,6 @@ class BilletController extends Controller
             ]
         ]);
 
-
         $billetPath = [];
 
         $billetLog = new BilletLog();
