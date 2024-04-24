@@ -15,7 +15,7 @@ class RestrictAcessIpMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedIP = '206.204.248.31'; // IP permitido
+        $allowedIP = '206.204.248.71'; // IP permitido
 
         if ($request->ip() !== $allowedIP) {
             return response()->json(['error' => 'unauthorized'], 403);
