@@ -94,7 +94,6 @@ class GoodPayerController extends Controller
             and frt.finished is false
             and frt2.title_loss = 0
             and ct.title ilike '%PJ%'
-            limit 1
             SQL;
 
     }
