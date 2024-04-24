@@ -11,7 +11,7 @@ class TemplatesSms
 
     public function __construct()
     {
-        $this->templates();
+        $this->getTemplates();
     }
 
     public function getTemplate($rankClient, $dayRule)
@@ -41,9 +41,11 @@ class TemplatesSms
 
     }
 
-    public function templates() : void
+    public function getTemplates()
     {
         $this->templates = Sms::getAllTemplates();
+
+        return $this->templates;
     }
 
 }

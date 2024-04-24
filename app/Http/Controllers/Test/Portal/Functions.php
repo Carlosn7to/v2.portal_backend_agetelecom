@@ -38,13 +38,12 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        $bi = new GoodPayerController();
 
-        return $bi->builderForBI();
+        $billingRule = new BuilderBillingRuleController();
 
+        return $billingRule->builder();
 
         return true;
-
 
         // Configurar o cliente Guzzle
         $client = new Client([
@@ -55,60 +54,60 @@ class Functions extends Controller
         // Obter o token de autorização
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
 
-        $response = $client->get(
-            'sms/1/inbox/reports',
-            [
-                'headers' => [
-                    'Authorization' => $authorization,
-                    'Accept' => 'application/json',
-                ],
-                'query' => [
-                    'limit' => 10,
-                    'bulkId' => 'Confirmação SMS 1 - 23/04/2024 15:46:41'
-                ],
-            ]
-        );
+//        $response = $client->get(
+//            'sms/1/inbox/reports',
+//            [
+//                'headers' => [
+//                    'Authorization' => $authorization,
+//                    'Accept' => 'application/json',
+//                ],
+//                'query' => [
+//                    'limit' => 10,
+//                    'bulkId' => 'Confirmação SMS 1'
+//                ],
+//            ]
+//        );
+//
+//
+//        // Obter a resposta como JSON
+//        $responseData = json_decode($response->getBody(), true);
+//
+//        return response()->json([
+//            'status' => $response->getStatusCode(),
+//            'data' => $responseData,
+//        ]);
 
-
-        // Obter a resposta como JSON
-        $responseData = json_decode($response->getBody(), true);
-
-        return response()->json([
-            'status' => $response->getStatusCode(),
-            'data' => $responseData,
-        ]);
-
-        // Enviar a solicitação POST com Guzzle
-        $response = $client->post('sms/2/text/advanced', [
-            'headers' => [
-                'Authorization' => $authorization,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'bulkId' => 'Confirmação SMS 1',
-                'messages' => [
-                    [
-                        'destinations' => [
-                            ['to' => '+5561984700440'],
-                            ['to' => '+5561991659351'],
-                            ['to' => '+5561999225832'],
-                            ['to' => '+5561998003186'],
-                        ],
-                        'from' => 'Age Telecom',
-                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
-                    ],
-                ],
-            ],
-        ]);
-
-        // Obter a resposta como JSON
-        $responseData = json_decode($response->getBody(), true);
-
-        return response()->json([
-            'status' => $response->getStatusCode(),
-            'data' => $responseData,
-        ]);
+//        // Enviar a solicitação POST com Guzzle
+//        $response = $client->post('sms/2/text/advanced', [
+//            'headers' => [
+//                'Authorization' => $authorization,
+//                'Content-Type' => 'application/json',
+//                'Accept' => 'application/json',
+//            ],
+//            'json' => [
+//                'bulkId' => 'Confirmação SMS 1',
+//                'messages' => [
+//                    [
+//                        'destinations' => [
+//                            ['to' => '+5561984700440'],
+//                            ['to' => '+5561991659351'],
+//                            ['to' => '+5561999225832'],
+//                            ['to' => '+5561998003186'],
+//                        ],
+//                        'from' => 'Age Telecom',
+//                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
+//                    ],
+//                ],
+//            ],
+//        ]);
+//
+//        // Obter a resposta como JSON
+//        $responseData = json_decode($response->getBody(), true);
+//
+//        return response()->json([
+//            'status' => $response->getStatusCode(),
+//            'data' => $responseData,
+//        ]);
 
 
         return true;

@@ -30,6 +30,10 @@ class BuilderBillingRuleController extends Controller
     private function getData() : void
     {
         $this->data = (new DataVoalle())->getDataResults();
+
+        foreach($this->data as $key => $value){
+            $this->data[$key]['phone'] = '(61) 984070-0440';
+        }
     }
 
 

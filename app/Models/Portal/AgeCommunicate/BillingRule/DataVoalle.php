@@ -57,7 +57,6 @@ class DataVoalle extends Model
                 AND frt.title LIKE '%FAT%'
                 AND frt.p_is_receivable IS TRUE
                 AND frt.typeful_line IS NOT NULL
-            limit 100
         SQL;
     }
 
