@@ -10,8 +10,15 @@ class GoodPayerController extends Controller
 
     private $token = '1813826105dfcb87c112d47b103570778d0ff89ca44e0adbf83671b42b1cf43c';
 
+
+    public function __construct()
+    {
+        $this->middleware('portal.bi.access.ip');
+    }
+
     public function builderForBI(Request $request)
     {
+
 
         if($this->token !== $request->token){
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -71,7 +78,6 @@ class GoodPayerController extends Controller
             and frt.finished is false
             and frt2.title_loss = 0
             and ct.title ilike '%PJ%'
-            limit 1000
             SQL;
 
     }
