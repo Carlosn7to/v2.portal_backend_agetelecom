@@ -63,7 +63,23 @@ class GoodPayerController extends Controller
             c.collection_day as "Dia vencimento",
             fn.title as "Natureza financeira",
             (select p.name from erp.people p where p.id = c.seller_1_id) as "vendedor 1",
-            (select p.name from erp.people p where p.id = c.seller_2_id) as "vendedor 2"
+            (select p.name from erp.people p where p.id = c.seller_2_id) as "vendedor 2",
+            CASE
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 1 THEN 'jan'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 2 THEN 'fev'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 3 THEN 'mar'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 4 THEN 'abr'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 5 THEN 'mai'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 6 THEN 'jun'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 7 THEN 'jul'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 8 THEN 'ago'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 9 THEN 'set'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 10 THEN 'out'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 11 THEN 'nov'
+                WHEN EXTRACT(MONTH FROM frt2.competence) = 12 THEN 'dez'
+            END AS nome_mes,
+            EXTRACT(MONTH FROM frt2.competence) as mes,
+            EXTRACT(YEAR FROM frt2.competence) as Ano
             from erp.contracts c
             right join erp.financial_receivable_titles frt2  on frt2.contract_id = c.id
             right join erp.financial_receipt_titles frt on frt.financial_receivable_title_id  = frt2.id
@@ -78,6 +94,7 @@ class GoodPayerController extends Controller
             and frt.finished is false
             and frt2.title_loss = 0
             and ct.title ilike '%PJ%'
+            limit 1
             SQL;
 
     }
