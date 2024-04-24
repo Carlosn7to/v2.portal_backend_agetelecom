@@ -77,9 +77,9 @@ class GoodPayerController extends Controller
                 WHEN EXTRACT(MONTH FROM frt2.competence) = 10 THEN 'out'
                 WHEN EXTRACT(MONTH FROM frt2.competence) = 11 THEN 'nov'
                 WHEN EXTRACT(MONTH FROM frt2.competence) = 12 THEN 'dez'
-            END AS Competencia Nome do Mes,
-            EXTRACT(MONTH FROM frt2.competence) as Competencia Mes,
-            EXTRACT(YEAR FROM frt2.competence) as Competencia Ano
+            END AS "Competencia Nome do Mes",
+            EXTRACT(MONTH FROM frt2.competence) as "Competencia Mes",
+            EXTRACT(YEAR FROM frt2.competence) as "Competencia Ano"
             from erp.contracts c
             right join erp.financial_receivable_titles frt2  on frt2.contract_id = c.id
             right join erp.financial_receipt_titles frt on frt.financial_receivable_title_id  = frt2.id
