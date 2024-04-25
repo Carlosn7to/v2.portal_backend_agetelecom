@@ -77,37 +77,34 @@ class Functions extends Controller
 //            'data' => $responseData,
 //        ]);
 
-//        // Enviar a solicitação POST com Guzzle
-//        $response = $client->post('sms/2/text/advanced', [
-//            'headers' => [
-//                'Authorization' => $authorization,
-//                'Content-Type' => 'application/json',
-//                'Accept' => 'application/json',
-//            ],
-//            'json' => [
-//                'bulkId' => 'Confirmação SMS 1',
-//                'messages' => [
-//                    [
-//                        'destinations' => [
-//                            ['to' => '+5561984700440'],
-//                            ['to' => '+5561991659351'],
-//                            ['to' => '+5561999225832'],
-//                            ['to' => '+5561998003186'],
-//                        ],
-//                        'from' => 'Age Telecom',
-//                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
-//                    ],
-//                ],
-//            ],
-//        ]);
-//
-//        // Obter a resposta como JSON
-//        $responseData = json_decode($response->getBody(), true);
-//
-//        return response()->json([
-//            'status' => $response->getStatusCode(),
-//            'data' => $responseData,
-//        ]);
+        // Enviar a solicitação POST com Guzzle
+        $response = $client->post('sms/2/text/advanced', [
+            'headers' => [
+                'Authorization' => $authorization,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'bulkId' => 'Confirmação SMS 1',
+                'messages' => [
+                    [
+                        'destinations' => [
+                            ['to' => '+5561984700440'],
+                        ],
+                        'from' => 'Age Telecom',
+                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
+                    ],
+                ],
+            ],
+        ]);
+
+        // Obter a resposta como JSON
+        $responseData = json_decode($response->getBody(), true);
+
+        return response()->json([
+            'status' => $response->getStatusCode(),
+            'data' => $responseData,
+        ]);
 
 
         return true;

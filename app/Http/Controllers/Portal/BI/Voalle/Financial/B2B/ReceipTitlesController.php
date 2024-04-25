@@ -42,6 +42,7 @@ class ReceipTitlesController extends Controller
                 f.title_amount as "valor titulo",
                 fn.title as "natureza financeira",
                 f.expiration_date as "vencimento",
+                frt.client_paid_date as "data do pagamento",
                 frt.receipt_date as "data do recebimento",
                 f.original_expiration_date as "vencimento original",
                 f.competence as "competencia",
@@ -52,6 +53,22 @@ class ReceipTitlesController extends Controller
                 f.contract_id as "numero de contrato",
                 (select p.name from erp.people p where p.id = c.seller_1_id) as "vendedor 1",
                 (select p.name from erp.people p where p.id = c.seller_2_id) as "vendedor 2"
+                CASE
+                WHEN EXTRACT(MONTH FROM frt.competence) = 1 THEN 'jan'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 2 THEN 'fev'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 3 THEN 'mar'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 4 THEN 'abr'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 5 THEN 'mai'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 6 THEN 'jun'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 7 THEN 'jul'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 8 THEN 'ago'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 9 THEN 'set'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 10 THEN 'out'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 11 THEN 'nov'
+                WHEN EXTRACT(MONTH FROM frt.competence) = 12 THEN 'dez'
+                    END AS "Competencia Nome do Mes",
+                EXTRACT(MONTH FROM frt.competence) as "Competencia Mes",
+                EXTRACT(YEAR FROM frt.competence) as "Competencia Ano"
                 from erp.financial_receivable_titles f
                 inner join erp.financers_natures fn on fn.id = f.financer_nature_id
                 left join erp.contracts c on c.id = f.contract_id

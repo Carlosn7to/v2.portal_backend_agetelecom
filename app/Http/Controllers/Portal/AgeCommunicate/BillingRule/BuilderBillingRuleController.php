@@ -20,6 +20,7 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
+        dd($this->data[0]);
 
         $smsAction = (new BuilderSms($this->data))->builder();
 
@@ -31,9 +32,7 @@ class BuilderBillingRuleController extends Controller
     {
         $this->data = (new DataVoalle())->getDataResults();
 
-        foreach($this->data as $key => $value){
-            $this->data[$key]['phone'] = '(61) 984070-0440';
-        }
+
     }
 
 

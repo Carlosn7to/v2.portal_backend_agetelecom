@@ -29,6 +29,7 @@ class DataVoalle extends Model
         return <<<SQL
             SELECT
                 c.id AS "contract_id",
+                i.title as "segregation",
                 p.email AS "email",
                 p.v_name AS "name",
                 frt.document_amount,
@@ -48,6 +49,7 @@ class DataVoalle extends Model
             FROM erp.contracts c
             LEFT JOIN erp.people p ON p.id = c.client_id
             LEFT JOIN erp.financial_receivable_titles frt ON frt.contract_id = c.id
+            left join erp.insignias i on i.id = p.insignia_id
             WHERE
                 c.v_stage = 'Aprovado'
                 AND c.v_status != 'Cancelado'
@@ -57,6 +59,7 @@ class DataVoalle extends Model
                 AND frt.title LIKE '%FAT%'
                 AND frt.p_is_receivable IS TRUE
                 AND frt.typeful_line IS NOT NULL
+                --and p.insignia_id is not null
         SQL;
     }
 
@@ -83,8 +86,9 @@ class DataVoalle extends Model
             'competence' => $row->competence,
             'frt_id' => $row->frt_id,
             'contract_id' => $row->contract_id,
-            'segmentation' => 'prata',
+            'segmentation' => $this->segregation != null ? $this->segregation : 'prata',
             'phone' => $this->sanitizeCellphone($row->phone),
+            'phone_original' => $row->phone,
             'days_until_expiration' => $row->days_until_expiration
         ];
     }
@@ -135,10 +139,15 @@ class DataVoalle extends Model
 
     private function sanitizeCellphone($cellphone)
     {
-        $cellphone = preg_replace('/[^0-9]/', '', $cellphone);
-        $cellphone = $this->formatCellphone($cellphone);
 
-        return $cellphone;
+
+        $cellphoneFormmated = preg_replace('/[^0-9]/', '', $cellphone);
+        $cellphoneFormmated = $this->formatCellphone($cellphoneFormmated);
+
+
+        return $cellphoneFormmated;
+
+
     }
 
     private function formatCellphone($cellphone)
