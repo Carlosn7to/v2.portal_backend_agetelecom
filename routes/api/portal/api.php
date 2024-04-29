@@ -19,4 +19,4 @@ Route::prefix('test')->controller(\App\Http\Controllers\Test\Portal\Functions::c
     Route::get('/', 'index');
 });
 
-Route::post('/infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);
+Route::post('infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);
