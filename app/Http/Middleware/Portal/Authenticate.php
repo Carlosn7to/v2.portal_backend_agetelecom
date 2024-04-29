@@ -22,6 +22,8 @@ class Authenticate
             return $next($request);
         }
 
+        \Log::info('Middleware acessado e recusado: ', ['url' => $request->url()]);
+
         return response()->json(['error' => 'Unauthorized'], 401);
 
     }

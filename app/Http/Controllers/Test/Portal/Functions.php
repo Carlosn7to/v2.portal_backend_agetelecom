@@ -33,12 +33,14 @@ class Functions extends Controller
 
     public function __construct()
     {
-//        $this->middleware('portal.master')->only('index');
+        $this->middleware('portal')->only('index');
     }
 
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+
+        return true;
 
 //        $billingRule = new BuilderBillingRuleController();
 //
