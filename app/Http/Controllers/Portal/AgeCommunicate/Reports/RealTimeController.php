@@ -19,8 +19,6 @@ class RealTimeController extends Controller
     public function handle(Request $request)
     {
 
-
-
         return response()->json(['message' => 'Webhook recebido com sucesso!'], 200);
     }
 }

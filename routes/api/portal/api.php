@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('test')->controller(\App\Http\Controllers\Test\Portal\Functions::class)->group(function () {
     Route::get('/', 'index');
 });
+
+Route::post('/infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);
