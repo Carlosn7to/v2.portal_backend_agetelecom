@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'portal.integrator.voalle.billets.access' => \App\Http\Middleware\Integrator\Voalle\AccessBilletsMiddleware::class,
         'portal.telescope.access' => BlockTelescopeInProduction::class,
         'portal.bi.access.ip' => RestrictAcessIpMiddleware::class,
+        'portal.ageCommunicate.infoBip.access' => \App\Http\Middleware\Portal\AgeCommunicate\InfoBipAccessMiddleware::class,
     ];
 
 

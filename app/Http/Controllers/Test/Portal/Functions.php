@@ -33,12 +33,13 @@ class Functions extends Controller
 
     public function __construct()
     {
-//        $this->middleware('portal')->only('index');
+        $this->middleware('portal.ageCommunicate.infoBip.access')->only('index');
     }
 
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+
 
 
 //        $billingRule = new BuilderBillingRuleController();

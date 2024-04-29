@@ -10,9 +10,15 @@ use Infobip\Model\SmsReport;
 
 class RealTimeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('portal.ageCommunicate.infoBip.access');
+    }
+
     public function handle(Request $request)
     {
-        \Log::info('Webhook recebido:', $request->all());
+
 
 
         return response()->json(['message' => 'Webhook recebido com sucesso!'], 200);
