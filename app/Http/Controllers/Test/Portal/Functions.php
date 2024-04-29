@@ -67,16 +67,16 @@ class Functions extends Controller
                     'Accept' => 'application/json',
                 ],
                 'json' => [
-                    'bulkId' => 'Teste_template_semUrl',
+                    'bulkId' => 'Teste_template_localhost',
                     'messages' => [
                         [
                             'destinations' => [
                                 ['to' => '+5561984700440'],
                             ],
                             'from' => 'Age Telecom',
-                            'text' => 'Testando o desenvolvimento da api 22',
-                            "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
-                            "notifyContentType" => "application/json"
+                            'text' => 'Testando o desenvolvimento da api 22'.Carbon::now()->format('d/m/Y H:i:s'),
+//                            "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
+//                            "notifyContentType" => "application/json"
                         ],
                     ],
                 ],

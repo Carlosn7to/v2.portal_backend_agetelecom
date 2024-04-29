@@ -22,7 +22,7 @@ class Authenticate
             return $next($request);
         }
 
-        \Log::info('Middleware acessado e recusado.', ['url' => $request->url(), 'data' => $request->headers->all()]);
+        \Log::info('Middleware acessado e recusado.', ['request' => $request]);
 
         return response()->json(['error' => 'Unauthorized'], 401);
 
