@@ -10,9 +10,14 @@ use Infobip\Model\SmsReport;
 
 class RealTimeController extends Controller
 {
-    public function report()
+
+    public function __construct()
     {
 
+    }
+
+    public function report()
+    {
 
     }
 }

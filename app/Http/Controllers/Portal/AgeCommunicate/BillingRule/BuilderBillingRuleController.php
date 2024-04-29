@@ -20,7 +20,6 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
-        dd($this->data[0]);
 
         $smsAction = (new BuilderSms($this->data))->builder();
 

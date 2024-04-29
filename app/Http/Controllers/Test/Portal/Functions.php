@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Test\Portal;
 
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
 use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
+use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Sms;
 use App\Models\Portal\User\User;
 use App\Routines\Portal\Users\UserSync;
 use Carbon\Carbon;
@@ -38,10 +40,83 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-
         $billingRule = new BuilderBillingRuleController();
 
         return $billingRule->builder();
+
+        $consult = false;
+
+        $template = Sms::find(1);
+
+        // Configurar o cliente Guzzle
+        $client = new Client([
+            'base_uri' => 'https://j36lvj.api-us.infobip.com/',
+            'timeout' => 10.0,
+        ]);
+
+        // Obter o token de autorização
+        $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
+
+        if(! $consult) {
+            // Enviar a solicitação POST com Guzzle
+            $response = $client->post('sms/2/text/advanced', [
+                'headers' => [
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'bulkId' => 'Teste_template',
+                    'messages' => [
+                        [
+                            'destinations' => [
+                                ['to' => '+5561984700440'],
+                            ],
+                            'from' => 'Age Telecom',
+                            'text' => $template->conteudo,
+                        ],
+                    ],
+                ],
+            ]);
+
+            // Obter a resposta como JSON
+            $responseData = json_decode($response->getBody(), true);
+
+            return response()->json([
+                'status' => $response->getStatusCode(),
+                'data' => $responseData,
+                'template' => $template
+            ]);
+        } else {
+
+
+        $response = $client->get(
+            'sms/1/inbox/reports',
+            [
+                'headers' => [
+                    'Authorization' => $authorization,
+                    'Accept' => 'application/json',
+                ],
+                'query' => [
+                    'limit' => 10,
+                    'bulkId' => 'Teste_template'
+                ],
+            ]
+        );
+
+
+        // Obter a resposta como JSON
+        $responseData = json_decode($response->getBody(), true);
+
+        return response()->json([
+            'status' => $response->getStatusCode(),
+            'data' => $responseData,
+        ]);
+
+
+        }
+
+
 
         return true;
 
@@ -53,29 +128,6 @@ class Functions extends Controller
 
         // Obter o token de autorização
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
-
-//        $response = $client->get(
-//            'sms/1/inbox/reports',
-//            [
-//                'headers' => [
-//                    'Authorization' => $authorization,
-//                    'Accept' => 'application/json',
-//                ],
-//                'query' => [
-//                    'limit' => 10,
-//                    'bulkId' => 'Confirmação SMS 1'
-//                ],
-//            ]
-//        );
-//
-//
-//        // Obter a resposta como JSON
-//        $responseData = json_decode($response->getBody(), true);
-//
-//        return response()->json([
-//            'status' => $response->getStatusCode(),
-//            'data' => $responseData,
-//        ]);
 
         // Enviar a solicitação POST com Guzzle
         $response = $client->post('sms/2/text/advanced', [

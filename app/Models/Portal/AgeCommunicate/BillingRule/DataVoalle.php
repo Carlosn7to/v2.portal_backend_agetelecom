@@ -30,6 +30,7 @@ class DataVoalle extends Model
             SELECT
                 c.id AS "contract_id",
                 i.title as "segregation",
+                c.v_status AS "contract_status",
                 p.email AS "email",
                 p.v_name AS "name",
                 frt.document_amount,
@@ -38,7 +39,7 @@ class DataVoalle extends Model
                     WHEN p.cell_phone_1 IS NOT NULL THEN p.cell_phone_1
                     ELSE p.cell_phone_2
                 END AS "phone",
-                frt.typeful_line AS "barcode",
+                frt.typeful_line AS "typeful_line",
                 frt.expiration_date AS "expiration_date",
                 frt.competence AS "competence",
                 CASE
@@ -59,6 +60,7 @@ class DataVoalle extends Model
                 AND frt.title LIKE '%FAT%'
                 AND frt.p_is_receivable IS TRUE
                 AND frt.typeful_line IS NOT NULL
+                and frt.financer_nature_id = 59
                 --and p.insignia_id is not null
         SQL;
     }
@@ -80,8 +82,9 @@ class DataVoalle extends Model
             'name' => $this->formmatedName($row->name),
             'email' => $this->sanitazeMail($row->email),
             'document_amount' => $row->document_amount,
+            'contract_status' =>$row->contract_status,
             'tx_id' => $this->formmatedTxId($row->tx_id),
-            'barcode' => $row->barcode,
+            'barcode' => $row->typeful_line,
             'expiration_date' => $row->expiration_date,
             'competence' => $row->competence,
             'frt_id' => $row->frt_id,
@@ -142,6 +145,40 @@ class DataVoalle extends Model
 
 
         $cellphoneFormmated = preg_replace('/[^0-9]/', '', $cellphone);
+
+        $dddValids = [
+            11, 12, 13, 14, 15, 16, 17, 18, 19, // São Paulo
+            21, 22, 24, // Rio de Janeiro
+            27, 28, // Espírito Santo
+            31, 32, 33, 34, 35, 37, 38, // Minas Gerais
+            41, 42, 43, 44, 45, 46, // Paraná
+            47, 48, 49, // Santa Catarina
+            51, 53, 54, 55, // Rio Grande do Sul
+            61, 62, 64, // Goiás
+            63, // Tocantins
+            65, 66, // Mato Grosso
+            67, // Mato Grosso do Sul
+            68, // Acre
+            69, // Rondônia
+            71, 73, 74, 75, 77, // Bahia
+            79, // Sergipe
+            81, 82, // Pernambuco
+            83, // Paraíba
+            84, // Rio Grande do Norte
+            85, 88, // Ceará
+            86, 89, // Piauí
+            87, // Pernambuco
+            91, 93, 94, // Pará
+            92, 97, // Amazonas
+            95, // Roraima
+            96, // Amapá
+            98, 99 // Maranhão
+        ];
+
+        if(!in_array(substr($cellphoneFormmated, 0, 2), $dddValids)){
+            return false;
+        }
+
         $cellphoneFormmated = $this->formatCellphone($cellphoneFormmated);
 
 

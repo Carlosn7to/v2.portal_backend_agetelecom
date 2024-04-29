@@ -67,6 +67,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('integrator/voalle/')
                 ->group(base_path('routes/api/integrator/voalle/billet.php'));
 
+            // Rotas para a integração de boletos Digitro x Voalle
+            Route::middleware('portal')
+                ->prefix('portal/ageCommunicate/')
+                ->group(base_path('routes/api/portal/ageCommunicate/api.php'));
+
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
