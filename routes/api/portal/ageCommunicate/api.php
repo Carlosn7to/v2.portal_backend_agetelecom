@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);
+Route::post('/infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);

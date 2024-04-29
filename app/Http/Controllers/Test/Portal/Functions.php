@@ -33,14 +33,13 @@ class Functions extends Controller
 
     public function __construct()
     {
-        $this->middleware('portal')->only('index');
+//        $this->middleware('portal')->only('index');
     }
 
     public function index(Request $request)
     {
         set_time_limit(20000000000);
 
-        return true;
 
 //        $billingRule = new BuilderBillingRuleController();
 //
@@ -76,6 +75,8 @@ class Functions extends Controller
                             ],
                             'from' => 'Age Telecom',
                             'text' => $template->conteudo,
+                            "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
+                            "notifyContentType" => "application/json"
                         ],
                     ],
                 ],
@@ -147,6 +148,8 @@ class Functions extends Controller
                         ],
                         'from' => 'Age Telecom',
                         'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
+                        "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
+                        "notifyContentType" => "application/json"
                     ],
                 ],
             ],
