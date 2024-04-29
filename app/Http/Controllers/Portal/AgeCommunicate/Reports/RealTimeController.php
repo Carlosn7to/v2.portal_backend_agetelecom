@@ -10,14 +10,11 @@ use Infobip\Model\SmsReport;
 
 class RealTimeController extends Controller
 {
-
-    public function __construct()
+    public function handle(Request $request)
     {
+        \Log::info('Webhook recebido:', $request->all());
 
-    }
 
-    public function report()
-    {
-
+        return response()->json(['message' => 'Webhook recebido com sucesso!'], 200);
     }
 }

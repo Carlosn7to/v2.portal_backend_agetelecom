@@ -40,9 +40,9 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        $billingRule = new BuilderBillingRuleController();
-
-        return $billingRule->builder();
+//        $billingRule = new BuilderBillingRuleController();
+//
+//        return $billingRule->builder();
 
         $consult = false;
 
