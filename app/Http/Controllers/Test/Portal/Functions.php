@@ -33,20 +33,14 @@ class Functions extends Controller
 
     public function __construct()
     {
-        $this->middleware('portal.ageCommunicate.infoBip.access')->only('index');
+//        $this->middleware('portal.ageCommunicate.infoBip.access')->only('index');
     }
 
     public function index(Request $request)
     {
         set_time_limit(20000000000);
 
-
-
-//        $billingRule = new BuilderBillingRuleController();
-//
-//        return $billingRule->builder();
-
-        $consult = false;
+        $consult = true;
 
         $template = Sms::find(1);
 
@@ -68,16 +62,15 @@ class Functions extends Controller
                     'Accept' => 'application/json',
                 ],
                 'json' => [
-                    'bulkId' => 'Teste_template_sem_ur',
+                    'bulkId' => '',
                     'messages' => [
                         [
                             'destinations' => [
                                 ['to' => '+5561984700440'],
+                                ['to' => '+5561991659351'],
                             ],
                             'from' => 'Age Telecom',
                             'text' => 'Testando o desenvolvimento da api'.Carbon::now()->format('d/m/Y H:i:s'),
-//                            "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
-//                            "notifyContentType" => "application/json",
                         ],
                     ],
                 ],
@@ -103,7 +96,7 @@ class Functions extends Controller
                 ],
                 'query' => [
                     'limit' => 10,
-                    'bulkId' => 'Teste_template'
+                    'bulkId' => '4144191653446471473056'
                 ],
             ]
         );
