@@ -19,7 +19,8 @@ class RealTimeController extends Controller
     public function handle(Request $request)
     {
 
-        \Log::info('Middleware acessado e recusado.', ['json' => $request->json()]);
+
+        \Log::info('Middleware acessado e recusado.', ['json' => $request->json('results')]);
 
         return response()->json(['message' => 'Webhook recebido com sucesso!'], 200);
     }

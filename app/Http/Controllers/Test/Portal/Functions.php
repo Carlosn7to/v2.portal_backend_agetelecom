@@ -40,7 +40,7 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        $consult = true;
+        $consult = false;
 
         $template = Sms::find(1);
 
