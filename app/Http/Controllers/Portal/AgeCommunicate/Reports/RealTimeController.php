@@ -23,7 +23,7 @@ class RealTimeController extends Controller
         $result = $request->json('results');
 
         // Inicializa a query básica usando messageId, que sempre existe
-        $query = ReportSms::where('message_id', $result[0]['messageId']);
+        $query = ReportSms::where('mensagem_id', $result[0]['messageId']);
 
         // Adiciona condição para bulkId apenas se ele existir
         if (isset($result[0]['bulkId'])) {
