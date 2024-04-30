@@ -22,10 +22,16 @@ class RealTimeController extends Controller
 
         $result = $request->json('results');
 
-        // Carrega o(s) registro(s) que você quer atualizar
-        $reports = ReportSms::where('bulk_id', $result[0]['bulkId'])
-            ->orWhere('mensagem_id', $result[0]['messageId'])
-            ->get();
+        // Inicializa a query básica usando messageId, que sempre existe
+        $query = ReportSms::where('message_id', $result[0]['messageId']);
+
+        // Adiciona condição para bulkId apenas se ele existir
+        if (isset($result[0]['bulkId'])) {
+            $query = $query->orWhere('bulk_id', $result[0]['bulkId']);
+        }
+
+        // Executa a consulta
+        $reports = $query->get();
 
         // Inicializa uma flag para verificar se houve mudanças
         $changes = false;
