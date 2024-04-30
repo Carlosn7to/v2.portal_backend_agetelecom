@@ -42,9 +42,9 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        return ReportSms::getAllSending();
-
-        return true;
+//        return ReportSms::getAllSending();
+//
+//        return true;
 
         $consult = false;
 
@@ -107,7 +107,7 @@ class Functions extends Controller
                 ]);
 
                 $reportSmsLog->create([
-                    'bulk_id' => isset($responseData['bulkId']['bulkId']) ? $responseData['bulkId']['bulkId'] : 'envio_individual',
+                    'bulk_id' => isset($responseData['bulkId']) ? $responseData['bulkId'] : 'envio_individual',
                     'mensagem_id' => $v['messageId'],
                     'celular' => $v['to'],
                     'resposta_infobip' => json_encode($responseData),

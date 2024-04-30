@@ -46,7 +46,7 @@ class RealTimeController extends Controller
         }
 
         $log = ReportSmsLog::create([
-            'bulk_id' => isset($value['bulkId']) ? $value['bulkId'] : 'envio_individual',
+            'bulk_id' => isset($result[0]['bulkId']) ? $result[0]['bulkId'] : 'envio_individual',
             'mensagem_id' => $result[0]['messageId'],
             'celular' => $result[0]['to'],
             'resposta_infobip' => json_encode($result),
