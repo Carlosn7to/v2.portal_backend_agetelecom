@@ -183,7 +183,8 @@ class BuilderSms
                         'celular_voalle' => $v['phone_original'],
                         'segregacao' => $v['segmentation'],
                         'regra' => $v['days_until_expiration'],
-                        'status' => $v['phone'] != null ? 'enviado' : 'erro',
+                        'status' => 100,
+                        'status_descricao' => 200,
                         'erro' => $v['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
                         'template_id' => $value['id_template']
                     ]);

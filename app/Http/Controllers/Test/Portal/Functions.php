@@ -9,6 +9,8 @@ use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleCon
 use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSmsLog;
 use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Sms;
 use App\Models\Portal\User\User;
 use App\Routines\Portal\Users\UserSync;
@@ -40,6 +42,10 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+//        return ReportSms::getAllSending();
+//
+//        return true;
+
         $consult = false;
 
         $template = Sms::find(1);
@@ -67,7 +73,6 @@ class Functions extends Controller
                         [
                             'destinations' => [
                                 ['to' => '+5561984700440'],
-                                ['to' => '+5561991659351'],
                             ],
                             'from' => 'Age Telecom',
                             'text' => 'Testando o desenvolvimento da api'.Carbon::now()->format('d/m/Y H:i:s'),
@@ -78,6 +83,40 @@ class Functions extends Controller
 
             // Obter a resposta como JSON
             $responseData = json_decode($response->getBody(), true);
+
+            $reportSms = new ReportSms();
+            $reportSmsLog = new ReportSmsLog();
+
+            foreach($responseData as $key => $value) {
+
+
+                foreach($responseData['messages'] as $k => $v) {
+
+                    $reportSms->create([
+                        'bulk_id' => isset($value['bulkId']) ? $value['bulkId'] : 'envio_individual',
+                        'mensagem_id' => $v['messageId'],
+                        'contrato_id' => 10291,
+                        'fatura_id' => 210213,
+                        'celular' => '5561984700440',
+                        'celular_voalle' => '5561984700440',
+                        'segregacao' => 'prata',
+                        'regra' => 10,
+                        'status' => 100,
+                        'status_descricao' => 200,
+                        'template_id' => 1
+                    ]);
+
+                    $reportSmsLog->create([
+                       'bulk_id' => isset($value['bulkId']) ? $value['bulkId'] : 'envio_individual',
+                        'mensagem_id' => $v['messageId'],
+                        'celular' => $v['to'],
+                        'resposta_infobip' => json_encode($responseData),
+                        'status' => 1
+                    ]);
+
+                }
+
+            }
 
             return response()->json([
                 'status' => $response->getStatusCode(),

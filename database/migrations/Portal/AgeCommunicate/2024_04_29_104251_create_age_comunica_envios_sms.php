@@ -21,8 +21,10 @@ return new class extends Migration
             $table->string('celular_voalle');
             $table->string('segregacao');
             $table->smallInteger('regra');
-            $table->enum('status', ['enviado', 'entregue', 'erro']);
+            $table->integer('status');
+            $table->integer('status_descricao');
             $table->json('erro')->nullable();
+            $table->json('resposta_infobip')->nullable();
             $table->foreignId('template_id')->constrained('age_comunica_templates_sms');
             $table->timestamps();
         });
