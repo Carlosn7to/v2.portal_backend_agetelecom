@@ -42,9 +42,9 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-//        return ReportSms::getAllSending();
-//
-//        return true;
+        return ReportSms::getAllSending();
+
+        return true;
 
         $consult = false;
 
@@ -73,6 +73,7 @@ class Functions extends Controller
                         [
                             'destinations' => [
                                 ['to' => '+5561984700440'],
+                                ['to' => '+5561991659351'],
                             ],
                             'from' => 'Age Telecom',
                             'text' => 'Testando o desenvolvimento da api'.Carbon::now()->format('d/m/Y H:i:s'),
@@ -84,39 +85,37 @@ class Functions extends Controller
             // Obter a resposta como JSON
             $responseData = json_decode($response->getBody(), true);
 
+
             $reportSms = new ReportSms();
             $reportSmsLog = new ReportSmsLog();
 
-            foreach($responseData as $key => $value) {
 
+            foreach($responseData['messages'] as $k => $v) {
 
-                foreach($responseData['messages'] as $k => $v) {
+                $reportSms->create([
+                    'bulk_id' => isset($responseData['bulkId']) ? $responseData['bulkId'] : 'envio_individual',
+                    'mensagem_id' => $v['messageId'],
+                    'contrato_id' => 10291,
+                    'fatura_id' => 210213,
+                    'celular' => $v['to'],
+                    'celular_voalle' => $v['to'],
+                    'segregacao' => 'prata',
+                    'regra' => 10,
+                    'status' => 100,
+                    'status_descricao' => 200,
+                    'template_id' => 1
+                ]);
 
-                    $reportSms->create([
-                        'bulk_id' => isset($value['bulkId']) ? $value['bulkId'] : 'envio_individual',
-                        'mensagem_id' => $v['messageId'],
-                        'contrato_id' => 10291,
-                        'fatura_id' => 210213,
-                        'celular' => '5561984700440',
-                        'celular_voalle' => '5561984700440',
-                        'segregacao' => 'prata',
-                        'regra' => 10,
-                        'status' => 100,
-                        'status_descricao' => 200,
-                        'template_id' => 1
-                    ]);
-
-                    $reportSmsLog->create([
-                       'bulk_id' => isset($value['bulkId']) ? $value['bulkId'] : 'envio_individual',
-                        'mensagem_id' => $v['messageId'],
-                        'celular' => $v['to'],
-                        'resposta_infobip' => json_encode($responseData),
-                        'status' => 1
-                    ]);
-
-                }
+                $reportSmsLog->create([
+                    'bulk_id' => isset($responseData['bulkId']['bulkId']) ? $responseData['bulkId']['bulkId'] : 'envio_individual',
+                    'mensagem_id' => $v['messageId'],
+                    'celular' => $v['to'],
+                    'resposta_infobip' => json_encode($responseData),
+                    'status' => 1
+                ]);
 
             }
+
 
             return response()->json([
                 'status' => $response->getStatusCode(),
@@ -178,11 +177,10 @@ class Functions extends Controller
                     [
                         'destinations' => [
                             ['to' => '+5561984700440'],
+                            ['to' => '+5561991659351'],
                         ],
                         'from' => 'Age Telecom',
                         'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
-                        "notifyUrl" => "https://v2.ageportal.agetelecom.com.br/portal/ageCommunicate/infobip/report/sms",
-                        "notifyContentType" => "application/json"
                     ],
                 ],
             ],
@@ -190,6 +188,8 @@ class Functions extends Controller
 
         // Obter a resposta como JSON
         $responseData = json_decode($response->getBody(), true);
+
+        return $responseData;
 
         return response()->json([
             'status' => $response->getStatusCode(),

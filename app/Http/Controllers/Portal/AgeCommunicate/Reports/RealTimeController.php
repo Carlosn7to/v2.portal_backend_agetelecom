@@ -25,11 +25,6 @@ class RealTimeController extends Controller
         // Inicializa a query básica usando messageId, que sempre existe
         $query = ReportSms::where('mensagem_id', $result[0]['messageId']);
 
-        // Adiciona condição para bulkId apenas se ele existir
-        if (isset($result[0]['bulkId'])) {
-            $query = $query->orWhere('bulk_id', $result[0]['bulkId']);
-        }
-
         // Executa a consulta
         $reports = $query->get();
 
@@ -44,7 +39,7 @@ class RealTimeController extends Controller
 
                 // Atualiza o registro já que os dados são diferentes
                 $report->update([
-                    'status' => $result[0]['status']['groupId'],
+                    'status' => $result[0]['status']['id'],
                     'status_descricao' => $result[0]['status']['id']
                 ]);
             }
