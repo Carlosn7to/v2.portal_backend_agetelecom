@@ -20,6 +20,7 @@ class RealTimeController extends Controller
     public function handle(Request $request)
     {
 
+        \Log::info('Webhook recebido', ['data' => $request->all()]);
         $result = $request->json('results');
 
         // Inicializa a query básica usando messageId, que sempre existe

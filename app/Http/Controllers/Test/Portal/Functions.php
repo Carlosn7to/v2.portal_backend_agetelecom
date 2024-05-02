@@ -27,6 +27,7 @@ use Infobip\Model\SmsDestination;
 use Infobip\Model\SmsTextualMessage;
 use Infobip\Model\WhatsAppBulkMessage;
 use Illuminate\Http\Request;
+use Nette\Utils\Random;
 
 class Functions extends Controller
 {
@@ -42,9 +43,61 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-//        return ReportSms::getAllSending();
-//
-//        return true;
+        $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
+
+        $client = new Client();
+
+        $response = $client->request('POST', 'https://j36lvj.api-us.infobip.com/whatsapp/1/message/template', [
+            'headers' => [
+                'Authorization' => $authorization, // Substitua {authorization} pelo token de autenticação real
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ],
+            'json' => [
+                'messages' => [
+                    [
+                        'from' => '5561920026402',
+                        'to' => '5561984700440',
+                        'messageId' => Random::generate(24),
+                        'content' => [
+                            'templateName' => 'pos_vencimento__2',
+                            'templateData' => [
+                                'body' => [
+                                    'placeholders' => []
+                                ]
+                            ],
+                            'language' => 'en_GB'
+                        ],
+                        'callbackData' => 'Callback data',
+//                        'notifyUrl' => 'https://www.example.com/whatsapp',
+//                        'urlOptions' => [
+//                            'shortenUrl' => true,
+//                            'trackClicks' => true,
+//                            'trackingUrl' => 'https://example.com/click-report',
+//                            'removeProtocol' => true,
+//                            'customDomain' => 'example.com'
+//                        ]
+                    ]
+                ]
+            ],
+            'timeout' => 0,
+            'allow_redirects' => [
+                'max' => 10,
+                'strict' => true,
+                'referer' => true,
+                'protocols' => ['https', 'http']
+            ],
+            'http_errors' => false
+        ]);
+
+        $body = $response->getBody();
+
+
+        return $body;
+
+        return ReportSms::getAllSending();
+
+        return true;
 
         $consult = false;
 
