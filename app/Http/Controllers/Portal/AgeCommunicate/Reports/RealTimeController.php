@@ -14,7 +14,7 @@ class RealTimeController extends Controller
 
     public function __construct()
     {
-//        $this->middleware('portal.ageCommunicate.infoBip.access');
+        $this->middleware('portal.ageCommunicate.infoBip.access');
     }
 
     public function handle(Request $request)

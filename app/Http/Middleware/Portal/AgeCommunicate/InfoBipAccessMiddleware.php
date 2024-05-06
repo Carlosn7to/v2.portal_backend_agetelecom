@@ -16,6 +16,12 @@ class InfoBipAccessMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        $allowedIP = '185.255.11.58';
+
+        if ($request->ip() === $allowedIP) {
+            return $next($request);
+        }
         // Pega o header Authorization
         $header = $request->header('Authorization');
 
@@ -46,6 +52,7 @@ class InfoBipAccessMiddleware
         if(auth('portal')->check()){
             return $next($request);
         }
+
 
         return response()->json(['error' => 'Unauthorized'], 401);
     }
