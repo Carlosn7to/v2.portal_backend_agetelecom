@@ -174,8 +174,8 @@ class Functions extends Controller
                     'envio_id' => $resultReport->id,
                     'bulk_id' => isset($responseData['bulkId']) ? $responseData['bulkId'] : 'envio_individual',
                     'mensagem_id' => $v['messageId'],
-                    'celular' => $v['to'],
-                    'resposta_infobip' => json_encode($responseData),
+                    'enviado_para' => $v['to'],
+                    'resposta_webhook' => json_encode($responseData),
                     'status' => 1
                 ]);
 
