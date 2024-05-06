@@ -11,21 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('age_comunica_envios_sms', function (Blueprint $table) {
+        Schema::create('age_comunica_envios', function (Blueprint $table) {
             $table->id();
             $table->string('bulk_id');
             $table->string('mensagem_id');
+            $table->string('canal');
             $table->integer('contrato_id');
             $table->integer('fatura_id');
-            $table->string('celular');
-            $table->string('celular_voalle');
+            $table->string('celular')->nullable();
+            $table->string('celular_voalle')->nullable();
+            $table->string('email')->nullable();
             $table->string('segregacao');
             $table->smallInteger('regra');
             $table->integer('status');
             $table->integer('status_descricao');
             $table->json('erro')->nullable();
-            $table->json('resposta_infobip')->nullable();
-            $table->foreignId('template_id')->constrained('age_comunica_templates_sms');
+            $table->foreignId('template_sms_id')->constrained('age_comunica_templates_sms');
             $table->timestamps();
         });
     }
@@ -35,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('age_comunica_envios_sms');
+        Schema::dropIfExists('age_comunica_envios');
     }
 };

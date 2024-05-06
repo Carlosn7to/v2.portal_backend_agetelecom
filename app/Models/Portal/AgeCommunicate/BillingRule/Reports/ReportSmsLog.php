@@ -10,12 +10,13 @@ class ReportSmsLog extends Model
     use HasFactory;
 
     protected $connection = 'portal';
-    protected $table = 'age_comunica_envios_sms_logs';
+    protected $table = 'age_comunica_envios_logs';
     protected $fillable = [
+        'envio_id',
         'bulk_id',
         'mensagem_id',
-        'celular',
-        'resposta_infobip',
+        'enviado_para',
+        'resposta_webhook',
         'status',
        ];
 }

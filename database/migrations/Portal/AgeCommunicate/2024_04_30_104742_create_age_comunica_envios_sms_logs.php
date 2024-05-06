@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('age_comunica_envios_sms_logs', function (Blueprint $table) {
+        Schema::create('age_comunica_envios_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('bulk_id');
-            $table->string('mensagem_id');
-            $table->string('celular');
-            $table->json('resposta_infobip');
+            $table->foreignId('envio_id')->constrained('age_comunica_envios');
+            $table->string('bulk_id')->nullable();
+            $table->string('mensagem_id')->nullable();
+            $table->string('enviado_para')->nullable();
+            $table->json('resposta_webhook')->nullable();
             $table->enum('status', ['criado', 'atualizado', 'inalterado']);
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('age_comunica_envios_sms_logs');
+        Schema::dropIfExists('age_comunica_envios_logs');
     }
 };

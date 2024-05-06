@@ -43,64 +43,71 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+//        $billingRule = new BuilderBillingRuleController();
+//
+//        return $billingRule->builder();
+
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
 
         $client = new Client();
-
-        $response = $client->request('POST', 'https://j36lvj.api-us.infobip.com/whatsapp/1/message/template', [
-            'headers' => [
-                'Authorization' => $authorization, // Substitua {authorization} pelo token de autenticação real
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
-            ],
-            'json' => [
-                'messages' => [
-                    [
-                        'from' => '5561920026402',
-                        'to' => '5561984700440',
-                        'messageId' => Random::generate(24),
-                        'content' => [
-                            'templateName' => 'pos_vencimento__2',
-                            'templateData' => [
-                                'body' => [
-                                    'placeholders' => []
-                                ]
-                            ],
-                            'language' => 'en_GB'
-                        ],
-                        'callbackData' => 'Callback data',
-//                        'notifyUrl' => 'https://www.example.com/whatsapp',
-//                        'urlOptions' => [
-//                            'shortenUrl' => true,
-//                            'trackClicks' => true,
-//                            'trackingUrl' => 'https://example.com/click-report',
-//                            'removeProtocol' => true,
-//                            'customDomain' => 'example.com'
-//                        ]
-                    ]
-                ]
-            ],
-            'timeout' => 0,
-            'allow_redirects' => [
-                'max' => 10,
-                'strict' => true,
-                'referer' => true,
-                'protocols' => ['https', 'http']
-            ],
-            'http_errors' => false
-        ]);
-
-        $body = $response->getBody();
-
-
-        return $body;
-
-        return ReportSms::getAllSending();
-
-        return true;
-
+//
+//        $response = $client->request('POST', 'https://j36lvj.api-us.infobip.com/whatsapp/1/message/template', [
+//            'headers' => [
+//                'Authorization' => $authorization, // Substitua {authorization} pelo token de autenticação real
+//                'Content-Type' => 'application/json',
+//                'Accept' => 'application/json'
+//            ],
+//            'json' => [
+//                'messages' => [
+//                    [
+//                        'from' => '5561920026402',
+//                        'to' => '5561984700440',
+//                        'messageId' => Random::generate(24),
+//                        'content' => [
+//                            'templateName' => 'pos_vencimento__2',
+//                            'templateData' => [
+//                                'body' => [
+//                                    'placeholders' => []
+//                                ],
+//                                'buttons' => [
+//                                    ['type' => 'QUICK_REPLY','parameter' => 'Sim'],
+//                                    ['type' => 'QUICK_REPLY','parameter' => 'Não']
+//                                ]
+//                            ],
+//                            'language' => 'pt_BR'
+//                        ],
+//                        'callbackData' => 'Teste callback',
+////                        'notifyUrl' => 'https://www.example.com/whatsapp',
+////                        'urlOptions' => [
+////                            'shortenUrl' => true,
+////                            'trackClicks' => true,
+////                            'trackingUrl' => 'https://example.com/click-report',
+////                            'removeProtocol' => true,
+////                            'customDomain' => 'example.com'
+////                        ]
+//                    ]
+//                ]
+//            ],
+//            'timeout' => 0,
+//            'allow_redirects' => [
+//                'max' => 10,
+//                'strict' => true,
+//                'referer' => true,
+//                'protocols' => ['https', 'http']
+//            ],
+//            'http_errors' => false
+//        ]);
+//
+//        $body = $response->getBody();
+//
+//        return $body;
+////
+//        return ReportSms::getAllSending();
+//
+//        return true;
+//
         $consult = false;
-
+//
         $template = Sms::find(1);
 
         // Configurar o cliente Guzzle
@@ -114,25 +121,27 @@ class Functions extends Controller
 
         if(! $consult) {
             // Enviar a solicitação POST com Guzzle
-            $response = $client->post('sms/2/text/advanced', [
+            $response = $client->post('/sms/2/text/advanced', [
                 'headers' => [
                     'Authorization' => $authorization,
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                 ],
                 'json' => [
-                    'bulkId' => '',
-                    'messages' => [
+                    "messages" => [
                         [
-                            'destinations' => [
-                                ['to' => '+5561984700440'],
-                                ['to' => '+5561991659351'],
+                            "destinations" => [
+                                [
+                                    "to" => "5561984700440"
+                                ]
                             ],
-                            'from' => 'Age Telecom',
-                            'text' => 'Testando o desenvolvimento da api'.Carbon::now()->format('d/m/Y H:i:s'),
-                        ],
+                            "from" => "Age Telecom",
+                            "text" => "teste api infoBip - " . Carbon::now()->format('d/m/Y H:i:s'),
+                            'entityId' => 'portal_agetelecom_colaborador',
+                            'applicationId' => 'portal_agetelecom_colaborador'
+                        ]
                     ],
-                ],
+                ]
             ]);
 
             // Obter a resposta como JSON
@@ -145,21 +154,24 @@ class Functions extends Controller
 
             foreach($responseData['messages'] as $k => $v) {
 
-                $reportSms->create([
+                $resultReport = $reportSms->create([
                     'bulk_id' => isset($responseData['bulkId']) ? $responseData['bulkId'] : 'envio_individual',
                     'mensagem_id' => $v['messageId'],
+                    'canal' => 'SMS',
                     'contrato_id' => 10291,
                     'fatura_id' => 210213,
                     'celular' => $v['to'],
                     'celular_voalle' => $v['to'],
+                    'email' => 'carlos.neto@agetelecom.com.br',
                     'segregacao' => 'prata',
                     'regra' => 10,
                     'status' => 100,
                     'status_descricao' => 200,
-                    'template_id' => 1
+                    'template_sms_id' => 1
                 ]);
 
                 $reportSmsLog->create([
+                    'envio_id' => $resultReport->id,
                     'bulk_id' => isset($responseData['bulkId']) ? $responseData['bulkId'] : 'envio_individual',
                     'mensagem_id' => $v['messageId'],
                     'celular' => $v['to'],

@@ -12,20 +12,22 @@ class ReportSms extends Model
     use HasFactory;
 
     protected $connection = 'portal';
-    protected $table = 'age_comunica_envios_sms';
+    protected $table = 'age_comunica_envios';
     protected $fillable = [
       'bulk_id',
         'mensagem_id',
+        'canal',
         'contrato_id',
         'fatura_id',
         'celular',
         'celular_voalle',
+        'email',
         'segregacao',
         'regra',
         'status',
         'status_descricao',
         'erro',
-        'template_id'
+        'template_sms_id'
     ];
 
     const STATUS_MAP = [

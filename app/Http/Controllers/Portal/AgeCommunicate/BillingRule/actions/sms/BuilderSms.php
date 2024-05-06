@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms;
 
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
+use GuzzleHttp\Client;
 use Infobip\Api\SmsApi;
 use Infobip\ApiException;
 use Infobip\Configuration;
@@ -56,6 +57,7 @@ class BuilderSms
             $buildingSends[] = $value;
         }
 
+
         foreach($buildingSends as $key => &$value) {
 
             foreach($this->data as $k => $v) {
@@ -68,13 +70,30 @@ class BuilderSms
         }
 
 
+        foreach($buildingSends as $key => &$value) {
 
-        return $this->buildingReport($buildingSends);
+            if(isset($value['clients'])) {
+
+                $value['clients'] = array_slice($value['clients'], 0, 2);
+
+                foreach($value['clients'] as $k => &$v) {
+
+                    $v['phone'] = '5561981069695';
+
+                }
+
+            }
+
+        }
+
+        foreach($buildingSends as $key => &$value) {
+            $this->chooseIntegrator($value);
+        }
 
 
+//        return $this->buildingReport($buildingSends);
 
 
-        return $buildingSends;
 //
 //        foreach($this->data as $key => $value){
 //
@@ -97,13 +116,13 @@ class BuilderSms
 
     }
 
-    private function chooseIntegrator($dataSending)
+    private function chooseIntegrator($buildingSends)
     {
 
-        switch($dataSending['template']['integrator']['titulo']){
+        switch(mb_convert_case($buildingSends['integrator']['titulo'], MB_CASE_LOWER, 'UTF-8')){
 
-            case 'InfoBip':
-                $this->infoBip($dataSending);
+            case 'infobip':
+                $this->infoBip($buildingSends);
                 break;
 
             default:
@@ -120,81 +139,87 @@ class BuilderSms
 
     }
 
-    private function infoBip($dataSending)
+    private function infoBip($buildingSends)
     {
+        $integrator = $buildingSends['integrator']['configuracao']['configuration'];
 
-        // Configurar o cliente Guzzle
-        $client = new Client([
-            'base_uri' => 'https://j36lvj.api-us.infobip.com/',
-            'timeout' => 10.0, // Configuração do tempo limite
-            'http_errors' => false, // Impedir que Guzzle gere exceções para códigos de erro HTTP
-        ]);
+        $destinations = [];
 
+        foreach($buildingSends['clients'] as $key => $value) {
+            $destinations[] = ['to' => $value['phone']];
+        }
 
-        $integrator = $dataSending['template']['integrator']['configuracao'];
-        $template = $dataSending['template'];
-        $clientPhone =
+            // Configurar o cliente Guzzle
+            $client = new Client([
+                'base_uri' => $integrator['host'],
+                'http_errors' => false, // Impedir que Guzzle gere exceções para códigos de erro HTTP
+            ]);
 
-        $response = $client->post('sms/2/text/advanced', [
-            'headers' => [
-                'Authorization' => 'App ' . $integrator['apiKey'],
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'bulkId' => 'Confirmação SMS 1',
-                'messages' => [
-                    [
-                        'destinations' => [
-                            ['to' => '+5561984700440'],
+            $response = $client->post('sms/2/text/advanced', [
+                'headers' => [
+                    'Authorization' => $integrator['apiKey'],
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => [
+                    'bulkId' => '',
+                    'messages' => [
+                        [
+                            'destinations' => $destinations,
+                            'from' => 'Age Telecom',
+                            'text' => $buildingSends['content'],
+                            'entityId' => 'portal_agetelecom_colaborador',
+                            'applicationId' => 'portal_agetelecom_colaborador'
                         ],
-                        'from' => 'Age Telecom',
-                        'text' => 'Teste age - infoBip' . Carbon::now()->format('d/m/Y H:i:s'),
                     ],
                 ],
-            ],
-        ]);
+            ]);
 
         // Obter a resposta como JSON
         $responseData = json_decode($response->getBody(), true);
 
-        return response()->json([
-            'status' => $response->getStatusCode(),
-            'data' => $responseData,
-        ]);
+        $this->buildingReport($buildingSends, $responseData);
 
     }
 
-    private function buildingReport($report)
+    private function buildingReport($report, $response)
     {
+
+
         $reportSms = new ReportSms();
 
-        foreach($report as $key => $value){
-
-            if(isset($value['clients'])) {
-                foreach($value['clients'] as $k => $v) {
-
-                    $reportStatus = $reportSms->create([
-                        'bulk_id' => 'bulk_test',
-                        'mensagem_id' => 'msg_test',
-                        'contrato_id' => $v['contract_id'],
-                        'fatura_id' => $v['frt_id'],
-                        'celular' => $v['phone'],
-                        'celular_voalle' => $v['phone_original'],
-                        'segregacao' => $v['segmentation'],
-                        'regra' => $v['days_until_expiration'],
-                        'status' => 100,
-                        'status_descricao' => 200,
-                        'erro' => $v['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
-                        'template_id' => $value['id_template']
-                    ]);
+        if(isset($report['clients'])) {
+            foreach($report['clients'] as $k => $v) {
 
 
-                }
+                $reportStatus = $reportSms->create([
+                    'bulk_id' => isset($response['bulkId']) ? $response['bulkId'] : 'envio_individual',
+                    'mensagem_id' => $this->getMessageId($v['phone'], $response['messages']),
+                    'canal' => 'SMS',
+                    'contrato_id' => $v['contract_id'],
+                    'fatura_id' => $v['frt_id'],
+                    'celular' => $v['phone'],
+                    'celular_voalle' => $v['phone_original'],
+                    'segregacao' => $v['segmentation'],
+                    'regra' => $v['days_until_expiration'],
+                    'status' => 100,
+                    'status_descricao' => 200,
+                    'erro' => $v['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
+                    'template_sms_id' => $report['id_template']
+                ]);
+
+
             }
-
         }
 
     }
 
+    private function getMessageId($phone, $messages)
+    {
+        foreach($messages as $key => $value) {
+            if($value['to'] == $phone) {
+                return $value['messageId'];
+            }
+        }
+    }
 }

@@ -20,7 +20,6 @@ class RealTimeController extends Controller
     public function handle(Request $request)
     {
 
-        \Log::info('Webhook recebido', ['data' => $request->all()]);
         $result = $request->json('results');
 
         // Inicializa a query básica usando messageId, que sempre existe
@@ -47,10 +46,11 @@ class RealTimeController extends Controller
         }
 
         $log = ReportSmsLog::create([
+            'envio_id' => $report->id,
             'bulk_id' => isset($result[0]['bulkId']) ? $result[0]['bulkId'] : 'envio_individual',
             'mensagem_id' => $result[0]['messageId'],
-            'celular' => $result[0]['to'],
-            'resposta_infobip' => json_encode($result),
+            'enviado_para' => $result[0]['to'],
+            'resposta_webhook' => json_encode($result),
             'status' => $changes ? 2 : 3
         ]);
 
