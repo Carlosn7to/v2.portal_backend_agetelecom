@@ -17,7 +17,7 @@ class InfoBipAccessMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        $allowedIP = '185.255.11.38';
+        $allowedIP = '185.255.11.58';
 
         if ($request->ip() === $allowedIP) {
             return $next($request);
