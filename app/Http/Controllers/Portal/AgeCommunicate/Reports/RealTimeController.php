@@ -42,17 +42,19 @@ class RealTimeController extends Controller
                     'status' => $result[0]['status']['id'],
                     'status_descricao' => $result[0]['status']['id']
                 ]);
+            } else {
+                $log = ReportSmsLog::create([
+                    'envio_id' => $report->id,
+                    'bulk_id' => isset($result[0]['bulkId']) ? $result[0]['bulkId'] : 'envio_individual',
+                    'mensagem_id' => $result[0]['messageId'],
+                    'enviado_para' => $result[0]['to'],
+                    'resposta_webhook' => json_encode($result),
+                    'status' => $changes ? 2 : 3
+                ]);
             }
         }
 
-        $log = ReportSmsLog::create([
-            'envio_id' => $reports->id,
-            'bulk_id' => isset($result[0]['bulkId']) ? $result[0]['bulkId'] : 'envio_individual',
-            'mensagem_id' => $result[0]['messageId'],
-            'enviado_para' => $result[0]['to'],
-            'resposta_webhook' => json_encode($result),
-            'status' => $changes ? 2 : 3
-        ]);
+
 
         return response()->json(['message' => 'Webhook recebido com sucesso!'], 200);
     }
