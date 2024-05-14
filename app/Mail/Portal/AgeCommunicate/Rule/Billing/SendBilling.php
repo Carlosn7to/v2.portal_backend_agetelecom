@@ -58,6 +58,6 @@ class SendBilling extends Mailable
      */
     public function attachments(): array
     {
-        return [$this->billetPath ? $this->billetPath : []];
+        return $this->billetPath;
     }
 }

@@ -22,7 +22,6 @@ class RealTimeController extends Controller
 
         $result = $request->json('results');
 
-        \Log::info('Webhook recebido', ['result' => $result]);
 
         // Inicializa a query básica usando messageId, que sempre existe
         $query = ReportSms::where('mensagem_id', $result[0]['messageId']);

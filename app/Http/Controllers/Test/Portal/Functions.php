@@ -17,6 +17,7 @@ use App\Routines\Portal\Users\UserSync;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Infobip\Api\SmsApi;
 use Infobip\Api\WhatsAppApi;
@@ -39,68 +40,126 @@ class Functions extends Controller
 //        $this->middleware('portal.ageCommunicate.infoBip.access')->only('index');
     }
 
+    private function testSendEmail()
+    {
+        $client = new Client();
+
+        $dataForm = [
+            "grant_type" => "client_credentials",
+            "scope" => "syngw",
+            "client_id" => config('services.voalle.client_id'),
+            "client_secret" => config('services.voalle.client_secret'),
+            "syndata" => config('services.voalle.syndata')
+        ];
+
+        $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'form_params' => $dataForm
+        ]);
+
+        $access = json_decode($response->getBody()->getContents());
+
+        $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/5541623',[
+            'headers' => [
+                'Authorization' => 'Bearer '.$access->access_token
+            ]
+        ]);
+
+        $billetPath = [];
+
+        // Verifique se a requisição foi bem-sucedida (código de status 200)
+        if ($responseBillet->getStatusCode() == 200) {
+            // Obtenha o conteúdo do PDF
+            $pdfContent = $responseBillet->getBody()->getContents();
+
+            // Especifique o caminho onde você deseja salvar o arquivo no seu computador
+            $billetPath = storage_path('app/portal/agecommunicate/billingrule/billets/boleto.pdf');
+
+            // Salve o arquivo no caminho especificado
+            file_put_contents($billetPath, $pdfContent);
+
+
+        }
+
+        $mail = Mail::mailer('portal')->to('carlos.neto@agetelecom.com.br')
+                    ->send(new SendBilling('invoice_expired', 'Lembrete Importante AGE Fibra: Sua Fatura Está em Atraso! 📢', [
+                        'Carlos Neto',
+                        $billetPath
+                        ]));
+
+        dd($mail);
+
+    }
+
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+
+        return $this->testSendEmail();
 
 //        $billingRule = new BuilderBillingRuleController();
 //
 //        return $billingRule->builder();
 
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
-
         $client = new Client();
-//
-//        $response = $client->request('POST', 'https://j36lvj.api-us.infobip.com/whatsapp/1/message/template', [
-//            'headers' => [
-//                'Authorization' => $authorization, // Substitua {authorization} pelo token de autenticação real
-//                'Content-Type' => 'application/json',
-//                'Accept' => 'application/json'
-//            ],
-//            'json' => [
-//                'messages' => [
-//                    [
-//                        'from' => '5561920026402',
-//                        'to' => '5561984700440',
-//                        'messageId' => Random::generate(24),
-//                        'content' => [
-//                            'templateName' => 'pos_vencimento__2',
-//                            'templateData' => [
-//                                'body' => [
-//                                    'placeholders' => []
-//                                ],
-//                                'buttons' => [
-//                                    ['type' => 'QUICK_REPLY','parameter' => 'Sim'],
-//                                    ['type' => 'QUICK_REPLY','parameter' => 'Não']
-//                                ]
-//                            ],
-//                            'language' => 'pt_BR'
-//                        ],
-//                        'callbackData' => 'Teste callback',
-////                        'notifyUrl' => 'https://www.example.com/whatsapp',
-////                        'urlOptions' => [
-////                            'shortenUrl' => true,
-////                            'trackClicks' => true,
-////                            'trackingUrl' => 'https://example.com/click-report',
-////                            'removeProtocol' => true,
-////                            'customDomain' => 'example.com'
-////                        ]
-//                    ]
-//                ]
-//            ],
-//            'timeout' => 0,
-//            'allow_redirects' => [
-//                'max' => 10,
-//                'strict' => true,
-//                'referer' => true,
-//                'protocols' => ['https', 'http']
-//            ],
-//            'http_errors' => false
-//        ]);
-//
-//        $body = $response->getBody();
-//
-//        return $body;
+
+        $response = $client->request('POST', 'https://j36lvj.api-us.infobip.com/whatsapp/1/message/template', [
+            'headers' => [
+                'Authorization' => $authorization, // Substitua {authorization} pelo token de autenticação real
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ],
+            'json' => [
+                'messages' => [
+                    [
+                        'from' => '556140404040',
+                        'to' => '5561984700440',
+                        'messageId' => Random::generate(24),
+                        'content' => [
+                            'templateName' => 'pre_cancelamento_1',
+                            'templateData' => [
+                                'body' => [
+                                    'placeholders' => [
+//                                        'Carlos Neto'
+                                    ]
+                                ],
+                                'buttons' => [
+                                    ['type' => 'QUICK_REPLY','parameter' => 'REALIZAR PAGAMENTO'],
+                                    ['type' => 'QUICK_REPLY','parameter' => 'PAGAMENTO REALIZADO']
+                                ]
+                            ],
+                            'language' => 'pt_BR'
+                        ],
+                        'entityId' => 'portal_agetelecom_colaborador',
+                        'applicationId' => 'portal_agetelecom_colaborador',
+                        'callbackData' => 'Teste callback',
+//                        'notifyUrl' => 'https://www.example.com/whatsapp',
+//                        'urlOptions' => [
+//                            'shortenUrl' => true,
+//                            'trackClicks' => true,
+//                            'trackingUrl' => 'https://example.com/click-report',
+//                            'removeProtocol' => true,
+//                            'customDomain' => 'example.com'
+//                        ]
+                    ]
+                ]
+            ],
+            'timeout' => 0,
+            'allow_redirects' => [
+                'max' => 10,
+                'strict' => true,
+                'referer' => true,
+                'protocols' => ['https', 'http']
+            ],
+            'http_errors' => false
+        ]);
+
+        $body = $response->getBody();
+
+        return $body;
 ////
 //        return ReportSms::getAllSending();
 //
@@ -128,6 +187,7 @@ class Functions extends Controller
                     'Accept' => 'application/json',
                 ],
                 'json' => [
+                    "bulkId" => 'Regua dia 07/05/2024',
                     "messages" => [
                         [
                             "destinations" => [

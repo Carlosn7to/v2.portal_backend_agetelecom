@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Pre 5 dias</title>
+    <title>Atrasado</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
                 <tr>
                     <td style="padding: 0 0 0 0; text-align: center; width: 100%; ">
                         <img style="height: 400px"
-                             src="https://agenotifica.s3.sa-east-1.amazonaws.com/age/ReguaDeCobranca/ReguaDeCobranca12_23/Header1.png"
+                             src="https://agenotifica.s3.sa-east-1.amazonaws.com/age/ReguaDeCobranca/regua_de_cobranca_age_fibra/Grupo+85+1.png"
                              alt="">
                     </td>
                 </tr>
@@ -27,18 +27,32 @@
                             <tr>
                                 <td
                                     style="font-size: 16px; padding: 0 40px 10px 40px; text-align: center; line-height: 1.5;background: #ffffff; border: 1px solid #ffffff; border-radius: 25px; ">
-                                    <p style="font-size: 30px"><strong style="color: #ec681c;">LEMBRETE</strong></p>
+                                    <p style="font-size: 30px"><strong style="color: #EE1313;">FATURA EM
+                                            ATRASO</strong></p>
 
-                                    <p>Olá, Teste,</p>
-                                    <p>Gostaríamos de lembrar que está próximo do vencimento da sua fatura, que <b
-                                            style="color: #ec681c;">ocorrerá em 5 DIAS.</b>
+                                    <p>Olá {nome_cliente},</p>
+                                    <p><b style="color: #EE1313;">Sua fatura está em
+                                            aberto há {dias_fatura} dias.</b> Infelizmente,
+                                        devido a este atraso no pagamento, o sinal de internet do seu plano poderá
+                                        ser reduzido.
                                     </p>
-                                    <p>Se precisar de alguma ajuda ou tiver alguma dúvida, <b
-                                            style="color: #ec681c;">estamos aqui para facilitar. </b></p>
-                                    <p>Fique à vontade para usar <b style="color: #ec681c;">nossos canais de
-                                            atendimento, clicando nos ícones abaixo,</b> efetue o pagamento de forma
-                                        segura pela área do cliente</p>
-                                    <p>Até mais,
+                                    <p>Efetue o pagamento o mais breve possível para assegurar que você siga
+                                        curtindo a sua conexão. Ficar sem internet ninguém merece, né?</p>
+                                    <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
+                                    </p>
+                                    <p>{codigo_barra}</p>
+                                    <p>
+                                        Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
+                                            pagamento por Pix.</b> Ao
+                                        escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
+                                        pagamento de forma fácil, rápida e muito prática.
+                                    </p>
+                                    <p>
+                                        {codigo_pix}
+                                    </p>
+                                    <p>confira também nossos canais de atendimento nos ícones abaixo.
+                                    </p>
+                                    <p>Atenciosamente,
                                         <br><b style="color: #ec681c;">Time AGE Telecom</b>
                                     </p>
                                 </td>

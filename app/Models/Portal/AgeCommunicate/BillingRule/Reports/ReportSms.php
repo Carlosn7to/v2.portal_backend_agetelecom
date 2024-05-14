@@ -27,7 +27,8 @@ class ReportSms extends Model
         'status',
         'status_descricao',
         'erro',
-        'template_sms_id'
+        'template_sms_id',
+        'informacoes_envio'
     ];
 
     const STATUS_MAP = [

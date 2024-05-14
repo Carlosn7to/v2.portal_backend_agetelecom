@@ -13,7 +13,7 @@ class BuilderBillingRuleController extends Controller
 
     public function builder()
     {
-        $this->getData();
+        $this->buildingData();
         return $this->sendingCommunication();
     }
 
@@ -31,7 +31,32 @@ class BuilderBillingRuleController extends Controller
     {
         $this->data = (new DataVoalle())->getDataResults();
 
+    }
 
+    private function buildingData()
+    {
+        $this->getData();
+
+        // Usando um array associativo para armazenar o contrato com o maior 'days_until_expiration' para cada 'contract_id'
+        $contractById = [];
+
+        // Percorrendo os contratos e mantendo apenas o com maior 'days_until_expiration' para cada 'contract_id'
+        foreach ($this->data as $contract) {
+            $contractId = $contract['contract_id'];
+
+            // Se o 'contract_id' já existir, mantenha apenas aquele com o maior 'days_until_expiration'
+            if (isset($contractById[$contractId])) {
+                if ($contract['days_until_expiration'] > $contractById[$contractId]['days_until_expiration']) {
+                    $contractById[$contractId] = $contract;
+                }
+            } else {
+                // Se não, adicione ao array
+                $contractById[$contractId] = $contract;
+            }
+        }
+
+        // Convertendo de volta para um array indexado
+        $this->data = array_values($contractById);
     }
 
 

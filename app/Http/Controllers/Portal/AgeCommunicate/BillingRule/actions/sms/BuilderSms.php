@@ -31,28 +31,6 @@ class BuilderSms
 
         $buildingSends = [];
 
-        // Usando um array associativo para armazenar o contrato com o maior 'days_until_expiration' para cada 'contract_id'
-        $contractById = [];
-
-        // Percorrendo os contratos e mantendo apenas o com maior 'days_until_expiration' para cada 'contract_id'
-        foreach ($this->data as $contract) {
-            $contractId = $contract['contract_id'];
-
-            // Se o 'contract_id' já existir, mantenha apenas aquele com o maior 'days_until_expiration'
-            if (isset($contractById[$contractId])) {
-                if ($contract['days_until_expiration'] > $contractById[$contractId]['days_until_expiration']) {
-                    $contractById[$contractId] = $contract;
-                }
-            } else {
-                // Se não, adicione ao array
-                $contractById[$contractId] = $contract;
-            }
-        }
-
-        // Convertendo de volta para um array indexado
-        $this->data = array_values($contractById);
-
-
         foreach($this->templates as $key => $value) {
             $buildingSends[] = $value;
         }
@@ -69,16 +47,16 @@ class BuilderSms
 
         }
 
-
+//////////// Função para debug de templates
         foreach($buildingSends as $key => &$value) {
 
             if(isset($value['clients'])) {
 
-                $value['clients'] = array_slice($value['clients'], 0, 2);
+                $value['clients'] = array_slice($value['clients'], 0, 1);
 
                 foreach($value['clients'] as $k => &$v) {
 
-                    $v['phone'] = '5561981069695';
+                    $v['phone'] = '5561984700440';
 
                 }
 
@@ -86,32 +64,13 @@ class BuilderSms
 
         }
 
+
         foreach($buildingSends as $key => &$value) {
-            $this->chooseIntegrator($value);
+            $valueFormmated = $this->getVariablesForTemplate($value);
+
+            return $valueFormmated;
+//            $this->chooseIntegrator($valueFormmated);
         }
-
-
-//        return $this->buildingReport($buildingSends);
-
-
-//
-//        foreach($this->data as $key => $value){
-//
-//            $template = $this->templates->getTemplate($value['segmentation'], $value['days_until_expiration']);
-//
-//            if($template != null){
-//
-//                $dataSending = [
-//                    'clientKey' => $key,
-//                    'template' => $template
-//                ];
-//
-//                $this->chooseIntegrator($dataSending);
-//
-//            }
-//
-//        }
-
 
 
     }
@@ -133,20 +92,16 @@ class BuilderSms
 
     }
 
-    public function smsReport()
-    {
-
-
-    }
-
     private function infoBip($buildingSends)
     {
         $integrator = $buildingSends['integrator']['configuracao']['configuration'];
 
         $destinations = [];
 
-        foreach($buildingSends['clients'] as $key => $value) {
-            $destinations[] = ['to' => $value['phone']];
+        if(isset($buildingSends['clients'])) {
+            foreach($buildingSends['clients'] as $key => $value) {
+                $destinations[] = ['to' => $value['phone']];
+            }
         }
 
             // Configurar o cliente Guzzle
@@ -165,7 +120,7 @@ class BuilderSms
                     'bulkId' => '',
                     'messages' => [
                         [
-                            'destinations' => $destinations,
+                            'destinations' => [],
                             'from' => 'Age Telecom',
                             'text' => $buildingSends['content'],
                             'entityId' => 'portal_agetelecom_colaborador',
@@ -187,6 +142,7 @@ class BuilderSms
 
 
         $reportSms = new ReportSms();
+
 
         if(isset($report['clients'])) {
             foreach($report['clients'] as $k => $v) {
@@ -221,5 +177,11 @@ class BuilderSms
                 return $value['messageId'];
             }
         }
+    }
+
+    private function getVariablesForTemplate($template)
+    {
+        dd($template);
+
     }
 }
