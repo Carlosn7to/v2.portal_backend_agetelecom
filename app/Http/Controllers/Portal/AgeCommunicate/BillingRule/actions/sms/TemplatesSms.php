@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms;
 
-use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Sms;
+use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
 
 class TemplatesSms
 {
@@ -43,9 +43,9 @@ class TemplatesSms
 
     public function getTemplates()
     {
-        $this->templates = Sms::getAllTemplates();
+        $this->templates = Template::getAllTemplates();
 
-        return $this->templates;
+        return $this->templates->where('channel', 'SMS');
     }
 
 }

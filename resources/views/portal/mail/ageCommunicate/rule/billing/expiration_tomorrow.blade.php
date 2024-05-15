@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Pre 4 dias</title>
+    <title>Pre 1 dia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
                 <tr>
                     <td style="padding: 0 0 0 0; text-align: center; width: 100%; ">
                         <img style="height: 400px"
-                             src="https://agenotifica.s3.sa-east-1.amazonaws.com/age/ReguaDeCobranca/ReguaDeCobranca12_23/Header2.png"
+                             src="https://agenotifica.s3.sa-east-1.amazonaws.com/age/ReguaDeCobranca/regua_de_cobranca_age_fibra/Grupo+83+1.png"
                              alt="">
                     </td>
                 </tr>
@@ -29,9 +29,25 @@
                                     style="font-size: 16px; padding: 0 40px 10px 40px; text-align: center; line-height: 1.5;background: #ffffff; border: 1px solid #ffffff; border-radius: 25px; ">
                                     <p style="font-size: 30px"><strong style="color: #ec681c;">LEMBRETE</strong></p>
 
-                                    <p>Olá, {{ mb_convert_case($client->name, MB_CASE_TITLE, 'utf-8')  }},</p>
-                                    <p>Gostaríamos de lembrar que está próximo do vencimento da sua fatura, que <b
-                                            style="color: #ec681c;">ocorrerá em 4 DIAS.</b>
+                                    <p>Olá {cliente},</p>
+                                    <p>Passando para avisar que a <b style="color: #ec681c;">sua fatura vence
+                                            AMANHÃ! </b> Programe agora mesmo o
+                                        pagamento para a data do vencimento e <b style="color: #ec681c;">siga tendo
+                                            a melhor experiência com a
+                                            fibra que mais cresce no DF!</b>
+
+                                    </p>
+                                    <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
+                                    </p>
+                                    <p>{codigo_barra}</p>
+                                    <p>
+                                        Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
+                                            pagamento por Pix.</b> Ao
+                                        escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
+                                        pagamento de forma fácil, rápida e muito prática.
+                                    </p>
+                                    <p>
+                                        {codigo_pix}
                                     </p>
                                     <p>Se precisar de alguma ajuda ou tiver alguma dúvida, <b
                                             style="color: #ec681c;">estamos aqui para facilitar. </b></p>

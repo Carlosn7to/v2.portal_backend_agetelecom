@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sms extends Model
+class Template extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'age_comunica_templates_sms';
+    protected $table = 'age_comunica_templates';
     protected $connection = 'portal';
     protected $fillable = [
         'titulo',
@@ -76,6 +76,8 @@ class Sms extends Model
         $attributes = [
             'id_template' => $this->id,
             'title' => $this->titulo,
+            'channel' => $this->canal,
+            'template_integrator' => $this->template_integradora,
             'content' => $this->conteudo,
             'rule' => $this->regra,
             'status' => $this->status,

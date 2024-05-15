@@ -3,7 +3,7 @@
 namespace App\Models\Portal\AgeCommunicate\BillingRule\Reports;
 
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
-use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Sms;
+use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +27,7 @@ class ReportSms extends Model
         'status',
         'status_descricao',
         'erro',
-        'template_sms_id',
+        'template_id',
         'informacoes_envio'
     ];
 
@@ -144,7 +144,7 @@ class ReportSms extends Model
 
     public function template()
     {
-        return $this->belongsTo(Sms::class, 'template_id', 'id')
+        return $this->belongsTo(Template::class, 'template_id', 'id')
             ->select('id', 'titulo', 'conteudo', 'status');
     }
 

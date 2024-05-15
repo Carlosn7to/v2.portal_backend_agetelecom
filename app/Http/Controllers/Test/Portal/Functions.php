@@ -11,7 +11,7 @@ use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSmsLog;
-use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Sms;
+use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
 use App\Models\Portal\User\User;
 use App\Routines\Portal\Users\UserSync;
 use Carbon\Carbon;
@@ -84,10 +84,11 @@ class Functions extends Controller
         }
 
         $mail = Mail::mailer('portal')->to('carlos.neto@agetelecom.com.br')
-                    ->send(new SendBilling('invoice_expired', 'Lembrete Importante AGE Fibra: Sua Fatura Está em Atraso! 📢', [
+                    ->send(new SendBilling('scpc',
+                        'Aviso Urgente AGE Fibra: Cancelamento de Contrato em Breve! 📵',
                         'Carlos Neto',
                         $billetPath
-                        ]));
+                        ));
 
         dd($mail);
 
@@ -97,11 +98,11 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        return $this->testSendEmail();
+//        return $this->testSendEmail();
 
-//        $billingRule = new BuilderBillingRuleController();
-//
-//        return $billingRule->builder();
+        $billingRule = new BuilderBillingRuleController();
+
+        return $billingRule->builder();
 
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
         $client = new Client();
@@ -167,7 +168,7 @@ class Functions extends Controller
 //
         $consult = false;
 //
-        $template = Sms::find(1);
+        $template = Template::find(1);
 
         // Configurar o cliente Guzzle
         $client = new Client([

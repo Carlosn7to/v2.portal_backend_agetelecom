@@ -22,66 +22,47 @@ class BuilderSms
     public function __construct($data)
     {
         $this->data = $data;
+        $this->bulkId = uniqid() . "_" . date("Y-m-d_H:i:s");
     }
 
     public function builder()
     {
-
         $this->templates = (new TemplatesSms())->getTemplates();
 
         $buildingSends = [];
 
-        foreach($this->templates as $key => $value) {
-            $buildingSends[] = $value;
-        }
+        foreach($this->data as $key => &$value) {
 
+                foreach($this->templates as $k => $v) {
 
-        foreach($buildingSends as $key => &$value) {
-
-            foreach($this->data as $k => $v) {
-
-                if(in_array($v['days_until_expiration'], $value['rule']['categorias'][$v['segmentation']])){
-                    $buildingSends[$key]['clients'][] = $v;
+                    if(in_array($value['days_until_expiration'], $v['rule']['categorias'][$value['segmentation']])){
+                        $buildingSends[$key] = $value;
+                        $buildingSends[$key]['template'] = $v;
+                    }
                 }
-            }
-
         }
 
-//////////// Função para debug de templates
-        foreach($buildingSends as $key => &$value) {
-
-            if(isset($value['clients'])) {
-
-                $value['clients'] = array_slice($value['clients'], 0, 1);
-
-                foreach($value['clients'] as $k => &$v) {
-
-                    $v['phone'] = '5561984700440';
-
-                }
-
-            }
-
-        }
-
+////////////// Função para debug de templates
+//        foreach($buildingSends as $key => &$value) {
+//
+//            $value['phone'] = '5561984700440';
+//        }
 
         foreach($buildingSends as $key => &$value) {
-            $valueFormmated = $this->getVariablesForTemplate($value);
-
-            return $valueFormmated;
-//            $this->chooseIntegrator($valueFormmated);
+            $clientData = $this->replaceVariablesForTemplate($value);
+            $this->chooseIntegrator($clientData);
         }
 
 
     }
 
-    private function chooseIntegrator($buildingSends)
+    private function chooseIntegrator($clientData)
     {
 
-        switch(mb_convert_case($buildingSends['integrator']['titulo'], MB_CASE_LOWER, 'UTF-8')){
+        switch(mb_convert_case($clientData['template']['integrator']['titulo'], MB_CASE_LOWER, 'UTF-8')){
 
             case 'infobip':
-                $this->infoBip($buildingSends);
+                $this->infoBip($clientData);
                 break;
 
             default:
@@ -92,23 +73,16 @@ class BuilderSms
 
     }
 
-    private function infoBip($buildingSends)
+    private function infoBip($clientData)
     {
-        $integrator = $buildingSends['integrator']['configuracao']['configuration'];
-
-        $destinations = [];
-
-        if(isset($buildingSends['clients'])) {
-            foreach($buildingSends['clients'] as $key => $value) {
-                $destinations[] = ['to' => $value['phone']];
-            }
-        }
+        $integrator = $clientData['template']['integrator']['configuracao']['configuration'];
 
             // Configurar o cliente Guzzle
             $client = new Client([
                 'base_uri' => $integrator['host'],
                 'http_errors' => false, // Impedir que Guzzle gere exceções para códigos de erro HTTP
             ]);
+
 
             $response = $client->post('sms/2/text/advanced', [
                 'headers' => [
@@ -117,12 +91,12 @@ class BuilderSms
                     'Accept' => 'application/json',
                 ],
                 'json' => [
-                    'bulkId' => '',
+                    'bulkId' => $this->bulkId,
                     'messages' => [
                         [
-                            'destinations' => [],
+                            'destinations' => ['to'=> $clientData['phone']],
                             'from' => 'Age Telecom',
-                            'text' => $buildingSends['content'],
+                            'text' => $clientData['template']['content'],
                             'entityId' => 'portal_agetelecom_colaborador',
                             'applicationId' => 'portal_agetelecom_colaborador'
                         ],
@@ -130,43 +104,33 @@ class BuilderSms
                 ],
             ]);
 
+
         // Obter a resposta como JSON
         $responseData = json_decode($response->getBody(), true);
 
-        $this->buildingReport($buildingSends, $responseData);
+        $this->buildingReport($clientData, $responseData);
 
     }
 
-    private function buildingReport($report, $response)
+    private function buildingReport($clientData, $response)
     {
-
-
         $reportSms = new ReportSms();
 
-
-        if(isset($report['clients'])) {
-            foreach($report['clients'] as $k => $v) {
-
-
-                $reportStatus = $reportSms->create([
-                    'bulk_id' => isset($response['bulkId']) ? $response['bulkId'] : 'envio_individual',
-                    'mensagem_id' => $this->getMessageId($v['phone'], $response['messages']),
-                    'canal' => 'SMS',
-                    'contrato_id' => $v['contract_id'],
-                    'fatura_id' => $v['frt_id'],
-                    'celular' => $v['phone'],
-                    'celular_voalle' => $v['phone_original'],
-                    'segregacao' => $v['segmentation'],
-                    'regra' => $v['days_until_expiration'],
-                    'status' => 100,
-                    'status_descricao' => 200,
-                    'erro' => $v['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
-                    'template_sms_id' => $report['id_template']
-                ]);
-
-
-            }
-        }
+        $reportStatus = $reportSms->create([
+            'bulk_id' => isset($response['bulkId']) ? $response['bulkId'] : 'envio_individual',
+            'mensagem_id' => $response['messages'][0]['messageId'],
+            'canal' => 'SMS',
+            'contrato_id' => $clientData['contract_id'],
+            'fatura_id' => $clientData['frt_id'],
+            'celular' => $clientData['phone'],
+            'celular_voalle' => $clientData['phone_original'],
+            'segregacao' => $clientData['segmentation'],
+            'regra' => $clientData['days_until_expiration'],
+            'status' => 100,
+            'status_descricao' => 200,
+            'erro' => $clientData['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
+            'template_id' => $clientData['template']['id_template']
+        ]);
 
     }
 
@@ -179,9 +143,49 @@ class BuilderSms
         }
     }
 
-    private function getVariablesForTemplate($template)
+    private function replaceVariablesForTemplate($clientData)
     {
-        dd($template);
+        $clientData['template']['content'] = str_replace(
+            [
+                '{nome_cliente}',
+                '{primeiro_nome_cliente}',
+                '{dias_fatura}',
+                '{codigo_barras}',
+//                '{pix_qrcode}',
+//                '{pix_copia_cola}',
+                ],
+            [
+                $clientData['name'],
+                explode(' ', $clientData['name'])[0],
+                $clientData['days_until_expiration'],
+                $clientData['barcode'],
+//                $clientData['pix_qrcode'],
+//                $clientData['pix_copia_cola'],
+            ],
+            $clientData['template']['content']
+        );
 
+        return $clientData;
+    }
+
+
+    public function infoSending()
+    {
+        $this->templates = (new TemplatesSms())->getTemplates();
+
+        $buildingSends = [];
+
+        foreach($this->data as $key => &$value) {
+
+            foreach($this->templates as $k => $v) {
+
+                if(in_array($value['days_until_expiration'], $v['rule']['categorias'][$value['segmentation']])){
+                    $buildingSends[$key] = $value;
+                    $buildingSends[$key]['template'] = $v;
+                }
+            }
+        }
+
+        return count($buildingSends);
     }
 }
