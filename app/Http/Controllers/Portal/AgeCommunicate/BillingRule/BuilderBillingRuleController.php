@@ -50,9 +50,9 @@ class BuilderBillingRuleController extends Controller
 
         $destinations = [
             '5561984700440',
-            '5561981069695',
-            '5511983705020',
-            '5561998003186'
+//            '5561981069695',
+//            '5511983705020',
+//            '5561998003186'
         ];
 
 

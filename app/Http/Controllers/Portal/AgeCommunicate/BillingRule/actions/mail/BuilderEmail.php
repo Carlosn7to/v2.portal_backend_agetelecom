@@ -57,7 +57,10 @@ class BuilderEmail
 
 
         foreach($buildingSends as $key => &$value) {
-            $this->chooseIntegrator($value);
+           try {
+               $this->chooseIntegrator($value);
+           } catch (\Exception $e) {
+           }
         }
 
 
@@ -119,12 +122,22 @@ class BuilderEmail
 
         $clientData['pix_qrcode'] = $qrCode;
 
-        $mail = \Mail::mailer('fat')->to($clientData['email'])
-            ->send(new SendBilling($clientData['template']['template_integrator'],
-                $clientData['template']['title'],
-                $clientData,
-                $billetPath
-            ));
+        try {
+
+            if(filter_var($clientData['email'], FILTER_VALIDATE_EMAIL)) {
+                $mail = \Mail::mailer('fat')->to($clientData['email'])
+                    ->send(new SendBilling($clientData['template']['template_integrator'],
+                        $clientData['template']['title'],
+                        $clientData,
+                        $billetPath
+                    ));
+            } else {
+                $clientData['error'] = json_encode('{"error": "E-mail inválido para disparo"}');
+            }
+
+        } catch (\Exception $e) {
+            $clientData['error'] = json_encode('{"error": "'.$e->getMessage().'"}');
+        }
 
         $this->buildingReport($clientData);
 
@@ -147,7 +160,7 @@ class BuilderEmail
             'regra' => $clientData['days_until_expiration'],
             'status' => 100,
             'status_descricao' => 201,
-            'erro' => $clientData['phone'] != null ? null : '{"error": "O campo celular não está preenchido no voalle"}',
+            'erro' => $clientData['error'] ?? 'null',
             'template_id' => $clientData['template']['id_template']
         ]);
 
