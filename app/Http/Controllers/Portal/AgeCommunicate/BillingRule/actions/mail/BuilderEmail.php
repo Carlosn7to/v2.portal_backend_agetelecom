@@ -27,7 +27,6 @@ class BuilderEmail
     public function __construct($data)
     {
         $this->data = $data;
-        $this->bulkId = uniqid() . "_" . date("Y-m-d_H:i:s");
         $this->authenticateVoalle();
     }
 
@@ -48,8 +47,7 @@ class BuilderEmail
                 }
         }
 
-
-//////////// Função para debug de templates
+////////// Função para debug de templates
 //        foreach($buildingSends as $key => &$value) {
 //
 //            $value['email'] = 'carlos.neto@agetelecom.com.br';
@@ -57,10 +55,15 @@ class BuilderEmail
 
 
         foreach($buildingSends as $key => &$value) {
-           try {
-               $this->chooseIntegrator($value);
-           } catch (\Exception $e) {
-           }
+            try {
+                $this->chooseIntegrator($value);
+            } catch (\Exception $e) {
+                // Registra o erro para depuração
+                \Log::error('Erro ao escolher integrador', [
+                    'error' => $e->getMessage(),
+                    'value' => $value
+                ]);
+            }
         }
 
 
@@ -109,37 +112,44 @@ class BuilderEmail
 
         }
 
-        $result = Builder::create()
-            ->writer(new PngWriter())
-            ->writerOptions([])
-            ->data($clientData['pix_qrcode'])
-            ->encoding(new Encoding('UTF-8'))
-            ->size(300)
-            ->margin(10)
-            ->build();
+        if($clientData['pix_qrcode'] != null){
+            $result = Builder::create()
+                ->writer(new PngWriter())
+                ->writerOptions([])
+                ->data($clientData['pix_qrcode'])
+                ->encoding(new Encoding('UTF-8'))
+                ->size(300)
+                ->margin(10)
+                ->build();
 
-        $qrCode = $result->getString();
+            $qrCode = $result->getString();
 
-        $clientData['pix_qrcode'] = $qrCode;
+            $clientData['pix_qrcode'] = $qrCode;
+        }
+
 
         try {
-
-            if(filter_var($clientData['email'], FILTER_VALIDATE_EMAIL)) {
-                $mail = \Mail::mailer('fat')->to($clientData['email'])
-                    ->send(new SendBilling($clientData['template']['template_integrator'],
+            if (filter_var($clientData['email'], FILTER_VALIDATE_EMAIL)) {
+                // Tente enviar o e-mail
+                \Mail::mailer('fat')->to($clientData['email'])
+                    ->send(new SendBilling(
+                        $clientData['template']['template_integrator'],
                         $clientData['template']['title'],
                         $clientData,
                         $billetPath
                     ));
             } else {
-                $clientData['error'] = json_encode('{"error": "E-mail inválido para disparo"}');
+                // Caso o e-mail seja inválido, registre um erro
+                $clientData['error'] = json_encode(['error' => 'E-mail inválido para disparo']);
+                \Log::error('E-mail inválido', ['clientData' => $clientData]);
             }
-
         } catch (\Exception $e) {
-            $clientData['error'] = json_encode('{"error": "'.$e->getMessage().'"}');
+            // Capture qualquer exceção e registre o erro
+            $clientData['error'] = json_encode(['error' => $e->getMessage()]);
+            \Log::error('Erro ao enviar e-mail', ['error' => $e->getMessage(), 'clientData' => $clientData]);
         }
 
-        $this->buildingReport($clientData);
+//        $this->buildingReport($clientData);
 
     }
 

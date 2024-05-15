@@ -22,6 +22,7 @@ class BuilderBillingRuleController extends Controller
 
     public function builder()
     {
+        set_time_limit(2000000000);
         $this->buildingData();
         return $this->sendingCommunication();
     }
@@ -35,7 +36,7 @@ class BuilderBillingRuleController extends Controller
         //        $whatsappAction = new BuilderWhatsapp($this->data);
 //        return $whatsappAction->builder();
 
-        $this->sendAlert(0, 10863, $emailAction->infoSending());
+//        $this->sendAlert(0, 10863, $emailAction->infoSending());
 //        sleep(15*60);
         $emailAction->builder();
 //        $smsAction->builder();
@@ -74,7 +75,7 @@ class BuilderBillingRuleController extends Controller
                                 'templateData' => [
                                     'body' => [
                                         'placeholders' => [
-                                            "$whatsappInfo envios, total: R$ ". number_format(($whatsappInfo * .4), 2, ',', '.'),
+                                            "$whatsappInfo envios, total: R$ ". number_format(($whatsappInfo * .26), 2, ',', '.'),
                                             "$smsInfo envios, total: R$ ". number_format(($smsInfo * .07), 2, ',', '.'),
                                             "$emailInfo envios, total: R$ ". number_format(($emailInfo * 0), 2, ',', '.'),
                                         ]

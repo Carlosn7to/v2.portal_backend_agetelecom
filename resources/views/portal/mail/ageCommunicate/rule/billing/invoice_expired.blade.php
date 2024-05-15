@@ -41,13 +41,15 @@
                                     <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
                                     </p>
                                     <p>{{$client['barcode']}}</p>
-                                    <p>
-                                        Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
-                                            pagamento por Pix.</b> Ao
-                                        escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
-                                        pagamento de forma fácil, rápida e muito prática.
-                                    </p>
-                                    <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
+                                    @if($client['pix_qrcode'] != null)
+                                        <p>
+                                            Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
+                                                pagamento por Pix.</b> Ao
+                                            escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
+                                            pagamento de forma fácil, rápida e muito prática.
+                                        </p>
+                                        <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
+                                    @endif
                                     <p>confira também nossos canais de atendimento nos ícones abaixo.
                                     </p>
                                     <p>Atenciosamente,

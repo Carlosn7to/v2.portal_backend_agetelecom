@@ -33,16 +33,15 @@
                                     <p>Gostaríamos de lembrar que está próximo do vencimento da sua fatura, que <b
                                             style="color: #ec681c;">ocorrerá em {{abs($client['days_until_expiration'])}} DIAS.</b>
                                     </p>
-                                    <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
-                                    </p>
-                                    <p>{{$client['barcode']}}</p>
-                                    <p>
-                                        Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
-                                            pagamento por Pix.</b> Ao
-                                        escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
-                                        pagamento de forma fácil, rápida e muito prática.
-                                    </p>
-                                    <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
+                                    @if($client['pix_qrcode'] != null)
+                                        <p>
+                                            Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
+                                                pagamento por Pix.</b> Ao
+                                            escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
+                                            pagamento de forma fácil, rápida e muito prática.
+                                        </p>
+                                        <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
+                                    @endif
                                     <p>Se precisar de alguma ajuda ou tiver alguma dúvida, <b
                                             style="color: #ec681c;">estamos aqui para facilitar. </b></p>
                                     <p>Fique à vontade para usar <b style="color: #ec681c;">nossos canais de
