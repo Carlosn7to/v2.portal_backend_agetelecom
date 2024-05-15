@@ -149,7 +149,7 @@ class BuilderEmail
             \Log::error('Erro ao enviar e-mail', ['error' => $e->getMessage(), 'clientData' => $clientData]);
         }
 
-//        $this->buildingReport($clientData);
+        $this->buildingReport($clientData);
 
     }
 
