@@ -30,9 +30,9 @@
                                     <p style="font-size: 30px"><strong style="color: #EE1313;">FATURA EM
                                             ATRASO</strong></p>
 
-                                    <p>Olá {nome_cliente},</p>
+                                    <p>Olá {{$client['name']}},</p>
                                     <p><b style="color: #EE1313;">Sua fatura está em
-                                            aberto há {dias_fatura} dias.</b> Infelizmente,
+                                            aberto há {{abs($client['days_until_expiration'])}} dias.</b> Infelizmente,
                                         devido a este atraso no pagamento, o sinal de internet do seu plano poderá
                                         ser reduzido.
                                     </p>
@@ -40,16 +40,14 @@
                                         curtindo a sua conexão. Ficar sem internet ninguém merece, né?</p>
                                     <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
                                     </p>
-                                    <p>{codigo_barra}</p>
+                                    <p>{{$client['barcode']}}</p>
                                     <p>
                                         Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
                                             pagamento por Pix.</b> Ao
                                         escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
                                         pagamento de forma fácil, rápida e muito prática.
                                     </p>
-                                    <p>
-                                        {codigo_pix}
-                                    </p>
+                                    <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
                                     <p>confira também nossos canais de atendimento nos ícones abaixo.
                                     </p>
                                     <p>Atenciosamente,

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Portal\AgeCommunicate\BillingRule;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\mail\BuilderEmail;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\BuilderSms;
+use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\whatsapp\BuilderWhatsapp;
 use App\Models\Portal\AgeCommunicate\BillingRule\DataVoalle;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -27,11 +29,16 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
-        $smsAction = new BuilderSms($this->data);
-        $smsInfo = $smsAction->infoSending();
-        $this->sendAlert(0, $smsInfo, 0);
-        sleep(15*60);
-        $smsAction->builder();
+//        $smsAction = new BuilderSms($this->data);
+        $emailAction = new BuilderEmail($this->data);
+
+        //        $whatsappAction = new BuilderWhatsapp($this->data);
+//        return $whatsappAction->builder();
+
+        $this->sendAlert(0, 10863, $emailAction->infoSending());
+//        sleep(15*60);
+        $emailAction->builder();
+//        $smsAction->builder();
         return true;
 
     }

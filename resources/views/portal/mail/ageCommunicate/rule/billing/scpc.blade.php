@@ -5,6 +5,58 @@
     <title>SCPC</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+@php
+    use Carbon\Carbon;
+
+    $date = Carbon::now();
+    $carbonDate = Carbon::parse($date);
+
+    $dia = $carbonDate->day;
+    $mes = $carbonDate->format('m');
+    $ano = $carbonDate->year;
+
+    switch ($mes) {
+        case 1:
+            $mes = 'Janeiro';
+            break;
+        case 2:
+            $mes = 'Fevereiro';
+            break;
+        case 3:
+            $mes = 'Março';
+            break;
+        case 4:
+            $mes = 'Abril';
+            break;
+        case 5:
+            $mes = 'Maio';
+            break;
+        case 6:
+            $mes = 'Junho';
+            break;
+        case 7:
+            $mes = 'Julho';
+            break;
+        case 8:
+            $mes = 'Agosto';
+            break;
+        case 9:
+            $mes = 'Setembro';
+            break;
+        case 10:
+            $mes = 'Outubro';
+            break;
+        case 11:
+            $mes = 'Novembro';
+            break;
+        case 12:
+            $mes = 'Dezembro';
+            break;
+    }
+
+    $mes = ucfirst(mb_strtolower($mes, 'UTF-8')); // Converte a primeira letra do mês para maiúscula
+    $dateFormatted = "$dia de $mes de $ano";
+@endphp
 <table width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
     <tr>
         <td align="center">
@@ -16,9 +68,9 @@
                 </tr>
                 <tr>
                     <td style="padding: 10px; text-align: left;">
-                        <p>Brasília, { $data['dateActual']  }</p>
-                        <p><strong>{ $data['nameClient'] }</strong></p>
-                        <p><strong>CPF:{$data['cpf']}</strong></p>
+                        <p>Brasília, {{$dateFormatted}}</p>
+                        <p><strong>{{$client['name']}}</strong></p>
+                        <p><strong>CPF:{{$client['tx_id']}}</strong></p>
                     </td>
                 </tr>
                 <tr>
@@ -33,8 +85,8 @@
                 </tr>
                 <tr>
                     <td style="padding: 10px; text-align: left;">
-                        <p><strong>CNPJ do Credor:</strong> {$data['cnpj']}</p>
-                        <p><strong>Endereço do Credor:</strong> {$data['address']}</p>
+                        <p><strong>CNPJ do Credor:</strong> 40.085.642/0001-55</p>
+                        <p><strong>Endereço do Credor:</strong> ST SIA TRECHO 17 VIA IA 4 LT 1080</p>
                     </td>
                 </tr>
                 <tr>
@@ -61,14 +113,12 @@
                                     DATA DO DÉBITO
                                 </th>
                             </tr>
-{{--                            @foreach($data['debits'] as $value)--}}
-{{--                                <tr>--}}
-{{--                                    <td style="padding: 10px;">{$value['contractClient']}</td>--}}
-{{--                                    <td style="padding: 10px;">Mensalidade AGE</td>--}}
-{{--                                    <td style="padding: 10px;">R${$value['value']}</td>--}}
-{{--                                    <td style="padding: 10px;">{$value['date']}</td>--}}
-{{--                                </tr>--}}
-{{--                            @endforeach--}}
+                            <tr>
+                                <td style="padding: 10px;">{{$client['contract_id']}}</td>
+                                <td style="padding: 10px;">Mensalidade AGE</td>
+                                <td style="padding: 10px;">R$ {{$client['document_amount']}}</td>
+                                <td style="padding: 10px;">{{$client['expiration_date']}}</td>
+                            </tr>
                         </table>
                     </td>
                 </tr>

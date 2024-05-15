@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms;
 
-use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
 use GuzzleHttp\Client;
 use Infobip\Api\SmsApi;
 use Infobip\ApiException;
@@ -114,7 +114,7 @@ class BuilderSms
 
     private function buildingReport($clientData, $response)
     {
-        $reportSms = new ReportSms();
+        $reportSms = new Report();
 
         $reportStatus = $reportSms->create([
             'bulk_id' => isset($response['bulkId']) ? $response['bulkId'] : 'envio_individual',

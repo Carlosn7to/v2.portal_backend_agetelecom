@@ -28,8 +28,8 @@
                                 <td
                                     style="font-size: 16px; padding: 0 40px 10px 40px; text-align: center; line-height: 1.5;background: #ffffff; border: 1px solid #ffffff; border-radius: 25px; ">
                                     <p style="font-size: 30px;"><strong style="color: #F41B11">SUSPENSÃO DE SINAL</strong></p>
-                                    <p>Olá {cliente},</p>
-                                    <p><b style="color: #F41B11;">Sua fatura está em aberto há {dias} dias. </b>
+                                    <p>Olá {{$client['name']}},</p>
+                                    <p><b style="color: #F41B11;">Sua fatura está em aberto há {{abs($client['days_until_expiration'])}} dias. </b>
                                         Infelizmente, devido a este atraso no pagamento, o sinal de internet do seu plano poderá ser suspenso e o seu o CPF
                                         <b style="color: #F41B11">negativado</b>.
                                     </p>
@@ -38,16 +38,14 @@
                                     </p>
                                     <p style="color: #818181; font-weight: 600;">Código de barras para o pagamento:
                                     </p>
-                                    <p>{codigo_barra}</p>
+                                    <p>{{$client['barcode']}}</p>
                                     <p>
                                         Se preferir, agora também <b style="color: #ec681c;">oferecemos a opção de
                                             pagamento por Pix.</b> Ao
                                         escanear o QR Code abaixo com a câmera do seu celular, você poderá efetuar o
                                         pagamento de forma fácil, rápida e muito prática.
                                     </p>
-                                    <p>
-                                        {codigo_pix}
-                                    </p>
+                                    <img src="data:image/png;base64,{{ base64_encode($client['pix_qrcode']) }}" alt="QR Code Pix">
                                     <p>Se precisar de alguma ajuda ou tiver alguma dúvida, <b
                                             style="color: #ec681c;">estamos aqui para facilitar. </b></p>
                                     <p>Fique à vontade para usar <b style="color: #ec681c;">nossos canais de

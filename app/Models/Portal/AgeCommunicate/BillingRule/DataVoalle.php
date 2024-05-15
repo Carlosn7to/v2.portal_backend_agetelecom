@@ -46,7 +46,8 @@ class DataVoalle extends Model
                     WHEN frt.expiration_date > current_date THEN -(frt.expiration_date - current_date)
                     ELSE (current_date - frt.expiration_date)
                 END AS "days_until_expiration",
-                frt.id AS "frt_id"
+                frt.id AS "frt_id",
+                frt.pix_qr_code as "pix_qrcode"
             FROM erp.contracts c
             LEFT JOIN erp.people p ON p.id = c.client_id
             LEFT JOIN erp.financial_receivable_titles frt ON frt.contract_id = c.id
@@ -92,7 +93,8 @@ class DataVoalle extends Model
             'segmentation' => $this->segregation != null ? $this->segregation : 'prata',
             'phone' => $this->sanitizeCellphone($row->phone),
             'phone_original' => $row->phone,
-            'days_until_expiration' => $row->days_until_expiration
+            'days_until_expiration' => $row->days_until_expiration,
+            'pix_qrcode' => $row->pix_qrcode
         ];
     }
 

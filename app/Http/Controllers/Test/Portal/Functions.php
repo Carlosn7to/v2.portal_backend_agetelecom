@@ -9,8 +9,8 @@ use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleCon
 use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
-use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
-use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSmsLog;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportLog;
 use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
 use App\Models\Portal\User\User;
 use App\Routines\Portal\Users\UserSync;
@@ -162,7 +162,7 @@ class Functions extends Controller
 
         return $body;
 ////
-//        return ReportSms::getAllSending();
+//        return Report::getAllSending();
 //
 //        return true;
 //
@@ -209,8 +209,8 @@ class Functions extends Controller
             $responseData = json_decode($response->getBody(), true);
 
 
-            $reportSms = new ReportSms();
-            $reportSmsLog = new ReportSmsLog();
+            $reportSms = new Report();
+            $reportSmsLog = new ReportLog();
 
 
             foreach($responseData['messages'] as $k => $v) {

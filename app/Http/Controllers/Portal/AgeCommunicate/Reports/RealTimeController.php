@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Portal\AgeCommunicate\Reports;
 
 use App\Http\Controllers\Controller;
-use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSms;
-use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportSmsLog;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportLog;
 use Illuminate\Http\Request;
 use Infobip\Model\SmsInboundMessageResult;
 use Infobip\ObjectSerializer;
@@ -24,7 +24,7 @@ class RealTimeController extends Controller
 
 
         // Inicializa a query básica usando messageId, que sempre existe
-        $query = ReportSms::where('mensagem_id', $result[0]['messageId']);
+        $query = Report::where('mensagem_id', $result[0]['messageId']);
 
         // Executa a consulta
         $reports = $query->get();
@@ -49,7 +49,7 @@ class RealTimeController extends Controller
 
             }
 
-            $log = ReportSmsLog::create([
+            $log = ReportLog::create([
                 'envio_id' => $report->id,
                 'bulk_id' => isset($result[0]['bulkId']) ? $result[0]['bulkId'] : 'envio_individual',
                 'mensagem_id' => $result[0]['messageId'],
