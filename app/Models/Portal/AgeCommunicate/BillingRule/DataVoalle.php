@@ -64,7 +64,6 @@ class DataVoalle extends Model
                 and frt.financer_nature_id = 59
                 --and p.insignia_id is not null
                 --and frt.pix_qr_code is null
-                limit 1
         SQL;
     }
 

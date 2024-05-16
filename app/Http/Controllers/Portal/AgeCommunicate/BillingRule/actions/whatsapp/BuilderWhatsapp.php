@@ -34,8 +34,6 @@ class BuilderWhatsapp
 
 
         foreach($this->data as $key => &$value) {
-            $value['phone'] = '5561984700440';
-            $value['days_until_expiration'] = -1;
 
                 foreach($this->templates as $k => $v) {
 
