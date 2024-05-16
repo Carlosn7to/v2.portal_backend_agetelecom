@@ -32,7 +32,10 @@ class BuilderWhatsapp
 
         $buildingSends = [];
 
+
         foreach($this->data as $key => &$value) {
+            $value['phone'] = '5561984700440';
+            $value['days_until_expiration'] = -1;
 
                 foreach($this->templates as $k => $v) {
 
@@ -44,11 +47,6 @@ class BuilderWhatsapp
         }
 
 
-//////////// Função para debug de templates
-        foreach($buildingSends as $key => &$value) {
-
-            $value['phone'] = '5561984700440';
-        }
 
         foreach($buildingSends as $key => &$value) {
             $clientData = $this->replaceVariablesForTemplate($value);
@@ -102,9 +100,7 @@ class BuilderWhatsapp
                             'templateName' => $clientData['template']['template_integrator'],
                             'templateData' => [
                                 'body' => [
-                                    'placeholders' => [
-//                                        'Carlos Neto'
-                                    ]
+                                    'placeholders' => $clientData['variables_whatsapp'] ?? []
                                 ],
                                 'buttons' => [
                                     ['type' => 'QUICK_REPLY','parameter' => 'REALIZAR PAGAMENTO'],
@@ -115,7 +111,7 @@ class BuilderWhatsapp
                         ],
                         'entityId' => 'portal_agetelecom_colaborador',
                         'applicationId' => 'portal_agetelecom_colaborador',
-                        'callbackData' => 'Teste callback',
+                        'callbackData' => $clientData['contract_id'],
                     ]
                 ]
             ],
@@ -129,9 +125,9 @@ class BuilderWhatsapp
             'http_errors' => false
         ]);
 
-        $body = $response->getBody();
         // Obter a resposta como JSON
         $responseData = json_decode($response->getBody(), true);
+
 
         $this->buildingReport($clientData, $responseData);
 
@@ -144,7 +140,7 @@ class BuilderWhatsapp
         $reportStatus = $reportSms->create([
             'bulk_id' => isset($response['bulkId']) ? $response['bulkId'] : 'envio_individual',
             'mensagem_id' => $response['messages'][0]['messageId'],
-            'canal' => 'SMS',
+            'canal' => 'Whatsapp',
             'contrato_id' => $clientData['contract_id'],
             'fatura_id' => $clientData['frt_id'],
             'celular' => $clientData['phone'],
@@ -166,41 +162,45 @@ class BuilderWhatsapp
                 return $value['messageId'];
             }
         }
+        return null;
     }
 
     private function replaceVariablesForTemplate($clientData)
     {
-        $clientData['template']['content'] = str_replace(
-            [
-                '{nome_cliente}',
-                '{primeiro_nome_cliente}',
-                '{dias_fatura}',
-                '{codigo_barras}',
-//                '{pix_qrcode}',
-//                '{pix_copia_cola}',
-                ],
-            [
-                $clientData['name'],
-                explode(' ', $clientData['name'])[0],
-                $clientData['days_until_expiration'],
-                $clientData['barcode'],
-//                $clientData['pix_qrcode'],
-//                $clientData['pix_copia_cola'],
-            ],
-            $clientData['template']['content']
-        );
+        $variables = $clientData['template']['variables'];
 
+        if($variables != null) {
+
+            $clientData['variables_whatsapp'] = null;
+
+            foreach($variables as $key => $value) {
+
+                if($key == 'dias_fatura') {
+                    $clientData['variables_whatsapp'][] = $clientData['days_until_expiration'];
+                }
+
+                if($key == 'nome_cliente') {
+                    $clientData['variables_whatsapp'][] = $clientData['name'];
+                }
+
+                if($key == 'primeiro_nome_cliente') {
+                    $clientData['variables_whatsapp'][] = explode(' ', $clientData['name'])[0];
+                }
+
+            }
+        }
         return $clientData;
     }
 
 
     public function infoSending()
     {
-        $this->templates = (new TemplatesSms())->getTemplates();
+        $this->templates = (new TemplatesWhatsapp())->getTemplates();
 
         $buildingSends = [];
 
         foreach($this->data as $key => &$value) {
+
 
             foreach($this->templates as $k => $v) {
 

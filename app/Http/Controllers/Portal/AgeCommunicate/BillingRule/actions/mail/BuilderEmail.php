@@ -58,6 +58,11 @@ class BuilderEmail
             try {
                 $this->chooseIntegrator($value);
             } catch (\Exception $e) {
+
+                if($e->getCode() == 401){
+                    $this->authenticateVoalle();
+                    $this->chooseIntegrator($value);
+                }
                 // Registra o erro para depuração
                 \Log::error('Erro ao escolher integrador', [
                     'error' => $e->getMessage(),

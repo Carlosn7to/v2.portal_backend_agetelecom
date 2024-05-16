@@ -51,6 +51,15 @@ class Template extends Model
         $this->attributes['regra'] = json_encode($value);
     }
 
+    public function getVariaveisAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function setVariaveisAttribute($value)
+    {
+        $this->attributes['variaveis'] = json_encode($value);
+    }
 
     public function integrator()
     {
@@ -81,6 +90,7 @@ class Template extends Model
             'content' => $this->conteudo,
             'rule' => $this->regra,
             'status' => $this->status,
+            'variables' => $this->variaveis,
             'integrator' => $integratorAttributes,
         ];
 
