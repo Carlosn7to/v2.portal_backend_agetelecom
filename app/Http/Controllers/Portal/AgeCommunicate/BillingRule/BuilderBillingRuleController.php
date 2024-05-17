@@ -30,13 +30,14 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
+        $timer = 60*60;
 
         $whatsappAction = new BuilderWhatsapp($this->data);
         $smsAction = new BuilderSms($this->data);
         $emailAction = new BuilderEmail($this->data);
 
-        $this->sendAlert($whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
-        sleep(15*60);
+        $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
+//        sleep($timer);
         $whatsappAction->builder();
         $smsAction->builder();
         $emailAction->builder();
@@ -44,17 +45,17 @@ class BuilderBillingRuleController extends Controller
 
     }
 
-    public function sendAlert($whatsappInfo, $smsInfo, $emailInfo)
+    public function sendAlert($timer, $whatsappInfo, $smsInfo, $emailInfo)
     {
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
         $client = new Client();
 
         $destinations = [
             '5561984700440',
-            '5561981069695',
-            '5511983705020',
-            '5561998003186',
-            '5561992587560'
+//            '5561981069695',
+//            '5511983705020',
+//            '5561998003186',
+//            '5561992587560'
         ];
 
 
@@ -76,6 +77,7 @@ class BuilderBillingRuleController extends Controller
                                 'templateData' => [
                                     'body' => [
                                         'placeholders' => [
+                                            "$timer",
                                             "$whatsappInfo envios, total: R$ ". number_format(($whatsappInfo * .26), 2, ',', '.'),
                                             "$smsInfo envios, total: R$ ". number_format(($smsInfo * .07), 2, ',', '.'),
                                             "$emailInfo envios, total: R$ ". number_format(($emailInfo * 0), 2, ',', '.'),

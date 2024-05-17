@@ -195,20 +195,72 @@ class BuilderWhatsapp
     {
         $this->templates = (new TemplatesWhatsapp())->getTemplates();
 
-        $buildingSends = [];
+        $count = 0;
+
+        $templates = [];
+
+
+        foreach($this->templates as $key => $value) {
+            $templates[$key] = [
+                'titulo' => $value['title'],
+                'template' => $value['template_integrator'],
+                'categorias' => []
+            ];
+
+            foreach($value['rule']['categorias'] as $k => $v) {
+
+
+                foreach($v as $kk => $aging) {
+                    $templates[$key]['categorias'][] = [
+                        'segmentacao' => $k,
+                        'aging' => $aging,
+                        'total' => 0
+                    ];
+                }
+
+            }
+        }
+
 
         foreach($this->data as $key => &$value) {
 
 
-            foreach($this->templates as $k => $v) {
+            foreach($templates as $k => &$v) {
 
-                if(in_array($value['days_until_expiration'], $v['rule']['categorias'][$value['segmentation']])){
-                    $buildingSends[$key] = $value;
-                    $buildingSends[$key]['template'] = $v;
+                foreach($v['categorias'] as $kk => &$vv) {
+
+                    if($value['days_until_expiration'] == $vv['aging'] && $value['segmentation'] == $vv['segmentacao']) {
+                        $templates[$k]['categorias'][$kk]['total']++;
+                        $count++;
+                    }
+
+
                 }
             }
         }
 
-        return count($buildingSends);
+        $report = [];
+
+
+        foreach($templates as $key => &$value) {
+
+
+            if(isset($value['categorias'])) {
+                foreach($value['categorias'] as $k => $v) {
+                    if($v['total'] > 0) {
+                        $report[] = [
+                            'titulo' => $value['titulo'],
+                            'segmentacao' => $v['segmentacao'],
+                            'aging' => $v['aging'],
+                            'total' => $v['total']
+                        ];
+
+                    }
+                }
+            }
+
+        }
+
+        return $count;
     }
 }
