@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // $schedule->command('portal:users:create')->dailyAt('07:00');
         $schedule->command('rule:billing:sending')
-            ->dailyAt('13:35')
+            ->dailyAt('13:36')
             ->days([Carbon::TUESDAY, Carbon::WEDNESDAY, Carbon::THURSDAY, Carbon::FRIDAY]);
     }
 
