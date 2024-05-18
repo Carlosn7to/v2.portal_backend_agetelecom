@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Portal\AgeCommunicate\Rule\Billing;
 
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class Sendings extends Command
@@ -26,7 +27,16 @@ class Sendings extends Command
      */
     public function handle()
     {
-        $builder = (new BuilderBillingRuleController())->__invoke();
+        $dayName = Carbon::now()->format('l');
+
+        if (
+            $dayName === 'Tuesday' ||
+            $dayName === 'Wednesday' ||
+            $dayName === 'Thursday' ||
+            $dayName === 'Friday'
+        ) {
+            $builder = (new BuilderBillingRuleController())->__invoke();
+        }
 
     }
 }
