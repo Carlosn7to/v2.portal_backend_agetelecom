@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // $schedule->command('portal:users:create')->dailyAt('07:00');
         $schedule->command('rule:billing:sending')
-            ->dailyAt('9:00');
+            ->dailyAt('9:28');
     }
 
     /**
