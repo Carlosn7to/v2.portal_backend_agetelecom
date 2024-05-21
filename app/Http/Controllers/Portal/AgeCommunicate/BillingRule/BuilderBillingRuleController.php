@@ -7,6 +7,8 @@ use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\mail\BuilderE
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\BuilderSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\whatsapp\BuilderWhatsapp;
 use App\Models\Portal\AgeCommunicate\BillingRule\DataVoalle;
+use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Nette\Utils\Random;
@@ -30,14 +32,14 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
-        $timer = 60*60;
+        $timer = 60*5;
 
         $whatsappAction = new BuilderWhatsapp($this->data);
         $smsAction = new BuilderSms($this->data);
         $emailAction = new BuilderEmail($this->data);
 
         $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
-//        sleep($timer);
+        sleep($timer);
         $whatsappAction->builder();
         $smsAction->builder();
         $emailAction->builder();
@@ -52,10 +54,10 @@ class BuilderBillingRuleController extends Controller
 
         $destinations = [
             '5561984700440',
-//            '5561981069695',
-//            '5511983705020',
-//            '5561998003186',
-//            '5561992587560'
+            '5561981069695',
+            '5511983705020',
+            '5561998003186',
+            '5561992587560'
         ];
 
 
@@ -118,6 +120,9 @@ class BuilderBillingRuleController extends Controller
     {
         $this->getData();
 
+
+        $dataSendedsToday = Report::where('created_at', '>=', Carbon::now()->startOfDay()->format('Y-m-d H:i:s'))->get();
+
         // Usando um array associativo para armazenar o contrato com o maior 'days_until_expiration' para cada 'contract_id'
         $contractById = [];
 
@@ -138,6 +143,16 @@ class BuilderBillingRuleController extends Controller
 
         // Convertendo de volta para um array indexado
         $this->data = array_values($contractById);
+
+
+        foreach($this->data as $key => &$value) {
+            foreach($dataSendedsToday as $k => $v) {
+                if($value['contract_id'] == $v['contrato_id']) {
+                    unset($this->data[$key]);
+                }
+            }
+        }
+
     }
 
 
