@@ -98,11 +98,18 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+        $userSync = new UserSync();
+
+        $userSync->builder();
+
+        return true;
+
+
 //        return $this->testSendEmail();
 
-        $billingRule = new BuilderBillingRuleController();
-//
-        return $billingRule->builder();
+//        $billingRule = new BuilderBillingRuleController();
+////
+//        return $billingRule->builder();
 
         $authorization = 'App b13815e2d434d294b446420e41d4f4e6-6c3b9fe0-a751-45d5-aba0-7afbe9fb28bd';
         $client = new Client();
