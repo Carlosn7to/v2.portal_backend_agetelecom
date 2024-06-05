@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '37a566c4b2167ca19df0d5e65a899af117c76561',
+        'reference' => '06720e789539df3006c413a894efb484392d432b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -265,6 +265,15 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'harrygulliford/laravel-firebird' => array(
+            'pretty_version' => 'v3.2.0',
+            'version' => '3.2.0.0',
+            'reference' => 'bb45e1fc748951f4bdd81b9bb541d5cb96873bd8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../harrygulliford/laravel-firebird',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'illuminate/auth' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -490,7 +499,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '37a566c4b2167ca19df0d5e65a899af117c76561',
+            'reference' => '06720e789539df3006c413a894efb484392d432b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

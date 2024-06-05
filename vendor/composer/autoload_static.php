@@ -173,6 +173,10 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
             'Illuminate\\Support\\' => 19,
             'Illuminate\\' => 11,
         ),
+        'H' => 
+        array (
+            'HarryGulliford\\Firebird\\' => 24,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\UriTemplate\\' => 23,
@@ -589,6 +593,10 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'Illuminate\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate',
+        ),
+        'HarryGulliford\\Firebird\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src',
         ),
         'GuzzleHttp\\UriTemplate\\' => 
         array (
@@ -3264,6 +3272,14 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'Hamcrest\\Type\\IsString' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Type/IsString.php',
         'Hamcrest\\Util' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
         'Hamcrest\\Xml\\HasXPath' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
+        'HarryGulliford\\Firebird\\FirebirdConnection' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/FirebirdConnection.php',
+        'HarryGulliford\\Firebird\\FirebirdConnector' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/FirebirdConnector.php',
+        'HarryGulliford\\Firebird\\FirebirdServiceProvider' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/FirebirdServiceProvider.php',
+        'HarryGulliford\\Firebird\\Query\\Builder' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/Query/Builder.php',
+        'HarryGulliford\\Firebird\\Query\\Grammars\\FirebirdGrammar' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/Query/Grammars/FirebirdGrammar.php',
+        'HarryGulliford\\Firebird\\Query\\Processors\\FirebirdProcessor' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/Query/Processors/FirebirdProcessor.php',
+        'HarryGulliford\\Firebird\\Schema\\Builder' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/Schema/Builder.php',
+        'HarryGulliford\\Firebird\\Schema\\Grammars\\FirebirdGrammar' => __DIR__ . '/..' . '/harrygulliford/laravel-firebird/src/Schema/Grammars/FirebirdGrammar.php',
         'Illuminate\\Auth\\Access\\AuthorizationException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/AuthorizationException.php',
         'Illuminate\\Auth\\Access\\Events\\GateEvaluated' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/Events/GateEvaluated.php',
         'Illuminate\\Auth\\Access\\Gate' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/Gate.php',

@@ -1,0 +1,63 @@
+name: Tests
+
+on:
+  [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: [8.2, 8.1, 8.0, 7.4]
+        laravel: [10.*, 9.*, 8.*]
+        stability: [prefer-lowest, prefer-stable]
+        firebird: [v4.0, v3.0, v2.5.9-sc]
+        include:
+          - laravel: 8.*
+            testbench: ^6.19
+          - laravel: 9.*
+            testbench: ^7.0
+          - laravel: 10.*
+            testbench: ^8.0
+        exclude:
+          - laravel: 8.*
+            php: 8.2
+          - laravel: 9.*
+            php: 7.4
+          - laravel: 10.*
+            php: 8.0
+          - laravel: 10.*
+            php: 7.4
+
+    name: PHP ${{ matrix.php }}, Laravel ${{ matrix.laravel }}, Firebird ${{ matrix.firebird }}, ${{ matrix.stability }}
+
+    services:
+      firebird:
+        image: jacobalberty/firebird:${{ matrix.firebird }}
+        env:
+          FIREBIRD_DATABASE: 'database.fdb'
+          ISC_PASSWORD: 'masterkey'
+          EnableLegacyClientAuth: 'true'
+        ports:
+          - 3050:3050
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_firebird
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/phpunit

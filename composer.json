@@ -10,6 +10,7 @@
         "directorytree/ldaprecord-laravel": "^3.1",
         "endroid/qr-code": "^5.0",
         "guzzlehttp/guzzle": "^7.2",
+        "harrygulliford/laravel-firebird": "^3.2",
         "infobip/infobip-api-php-client": "^5.1.4",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
