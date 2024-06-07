@@ -24,3 +24,8 @@ Route::prefix('commission/financial/builder')->controller(\App\Http\Controllers\
     Route::get('/', 'builder');
     Route::get('/seller', 'sellerData');
 });
+
+Route::prefix('commission/seller/dashboard')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController::class)
+        ->group(function() {
+    Route::get('/', 'response');
+});

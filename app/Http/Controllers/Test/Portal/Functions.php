@@ -6,6 +6,7 @@ use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
+use App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController;
 use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
@@ -98,11 +99,9 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        $userSync = new UserSync();
+        $b2bSeller = new BuilderController();
 
-        $userSync->builder();
-
-        return true;
+        return $b2bSeller->response();
 
 
 //        return $this->testSendEmail();
