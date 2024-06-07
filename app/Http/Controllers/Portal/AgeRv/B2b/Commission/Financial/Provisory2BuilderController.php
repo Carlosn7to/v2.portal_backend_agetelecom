@@ -9,7 +9,7 @@ class Provisory2BuilderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('portal.agerv.b2b.financial.access');
+        $this->middleware('portal.agerv.b2b.financial.access')->except('sellerData');
     }
 
     public function builder(Request $request)
@@ -123,5 +123,18 @@ class Provisory2BuilderController extends Controller
         unset($sellerData); // Desfaz a referência no final do loop externo
 
 
+    }
+
+
+    public function sellerData(Request $request)
+    {
+        $typeCollaborator = 'seller';
+        $this->data = (new ProvisoryBuilderController())->builder($request->period, $typeCollaborator);
+
+        $this->levelCommission();
+
+        $this->getCommission();
+
+        return $this->data;
     }
 }

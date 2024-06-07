@@ -8,10 +8,11 @@ use Carbon\Carbon;
 
 class ProvisoryBuilderController extends Controller
 {
-    public function builder($period)
+    public function builder($period, $typeCollaborator = '')
     {
 
         $this->period = Carbon::parse($period);
+        $this->typeCollaborator = $typeCollaborator;
 
 
         $this->getData();
@@ -205,6 +206,9 @@ class ProvisoryBuilderController extends Controller
 
     private function getQuery()
     {
+
+
+
         $query = '
             SELECT
                 c.id,
@@ -223,6 +227,8 @@ class ProvisoryBuilderController extends Controller
             WHERE p2.id = 73512 and c.v_stage = \'Aprovado\'
             AND c.approval_date >= \''.clone($this->period).'\' and c.approval_date < \''.clone($this->period->addMonth()->startOfMonth()).'\'
             ';
+
+        if($this->typeCollaborator === 'seller') {$query .= 'and p1.email = \'suelen.santos@agetelecom.com.br\'';}
 
         return $query;
 
