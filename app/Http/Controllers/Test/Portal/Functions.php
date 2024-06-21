@@ -9,6 +9,7 @@ use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleCon
 use App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController;
 use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
 use App\Http\Controllers\Portal\Management\User\UserController;
+use App\Http\Controllers\Test\Portal\Aniel\API;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportLog;
@@ -99,9 +100,18 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        $b2bSeller = new BuilderController();
+        return (new API())->capacity();
 
-        return $b2bSeller->response();
+        $result = \DB::connection('aniel')->select($this->getQueryAniel());
+
+        return $result;
+
+
+        return 10;
+
+//        $b2bSeller = new BuilderController();
+//
+//        return $b2bSeller->response();
 
 
 //        return $this->testSendEmail();
@@ -569,6 +579,43 @@ class Functions extends Controller
         }
 
         return $customerData->days_until_expiration == $rule;
+    }
+
+    private function getQueryAniel()
+    {
+        return <<<SQL
+            SELECT
+                *
+                FROM TB_TIPO_SERVICO_EQUIPE tse
+        SQL;
+
+        return <<<SQL
+            SELECT DISTINCT
+                dp.NUM_DOC AS "N OS",
+                dp.PROJETO,
+                dp.COD_TIPO_SERV,
+                CASE WHEN dp.COD_TIPO_SERV in ('96' , '4', '92', '51', '133') THEN 'MUDANDANÇA DE ENDEREÇO'
+                WHEN dp.COD_TIPO_SERV in ('3', '95','1', '2') THEN 'INSTALAÇÃO'
+                WHEN dp.COD_TIPO_SERV in ('57','55', '56', '41', '59', '97', '16') THEN 'MANUTENÇÃO'
+                WHEN dp.COD_TIPO_SERV IN ('52', '94', '8', '10','93','5', '11', '58', '9', '6', '7', '99', '12', '63', '53', '161', '163') THEN 'VISITA TÉCNICA'
+                ELSE dp.COD_TIPO_SERV END AS "TIPO_SERVICO",
+                c.RAZAO_SOCIAL AS "Nome Cliente",
+                CASE WHEN e.NOME IS NULL THEN 'SEM TÉCNICO ATRIBUIDO'
+                ELSE e.NOME END AS "Nome Tecnico",
+                dp.DIA AS "Criacao",
+                CASE WHEN ts.DESCRICAO like 'Manhã' THEN 'Manhã'
+                ELSE 'Tarde' END AS "Turno",
+                ts.DESCRICAO AS "Turno_True",
+                dp.DATA_MAXIMA AS "Data_do_Agendamento"
+                FROM TB_DOCUMENTO_PRODUCAO dp
+                LEFT JOIN TB_CLIENTE c ON c.RAZAO_SOCIAL = dp.TITULAR
+                LEFT JOIN TB_EQUIPE e ON e.EQUIPE = dp.EQUIPE
+                LEFT JOIN TB_TURNO_SERVICO ts ON ts.ID = dp.COD_TURNO_SERV
+                WHERE dp.DATA_MAXIMA BETWEEN '2024-06-18' AND '2024-06-18'
+                AND dp.COD_TIPO_SERV NOT IN ('57','55', '56', '41', '59')
+            ROWS 10
+        SQL;
+
     }
 
 }

@@ -114,15 +114,15 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-        'firebird' => [
+        'aniel' => [
             'driver'   => 'firebird',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', ''),
-            'username' => env('DB_USERNAME', ''),
-            'password' => env('DB_PASSWORD', ''),
-            'charset'  => env('DB_CHARSET', 'UTF8'),
-            'role'     => env('DB_ROLE', null),
-            'port'     => env('DB_PORT', '3050'),
+            'host'     => env('DB_HOST_ANIEL', 'localhost'),
+            'database' => env('DB_DATABASE_ANIEL', ''),
+            'username' => env('DB_USERNAME_ANIEL', ''),
+            'password' => env('DB_PASSWORD_ANIEL', ''),
+            'charset'  => env('DB_CHARSET_ANIEL', 'UTF8'),
+            'role'     => env('DB_ROLE_ANIEL', null),
+            'port'     => env('DB_PORT_ANIEL', '3050'),
         ],
 
     ],
