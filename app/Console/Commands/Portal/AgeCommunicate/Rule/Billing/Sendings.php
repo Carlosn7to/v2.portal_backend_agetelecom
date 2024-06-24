@@ -30,7 +30,6 @@ class Sendings extends Command
         $dayName = Carbon::now()->format('l');
 
         if (
-            $dayName === 'Monday' ||
             $dayName === 'Tuesday' ||
             $dayName === 'Wednesday' ||
             $dayName === 'Thursday' ||
