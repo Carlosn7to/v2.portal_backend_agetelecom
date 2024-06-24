@@ -10,6 +10,9 @@ class API
 
     public function capacity()
     {
+
+        return $this->finishedOrder('99999999/1');
+
         $result = \DB::connection('aniel')->select($this->getQueryAniel());
 
         return $result;
@@ -79,6 +82,68 @@ class API
         return response()->json(json_decode($client->getBody()->getContents()));
 
 
+
+    }
+
+    private function finishedOrder($order)
+    {
+        $orderResult = $this->getOrder($order);
+
+        $client = new Client();
+
+
+        $form = [
+            'os' => $orderResult->data[0]->numeroDocumento,
+            'contrato' => $orderResult->data[0]->codigoCliente,
+            'projeto' => $orderResult->data[0]->projeto,
+            'codigoCliente' => intval($orderResult->data[0]->codigoCliente),
+            'observacao' => '',
+            'codigo_Encerramento' => '84',
+            'equipe' => $orderResult->data[0]->equipe,
+            'data_Ini_Atend' => Carbon::now()->format('Y-m-d'),
+            'data_Fim_Atend' => Carbon::now()->format('Y-m-d'),
+            'hora_Ini_Atend' => Carbon::now()->format('H:i:s'),
+            'hora_Fim_Atend' => Carbon::now()->format('H:i:s'),
+            'caixaFTTH' => '',
+            'portaFTTH' => '',
+            'settings' => [
+                'user' => 'AGE',
+                'password' => 'age@niel_2023',
+                'token' => 'YW5pZWxhZ2V0ZWxlY29t',
+            ],
+        ];
+
+
+        dd($form);
+
+        $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/BaixarOs', [
+            'json' => $form
+        ]);
+
+
+        return response()->json(json_decode($client->getBody()->getContents()));
+
+
+    }
+
+    private function getOrder($order)
+    {
+        $client = new Client();
+
+        $form = [
+            'numObra' => $order,
+            'settings' => [
+                'user' => 'AGE',
+                'password' => 'age@niel_2023',
+                'token' => 'YW5pZWxhZ2V0ZWxlY29t',
+            ],
+        ];
+
+        $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/ConsultarOS', [
+            'json' => $form
+        ]);
+
+        return json_decode($client->getBody()->getContents());
 
     }
 
@@ -334,6 +399,7 @@ class API
         return <<<SQL
             SELECT DISTINCT
                 dp.NUM_DOC AS "N OS",
+                dp.NUM_OBRA as "N OS voalle",
                 dp.PROJETO,
                 dp.COD_TIPO_SERV,
                 CASE WHEN dp.COD_TIPO_SERV in ('96' , '4', '92', '51', '133') THEN 'MUDANDANÇA DE ENDEREÇO'
