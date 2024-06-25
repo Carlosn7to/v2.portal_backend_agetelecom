@@ -72,16 +72,11 @@ class API
             ]
         ];
 
-
-
-
         $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/CriarOrdemServico', [
             'json' => $form
         ]);
 
         return response()->json(json_decode($client->getBody()->getContents()));
-
-
 
     }
 
@@ -93,10 +88,10 @@ class API
 
 
         $form = [
-            'os' => $orderResult->data[0]->numeroDocumento,
-            'contrato' => $orderResult->data[0]->codigoCliente,
+            'os' => $orderResult->data[0]->numeroObra,
+            'contrato' => $orderResult->data[0]->codContrato,
             'projeto' => $orderResult->data[0]->projeto,
-            'codigoCliente' => intval($orderResult->data[0]->codigoCliente),
+            'codigoCliente' => intval($orderResult->data[0]->numeroDocumento),
             'observacao' => '',
             'codigo_Encerramento' => '84',
             'equipe' => $orderResult->data[0]->equipe,
@@ -112,7 +107,6 @@ class API
                 'token' => 'YW5pZWxhZ2V0ZWxlY29t',
             ],
         ];
-
 
         dd($form);
 
