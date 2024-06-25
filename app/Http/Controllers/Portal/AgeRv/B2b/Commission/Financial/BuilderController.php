@@ -52,6 +52,7 @@ class BuilderController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
+
         $this->actualPeriod = Carbon::parse($request->period)->addMonth();
         $this->subPeriod = Carbon::parse($request->period)->subMonth();
         $this->data = collect($this->getData());
