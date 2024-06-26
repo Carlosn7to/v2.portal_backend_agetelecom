@@ -129,15 +129,8 @@ class Provisory2BuilderController extends Controller
     {
         $typeCollaborator = 'seller';
         $this->data = (new ProvisoryBuilderController())->builder($request->period, $typeCollaborator);
-
-        if(count($this->data) === 0) {
-            return response()->json(['error' => 'Nenhum dado encontrado para o período solicitado.'], 404);
-        }
-
         $this->levelCommission();
-
         $this->getCommission();
-
         return $this->data;
     }
 }
