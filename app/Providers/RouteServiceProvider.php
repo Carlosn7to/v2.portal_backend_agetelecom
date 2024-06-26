@@ -67,6 +67,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('integrator/voalle/')
                 ->group(base_path('routes/api/integrator/voalle/billet.php'));
 
+            // Rotas para a integração de boletos Portal x Voalle x Aniel
+            Route::middleware('portal')
+                ->prefix('integrator/aniel/')
+                ->group(base_path('routes/api/integrator/aniel/schedule.php'));
+
+
             // Rotas para a integração de boletos Digitro x Voalle
             Route::middleware('portal')
                 ->prefix('portal/ageCommunicate/')
