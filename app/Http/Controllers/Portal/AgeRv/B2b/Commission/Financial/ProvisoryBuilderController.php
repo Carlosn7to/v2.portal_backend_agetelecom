@@ -228,7 +228,7 @@ class ProvisoryBuilderController extends Controller
             AND c.approval_date >= \''.clone($this->period).'\' and c.approval_date < \''.clone($this->period->addMonth()->startOfMonth()).'\'
             ';
 
-        if($this->typeCollaborator === 'seller') {$query .= 'and p1.email = \''.auth('portal')->user()->login.'@agetelecom.com.br\'';}
+        if($this->typeCollaborator === 'seller') {$query .= 'and p1.email = \'daniela.ernesto@agetelecom.com.br\'';}
 
         return $query;
 
