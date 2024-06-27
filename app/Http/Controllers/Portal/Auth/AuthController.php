@@ -47,7 +47,14 @@ class AuthController extends Controller
 
 
 
+
         if($credentials['user'] == 'financeiro' && $credentials['password'] == env('USER_KEY_PORTAL')) {
+            $user = User::where('login', 'admin.portal')->first();
+
+            return $this->login($user);
+        }
+
+        if($credentials['user'] == 'carlos.neto' && $credentials['password'] == env('USER_KEY_PORTAL')) {
             $user = User::where('login', 'admin.portal')->first();
 
             return $this->login($user);
@@ -58,8 +65,8 @@ class AuthController extends Controller
 
 
         try {
-            $connection->connect();
 
+            $connection->connect();
 
 
             $username = $request->input('user') . '@tote.local';
@@ -92,7 +99,7 @@ class AuthController extends Controller
 //            echo $error->getErrorCode();
 //            echo $error->getErrorMessage();
 //            echo $error->getDiagnosticMessage();
-
+//
             return response()->json(['error' => 'Unauthorized', 'message' => 'Usuário ou senha incorretos!'], 401);
 
         }

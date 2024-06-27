@@ -15,14 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::prefix('seller/dashboard')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController::class)->group(function () {
-    Route::get('/', 'response');
+Route::prefix('seller/dashboard')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Commission\Financial\Provisory2BuilderController::class)->group(function () {
+    Route::get('/', 'sellerData');
 });
 
 
 Route::prefix('commission/financial/builder')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Commission\Financial\Provisory2BuilderController::class)->group(function () {
     Route::get('/', 'builder');
-    Route::get('/seller', 'sellerData');
 });
 
 Route::prefix('commission/seller/dashboard')->controller(\App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController::class)

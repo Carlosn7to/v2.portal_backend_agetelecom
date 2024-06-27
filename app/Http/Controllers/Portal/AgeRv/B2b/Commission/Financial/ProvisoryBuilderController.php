@@ -208,7 +208,6 @@ class ProvisoryBuilderController extends Controller
     {
 
 
-
         $query = '
             SELECT
                 c.id,

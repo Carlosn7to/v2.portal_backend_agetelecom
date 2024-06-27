@@ -13,6 +13,9 @@ class BuilderController extends Controller
     public function getCapacity(Request $request)
     {
 
+        $syncSubServices = new SubServicesSync();
+        $syncSubServices->sync();
+
 
         return response()->json(true);
     }

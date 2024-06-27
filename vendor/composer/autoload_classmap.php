@@ -59,6 +59,7 @@ return array(
     'App\\Http\\Controllers\\Portal\\BI\\Voalle\\Financial\\B2B\\GoodPayerController' => $baseDir . '/app/Http/Controllers/Portal/BI/Voalle/Financial/B2B/GoodPayerController.php',
     'App\\Http\\Controllers\\Portal\\BI\\Voalle\\Financial\\B2B\\ReceipTitlesController' => $baseDir . '/app/Http/Controllers/Portal/BI/Voalle/Financial/B2B/ReceipTitlesController.php',
     'App\\Http\\Controllers\\Portal\\Management\\User\\UserController' => $baseDir . '/app/Http/Controllers/Portal/Management/User/UserController.php',
+    'App\\Http\\Controllers\\Test\\Portal\\Aniel\\API' => $baseDir . '/app/Http/Controllers/Test/Portal/Aniel/API.php',
     'App\\Http\\Controllers\\Test\\Portal\\Functions' => $baseDir . '/app/Http/Controllers/Test/Portal/Functions.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\AppClient\\Autheticate' => $baseDir . '/app/Http/Middleware/AppClient/Autheticate.php',

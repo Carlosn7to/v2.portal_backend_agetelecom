@@ -779,6 +779,7 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'App\\Http\\Controllers\\Portal\\BI\\Voalle\\Financial\\B2B\\GoodPayerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Portal/BI/Voalle/Financial/B2B/GoodPayerController.php',
         'App\\Http\\Controllers\\Portal\\BI\\Voalle\\Financial\\B2B\\ReceipTitlesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Portal/BI/Voalle/Financial/B2B/ReceipTitlesController.php',
         'App\\Http\\Controllers\\Portal\\Management\\User\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Portal/Management/User/UserController.php',
+        'App\\Http\\Controllers\\Test\\Portal\\Aniel\\API' => __DIR__ . '/../..' . '/app/Http/Controllers/Test/Portal/Aniel/API.php',
         'App\\Http\\Controllers\\Test\\Portal\\Functions' => __DIR__ . '/../..' . '/app/Http/Controllers/Test/Portal/Functions.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AppClient\\Autheticate' => __DIR__ . '/../..' . '/app/Http/Middleware/AppClient/Autheticate.php',

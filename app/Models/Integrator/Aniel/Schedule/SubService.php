@@ -17,6 +17,7 @@ class SubService extends Model
         'servico_id',
         'titulo',
         'descricao',
+        'vinculado_por'
     ];
     protected $connection = 'portal';
 

@@ -129,8 +129,12 @@ class Provisory2BuilderController extends Controller
     {
         $typeCollaborator = 'seller';
         $this->data = (new ProvisoryBuilderController())->builder($request->period, $typeCollaborator);
+
+
         $this->levelCommission();
+
         $this->getCommission();
-        return $this->data;
+
+        return response()->json($this->data, 200);
     }
 }

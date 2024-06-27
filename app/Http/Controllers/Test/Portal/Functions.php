@@ -42,60 +42,6 @@ class Functions extends Controller
 //        $this->middleware('portal.ageCommunicate.infoBip.access')->only('index');
     }
 
-    private function testSendEmail()
-    {
-        $client = new Client();
-
-        $dataForm = [
-            "grant_type" => "client_credentials",
-            "scope" => "syngw",
-            "client_id" => config('services.voalle.client_id'),
-            "client_secret" => config('services.voalle.client_secret'),
-            "syndata" => config('services.voalle.syndata')
-        ];
-
-        $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ],
-            'form_params' => $dataForm
-        ]);
-
-        $access = json_decode($response->getBody()->getContents());
-
-        $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/5541623',[
-            'headers' => [
-                'Authorization' => 'Bearer '.$access->access_token
-            ]
-        ]);
-
-        $billetPath = [];
-
-        // Verifique se a requisição foi bem-sucedida (código de status 200)
-        if ($responseBillet->getStatusCode() == 200) {
-            // Obtenha o conteúdo do PDF
-            $pdfContent = $responseBillet->getBody()->getContents();
-
-            // Especifique o caminho onde você deseja salvar o arquivo no seu computador
-            $billetPath = storage_path('app/portal/agecommunicate/billingrule/billets/boleto.pdf');
-
-            // Salve o arquivo no caminho especificado
-            file_put_contents($billetPath, $pdfContent);
-
-
-        }
-
-        $mail = Mail::mailer('portal')->to('carlos.neto@agetelecom.com.br')
-                    ->send(new SendBilling('scpc',
-                        'Aviso Urgente AGE Fibra: Cancelamento de Contrato em Breve! 📵',
-                        'Carlos Neto',
-                        $billetPath
-                        ));
-
-        dd($mail);
-
-    }
-
     public function index(Request $request)
     {
         set_time_limit(20000000000);
@@ -505,30 +451,6 @@ class Functions extends Controller
         ];
     }
 
-    private function getAccessToken()
-    {
-        $client = new Client();
-
-        $dataForm = [
-            "grant_type" => "client_credentials",
-            "scope" => "syngw",
-            "client_id" => config('services.voalle.client_id'),
-            "client_secret" => config('services.voalle.client_secret'),
-            "syndata" => config('services.voalle.syndata')
-        ];
-
-
-        $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ],
-            'form_params' => $dataForm
-        ]);
-
-        $access = json_decode($response->getBody()->getContents());
-
-        return $response->getStatusCode() == 200 ? $access->access_token : null;
-    }
 
     private function fetchBillet($customerData, $accessToken)
     {

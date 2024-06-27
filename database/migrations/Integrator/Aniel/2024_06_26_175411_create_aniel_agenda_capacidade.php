@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('aniel_agenda_capacidade', function (Blueprint $table) {
             $table->id();
-            $table->
+            $table->foreignId('servico_id')->constrained('aniel_agenda_servicos');
+            $table->enum('periodo', ['manha', 'tarde', 'noite']);
+            $table->integer('capacidade');
+            $table->date('data_inicio');
+            $table->date('data_fim');
             $table->timestamps();
         });
     }

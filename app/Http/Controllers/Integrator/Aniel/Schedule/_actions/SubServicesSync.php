@@ -12,12 +12,12 @@ class SubServicesSync
         $subServices = new SubService();
         $data = \DB::connection('voalle')->select($this->getQuery());
 
-
         foreach($data as $key => $value) {
 
             $subServices->firstOrCreate([
                 'servico_id' => 1,
-                'titulo' => $value->title
+                'titulo' => $value->title,
+                'vinculado_por' => auth('portal')->user()->id
             ]);
 
 
