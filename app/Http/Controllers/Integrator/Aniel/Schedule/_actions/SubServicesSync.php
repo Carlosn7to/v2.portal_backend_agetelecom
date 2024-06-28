@@ -14,7 +14,7 @@ class SubServicesSync
 
         foreach($data as $key => $value) {
 
-            $subServices->firstOrCreate([
+            $subServices->firstOrCreate(['titulo' => $value->title],[
                 'servico_id' => 1,
                 'titulo' => $value->title,
                 'vinculado_por' => auth('portal')->user()->id

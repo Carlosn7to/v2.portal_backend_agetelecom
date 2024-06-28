@@ -113,20 +113,20 @@ class ProvisoryBuilderController extends Controller
             frt2.title,
             frt2.competence,
             frt.receipt_date,
-            frt.total_amount
+            (frt.total_amount - frt.increase_amount) as total_amount
         from erp.financial_receipt_titles frt
         left join erp.financial_receivable_titles frt2 on frt.financial_receivable_title_id = frt2.id
         where frt2.title like \'FAT%\' and frt2.contract_id = ' . $contractInfo['id'] . '
-        order by frt2.id desc';
+        order by frt2.id asc';
 
         $this->invoices = collect(\DB::connection('voalle')->select($query));
 
         if($this->invoices->count() > 1) {
-            $this->invoices = $this->invoices->first();
+            $this->invoices = $this->invoices->skip(1)->first();
         } else if($this->invoices->count() > 0 ) {
 
-            if($this->invoices->first()->total_amount >= $contractInfo['amount']) {
-                $this->invoices = $this->invoices->first();
+            if($this->invoices->skip(1)->first()->total_amount >= $contractInfo['amount']) {
+                $this->invoices = $this->invoices->skip(1)->first();
             } else {
                 $this->invoices = null;
             }
