@@ -31,8 +31,11 @@ class TrackingAgeAtende
                 'username' => 'carlos.neto',
                 'password' => env('PASSWORD_MONITORING')
             ],
-            'timeout' => 10
+            'timeout' => 10,
+            'connect_timeout' => 10,
+            'read_timeout' => 10
         ]);
+
 
         if($response->getStatusCode() == 200) {
 
@@ -40,9 +43,13 @@ class TrackingAgeAtende
                 $this->findAlert->update([
                     'data_hora_resolucao' => Carbon::now()->format('Y-m-d H:i:s')
                 ]);
+
+                return $this->sendingReport('up');
+
             }
 
-            return $this->sendingReport('up');
+            return;
+
         }
 
         if(!$this->findAlert) {
@@ -138,11 +145,11 @@ class TrackingAgeAtende
 
         $destinations = [
             '5561984700440',
-            '5561999353292',
-            '5561998003186',
-            '5561998051731',
-            '5561992587560',
-            '5561991210156'
+//            '5561999353292',
+//            '5561998003186',
+//            '5561998051731',
+//            '5561992587560',
+//            '5561991210156'
         ];
 
         $info = [
