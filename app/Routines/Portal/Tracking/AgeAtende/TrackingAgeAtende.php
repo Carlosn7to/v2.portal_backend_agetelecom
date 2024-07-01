@@ -30,7 +30,8 @@ class TrackingAgeAtende
             'json' => [
                 'username' => 'carlos.neto',
                 'password' => env('PASSWORD_MONITORING')
-            ]
+            ],
+            'timeout' => 10
         ]);
 
         if($response->getStatusCode() == 200) {
