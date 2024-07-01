@@ -45,6 +45,19 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+//        $client = new Client();
+//
+//
+//        $response = $client->post('http://10.25.3.196:3000/signin/login', [
+//            'json' => [
+//                'username' => 'carlos.neto',
+//                'password' => env('PASSWORD_MONITORING')
+//            ]
+//        ]);
+
+
+
+
 
         return (new API())->capacity();
 

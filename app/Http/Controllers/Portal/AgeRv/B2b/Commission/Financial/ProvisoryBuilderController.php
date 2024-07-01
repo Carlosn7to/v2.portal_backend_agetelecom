@@ -125,8 +125,8 @@ class ProvisoryBuilderController extends Controller
             $this->invoices = $this->invoices->skip(1)->first();
         } else if($this->invoices->count() > 0 ) {
 
-            if($this->invoices->skip(1)->first()->total_amount >= $contractInfo['amount']) {
-                $this->invoices = $this->invoices->skip(1)->first();
+            if($this->invoices->first()->total_amount >= $contractInfo['amount']) {
+                $this->invoices = $this->invoices->first();
             } else {
                 $this->invoices = null;
             }

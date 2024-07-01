@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions;
 
 use App\Models\Integrator\Aniel\Schedule\SubService;
+use Illuminate\Support\Facades\DB;
 
 class SubServicesSync
 {
@@ -31,11 +32,27 @@ class SubServicesSync
 
     }
 
+    private function syncId()
+    {
+        $data = DB::connection('voalle')->select($this->getQuery());
+
+        $subServices = new SubService();
+        foreach($data as $key => $value) {
+            $subServices->where('titulo', $value->title)->update(['voalle_id' => $value->id]);
+        }
+
+        return response()->json([
+            'message' => 'Serviços atualizados com sucesso!',
+            'status' => 'Sucesso'
+        ], 201);
+    }
+
     private function getQuery()
     {
 
         return <<<SQL
                 select
+                    id,
                     title
                 from erp.incident_types it
                 where active is true and service_field is true

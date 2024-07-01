@@ -17,6 +17,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('portal:users:create')->dailyAt('07:00');
         $schedule->command('rule:billing:sending')
             ->dailyAt('8:00');
+
+        $schedule->command('monitoring:age-atende')
+            ->everyMinute();
+
     }
 
     /**

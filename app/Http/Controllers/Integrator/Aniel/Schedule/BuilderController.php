@@ -14,6 +14,7 @@ class BuilderController extends Controller
 
     public function getCapacity(Request $request)
     {
+
         if($request->period == null) {
             return response()->json([
                 'message' => 'O período é obrigatório!',
@@ -25,7 +26,11 @@ class BuilderController extends Controller
         $period = Carbon::parse($request->period)->format('Y-m-d');
 
         $capacity = new Capacity();
-        $result = $capacity->where('data_inicio', '<=', $period)->with('services')->get();
+        $result = $capacity
+            ->where('data_inicio', '<=', $period)
+            ->where('data_fim', '>=', $period)
+            ->with('services')
+            ->get();
 
         return response()->json(
             $result,
