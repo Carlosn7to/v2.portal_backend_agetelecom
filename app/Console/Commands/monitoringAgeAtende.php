@@ -39,7 +39,7 @@ class monitoringAgeAtende extends Command
             ]
         ]);
 
-        if($response->getStatusCode() == 201) {
+        if($response->getStatusCode() == 200) {
             return true;
         }
 
