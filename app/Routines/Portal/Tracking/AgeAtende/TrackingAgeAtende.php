@@ -26,15 +26,19 @@ class TrackingAgeAtende
     {
         $client = new Client();
 
-        $response = $client->post('http://10.25.3.196:3000/signin/login', [
-            'json' => [
-                'username' => 'carlos.neto',
-                'password' => env('PASSWORD_MONITORING')
-            ],
-            'timeout' => 5,
-            'connect_timeout' => 5,
-            'read_timeout' => 5
-        ]);
+        try {
+            $response = $client->post('localhost:8000/portal/test', [
+                'json' => [
+                    'username' => 'carlos.neto',
+                    'password' => env('PASSWORD_MONITORING')
+                ],
+                'timeout' => 5,
+                'connect_timeout' => 5,
+                'read_timeout' => 5
+            ]);
+        } catch (\Exception $e) {
+            return $this->sendingReport('down');
+        }
 
 
         if($response->getStatusCode() == 200) {
@@ -145,11 +149,11 @@ class TrackingAgeAtende
 
         $destinations = [
             '5561984700440',
-            '5561999353292',
-            '5561998003186',
-            '5561998051731',
-            '5561992587560',
-            '5561991210156'
+//            '5561999353292',
+//            '5561998003186',
+//            '5561998051731',
+//            '5561992587560',
+//            '5561991210156'
         ];
 
         $info = [
