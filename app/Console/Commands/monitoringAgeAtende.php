@@ -14,7 +14,7 @@ class monitoringAgeAtende extends Command
      *
      * @var string
      */
-    protected $signature = 'app:monitoring-age-atende';
+    protected $signature = 'monitoring-age-atende';
 
     /**
      * The console command description.
