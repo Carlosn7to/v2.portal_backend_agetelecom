@@ -31,9 +31,9 @@ class TrackingAgeAtende
                 'username' => 'carlos.neto',
                 'password' => env('PASSWORD_MONITORING')
             ],
-            'timeout' => 10,
-            'connect_timeout' => 10,
-            'read_timeout' => 10
+            'timeout' => 5,
+            'connect_timeout' => 5,
+            'read_timeout' => 5
         ]);
 
 

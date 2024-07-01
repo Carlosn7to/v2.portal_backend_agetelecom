@@ -46,11 +46,14 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+//        $tracking = new TrackingAgeAtende();
+//
+//        $tracking->getStatus();
+//        sleep(10);
+
+        return true;
 
 
-        $tracking = new TrackingAgeAtende();
-
-        return $tracking->getStatus();
 
 
         return (new API())->capacity();
