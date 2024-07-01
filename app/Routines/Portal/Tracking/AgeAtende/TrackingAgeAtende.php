@@ -26,6 +26,7 @@ class TrackingAgeAtende
     {
         $client = new Client();
 
+
         try {
             $response = $client->post('http://10.25.3.196:3000/signin/login', [
                 'json' => [
@@ -33,19 +34,23 @@ class TrackingAgeAtende
                     'password' => config('services.portal.password_tracking')
                 ],
                 'timeout' => 10,
-                'connect_timeout' => 10,
+                'connect_timeout' => 5,
                 'read_timeout' => 10
             ]);
 
 
-            if($this->findAlert) {
-                $this->findAlert->update([
-                    'data_hora_resolucao' => Carbon::now()->format('Y-m-d H:i:s')
-                ]);
+            if($response->getStatusCode() === 200) {
+                if($this->findAlert) {
+                    $this->findAlert->update([
+                        'data_hora_resolucao' => Carbon::now()->format('Y-m-d H:i:s')
+                    ]);
 
-                return $this->sendingReport('up');
+                    return $this->sendingReport('up');
 
+                }
             }
+
+
 
         } catch (\Exception $e) {
             if(!$this->findAlert) {

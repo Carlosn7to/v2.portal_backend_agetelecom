@@ -48,9 +48,10 @@ class Functions extends Controller
         set_time_limit(20000000000);
         $tracking = new TrackingAgeAtende();
 
-        $tracking->getStatus();
 
-        return true;
+        return response()->json([
+            'status' => 'success'
+        ], 200);
 
 
 
