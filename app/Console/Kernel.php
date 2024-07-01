@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('rule:billing:sending')
             ->dailyAt('8:00');
 
-        $schedule->command('monitoring:age-atende')
+        $schedule->command('tracking:services')
             ->everySecond();
 
     }
