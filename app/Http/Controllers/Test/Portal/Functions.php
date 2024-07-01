@@ -15,6 +15,7 @@ use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportLog;
 use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
 use App\Models\Portal\User\User;
+use App\Routines\Portal\Tracking\AgeAtende\TrackingAgeAtende;
 use App\Routines\Portal\Users\UserSync;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -45,18 +46,11 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
-//        $client = new Client();
-//
-//
-//        $response = $client->post('http://10.25.3.196:3000/signin/login', [
-//            'json' => [
-//                'username' => 'carlos.neto',
-//                'password' => env('PASSWORD_MONITORING')
-//            ]
-//        ]);
 
 
+        $tracking = new TrackingAgeAtende();
 
+        return $tracking->getStatus();
 
 
         return (new API())->capacity();
