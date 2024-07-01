@@ -49,5 +49,6 @@ return [
     ],
     'portal' => [
         'user_key' => env('USER_KEY_PORTAL'),
+        'password_tracking' => env('PASSWORD_TRACKING'),
     ],
 ];

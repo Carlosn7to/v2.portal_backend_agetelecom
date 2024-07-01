@@ -30,12 +30,13 @@ class TrackingAgeAtende
             $response = $client->post('http://10.25.3.196:3000/signin/login', [
                 'json' => [
                     'username' => 'carlos.neto',
-                    'password' => env('PASSWORD_MONITORING')
+                    'password' => config('services.portal.password_tracking')
                 ],
                 'timeout' => 10,
                 'connect_timeout' => 10,
                 'read_timeout' => 10
             ]);
+
 
             if($this->findAlert) {
                 $this->findAlert->update([
@@ -142,11 +143,11 @@ class TrackingAgeAtende
 
         $destinations = [
             '5561984700440',
-            '5561999353292',
-            '5561998003186',
-            '5561998051731',
-            '5561992587560',
-            '5561991210156'
+//            '5561999353292',
+//            '5561998003186',
+//            '5561998051731',
+//            '5561992587560',
+//            '5561991210156'
         ];
 
         $info = [
