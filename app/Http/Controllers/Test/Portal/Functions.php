@@ -49,7 +49,6 @@ class Functions extends Controller
         $tracking = new TrackingAgeAtende();
 
         $tracking->getStatus();
-        sleep(10);
 
         return true;
 

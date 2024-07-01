@@ -27,21 +27,15 @@ class TrackingAgeAtende
         $client = new Client();
 
         try {
-            $response = $client->post('localhost:8000/portal/test', [
+            $response = $client->post('http://10.25.3.196:3000/signin/login', [
                 'json' => [
                     'username' => 'carlos.neto',
                     'password' => env('PASSWORD_MONITORING')
                 ],
-                'timeout' => 5,
-                'connect_timeout' => 5,
-                'read_timeout' => 5
+                'timeout' => 10,
+                'connect_timeout' => 10,
+                'read_timeout' => 10
             ]);
-        } catch (\Exception $e) {
-            return $this->sendingReport('down');
-        }
-
-
-        if($response->getStatusCode() == 200) {
 
             if($this->findAlert) {
                 $this->findAlert->update([
@@ -52,13 +46,12 @@ class TrackingAgeAtende
 
             }
 
-            return;
-
+        } catch (\Exception $e) {
+            if(!$this->findAlert) {
+                return $this->sendingReport('down');
+            }
         }
 
-        if(!$this->findAlert) {
-            return $this->sendingReport('down');
-        }
 
     }
 
