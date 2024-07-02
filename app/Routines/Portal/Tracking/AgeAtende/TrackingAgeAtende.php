@@ -33,9 +33,9 @@ class TrackingAgeAtende
                     'username' => 'carlos.neto',
                     'password' => config('services.portal.password_tracking')
                 ],
-                'timeout' => 30,
-                'connect_timeout' => 30,
-                'read_timeout' => 30
+                'timeout' => 60,
+                'connect_timeout' => 60,
+                'read_timeout' => 60
             ]);
 
 
