@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'baae875f7c5563f1aa0bb7ba172d3751dadcc8b6',
+        'reference' => '22bed5ff616850faf94e95288a369dd7fb1a24e5',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -183,6 +183,12 @@
             'install_path' => __DIR__ . '/../ezyang/htmlpurifier',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'facebook/webdriver' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
         ),
         'fakerphp/faker' => array(
             'pretty_version' => 'v1.23.1',
@@ -487,6 +493,15 @@
                 0 => '*',
             ),
         ),
+        'laravel/dusk' => array(
+            'pretty_version' => 'v8.2.0',
+            'version' => '8.2.0.0',
+            'reference' => '773a12dfbd3f84174b0f26fbc2807a414a379a66',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/dusk',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'laravel/framework' => array(
             'pretty_version' => 'v10.47.0',
             'version' => '10.47.0.0',
@@ -499,7 +514,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'baae875f7c5563f1aa0bb7ba172d3751dadcc8b6',
+            'reference' => '22bed5ff616850faf94e95288a369dd7fb1a24e5',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -789,6 +804,15 @@
             'install_path' => __DIR__ . '/../phar-io/version',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'php-webdriver/webdriver' => array(
+            'pretty_version' => '1.15.1',
+            'version' => '1.15.1.0',
+            'reference' => 'cd52d9342c5aa738c2e75a67e47a1b6df97154e8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../php-webdriver/webdriver',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'phpdocumentor/reflection-common' => array(
             'pretty_version' => '2.2.0',

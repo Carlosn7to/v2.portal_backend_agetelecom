@@ -14,6 +14,8 @@ class SubService extends Model
     protected $table = 'aniel_agenda_subservicos';
     protected $fillable = [
         'id',
+        'voalle_id',
+        'aniel_id',
         'servico_id',
         'titulo',
         'descricao',

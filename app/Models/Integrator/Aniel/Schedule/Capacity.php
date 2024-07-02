@@ -19,10 +19,5 @@ class Capacity extends Model
     ];
     protected $connection = 'portal';
 
-    public function services()
-    {
-        return $this->hasMany(Service::class, 'id', 'servico_id')
-            ->select('id', 'titulo', 'descricao', 'segmento');
-    }
 
 }

@@ -12,6 +12,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "harrygulliford/laravel-firebird": "^3.2",
         "infobip/infobip-api-php-client": "^5.1.4",
+        "laravel/dusk": "^8.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/telescope": "^4.17",

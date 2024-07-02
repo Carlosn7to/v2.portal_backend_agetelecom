@@ -17,12 +17,14 @@ class SubServicesSync
 
             $subServices->firstOrCreate(['titulo' => $value->title],[
                 'servico_id' => 1,
+                'voalle_id' => $value->id,
                 'titulo' => $value->title,
                 'vinculado_por' => auth('portal')->user()->id
             ]);
 
-
         }
+
+        return $this->syncIdAniel();
 
         return response()->json([
             'message' => 'Serviços sincronizados com sucesso!',
@@ -32,19 +34,32 @@ class SubServicesSync
 
     }
 
-    private function syncId()
+    private function syncIdAniel()
     {
-        $data = DB::connection('voalle')->select($this->getQuery());
+        $data = DB::connection('aniel')->select($this->getQueryAniel());
 
-        $subServices = new SubService();
+        return $data;
+
         foreach($data as $key => $value) {
-            $subServices->where('titulo', $value->title)->update(['voalle_id' => $value->id]);
+
+            $subService = SubService::where('titulo', $value->DESCRICAO)->first();
+
+            if($subService) {
+                $subService->update([
+                    'aniel_id' => $value->COD_TIPO_SERV
+                ]);
+            }
+
         }
 
-        return response()->json([
-            'message' => 'Serviços atualizados com sucesso!',
-            'status' => 'Sucesso'
-        ], 201);
+    }
+
+    private function getQueryAniel()
+    {
+        return <<<SQL
+            SELECT tse.COD_TIPO_SERV, tse.descricao FROM TB_TIPO_SERVICO_EQUIPE tse
+        SQL;
+
     }
 
     private function getQuery()

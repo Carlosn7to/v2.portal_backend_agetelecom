@@ -120,7 +120,7 @@ class API
 
     }
 
-    private function getOrder($order)
+    public function getOrder($order)
     {
         $client = new Client();
 
