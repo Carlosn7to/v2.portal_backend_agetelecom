@@ -18,7 +18,6 @@ class CapacityAniel
     public function getCapacityAniel()
     {
 
-
         return collect($this->data);
 
     }

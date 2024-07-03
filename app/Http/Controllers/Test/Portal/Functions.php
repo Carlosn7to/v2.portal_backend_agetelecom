@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Test\Portal;
 
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
 use App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController;
@@ -46,8 +47,17 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
-        $tracking = new TrackingAgeAtende();
+//        $tracking = new TrackingAgeAtende();
+//
 
+        $aniel = new OrderController();
+
+        try {
+            return $aniel->store();
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
 
         return response()->json([
             'status' => 'success'

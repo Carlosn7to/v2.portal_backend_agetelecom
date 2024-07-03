@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
 use App\Http\Controllers\Test\Portal\Aniel\API;
 use App\Models\Integrator\Aniel\Schedule\Capacity;
@@ -28,10 +29,16 @@ class BuilderController extends Controller
         }
 
 
+        $orderSync = new OrderSync();
+
+        return $orderSync->response();
+
 
         $period = Carbon::parse($request->period)->format('Y-m-d');
 
         $this->dataAniel = (new CapacityAniel($period))->getCapacityAniel();
+
+        return $this->dataAniel;
 
 
         $services = Service::where('titulo','!=', 'Sem vinculo')->with(['subServices', 'capacity'])->get(['id', 'titulo', 'segmento'])->toArray();
@@ -96,6 +103,11 @@ class BuilderController extends Controller
         }
 
         return $dateArray;
+
+    }
+
+    private function buildingCapacity()
+    {
 
     }
 }

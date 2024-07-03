@@ -1,87 +1,69 @@
 <?php
 
-namespace App\Http\Controllers\Integrator\Aniel\Services\Orders;
+namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle;
 
-use App\Http\Controllers\Controller;
+use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class OrderController extends Controller
+class OrderSync
 {
 
-
-    public function __construct()
+    public function response()
     {
-        $this->user = "AGE";
-        $this->password = "age@niel_2023";
-        $this->token = "YW5pZWxhZ2V0ZWxlY29t";
-        $this->dataEmail = [
-            'services' => [],
-            'errors' => []
-        ];
-        $this->response = [];
+
+        $this->getData();
+
+        return $this->importOrder();
+
     }
 
-    public function getOrder($id)
+    private function importOrder()
+    {
+        $import = new ImportOrder();
+
+        foreach($this->data as $key => $value) {
+            $import->firstOrCreate(
+                ['protocolo' => $value->protocol],
+                [
+                'atendimento_id' => $value->assignment_id,
+                'protocolo' => $value->protocol,
+                'contrato_id' => $value->contract_id,
+                'cliente_id' => $value->client_id,
+                'cliente_documento' => $value->doc,
+                'cliente_nome' => $value->client_name,
+                'email' => $value->email,
+                'celular_1' => $value->cell_phone,
+                'celular_2' => $value->cell_phone_2,
+                'endereco' => $value->address,
+                'numero' => $value->number,
+                'complemento' => $value->complement,
+                'cidade' => $value->city,
+                'bairro' => $value->neighborhood,
+                'cep' => $value->cep,
+                'latitude' => $value->latitude,
+                'longitude' => $value->longitude,
+                'tipo_imovel' => $value->type_immobile,
+                'tipo_servico' => $value->type_service,
+                'node' => $value->Node,
+                'area_despacho' => 'INDIFERENTE',
+                'observacao' => $value->observation,
+                'grupo' => $value->group,
+                'data_agendamento' => $value->schedule_date
+            ]);
+
+        }
+
+
+    }
+
+    private function importAniel()
     {
         $client = new Client();
 
-        $data = [
-            "num_Obra_Original" => "$id",
-            "settings" => [
-                "user" => $this->user,
-                "password" => $this->password,
-                "token" => $this->token
-            ]
-        ];
 
-        $response = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/ConsultarOS', [
-            'json' => $data
-        ]);
-
-        $response2 = json_decode($response->getBody()->getContents());
-
-        return $response2;
-
-    }
-
-    public function store()
-    {
-        set_time_limit(200000);
-
-        $result = DB::connection('voalle')->select($this->getQuery());
-
-        foreach($result as $key => $data) {
-            $client = new Client();
-
-
-            if(! empty($order->data)) {
-
-                $this->dataEmail['errors'][] = [
-                    'protocol' => $data->protocol,
-                    'typeService' => $data->type_service,
-                    'error' => 'Ordem de serviço já cadastrada'
-                ];
-
-                continue;
-            }
-
-
-
-//            $response = $this->getLatLong($data->address, $data->number, $data->neighborhood, $data->city);
-
-
-            if (!empty($response->results) && is_array($response->results) && isset($response->results[0])) {
-                $lat = $response->results[0]->geometry->location->lat;
-                $lng = $response->results[0]->geometry->location->lng;
-            } else {
-                $lat = null;
-                $lng = null;
-            }
-
-
+        foreach($this->data as $key => $data) {
             $form = [
                 "cpf" => $data->doc,
                 "codigoIntegratorTipoServico" => "",
@@ -134,98 +116,21 @@ class OrderController extends Controller
                 'json' => $form
             ]);
 
-            $response = json_decode($client->getBody()->getContents());
+        }
 
 
-            $status = $response->ok;
-
-            if(! $status) {
-
-                $this->dataEmail['errors'][] = [
-                    'protocol' => $data->protocol,
-                    'typeService' => $data->type_service,
-                    'error' => trim(explode(":", explode('|', $response->mensagem)[0])[1])
-                ];
-            }
-
-            $serviceFound = false;
-
-            if (!empty($this->dataEmail['services'])) {
-                foreach ($this->dataEmail['services'] as &$item) {
-
-                    if ($item['typeService'] == $data->type_service) {
-                        $item['count']++;
-                        $item['successfuly'] += $status ? 1 : 0;
-                        $item['error'] += $status ? 0 : 1;
-                        $serviceFound = true;
-                        break;
-                    }
-                }
-                // Importante: Desvincular a referência para evitar problemas posteriores
-                unset($item);
-            }
-
-            if (!$serviceFound) {
 
 
-                $this->dataEmail['services'][] = [
-                    'typeService' => $data->type_service,
-                    'count' => 1,
-                    'successfuly' => $status ? 1 : 0,
-                    'error' => $status ? 0 : 1,
-                ];
-            }
-    }
+        $response = json_decode($client->getBody()->getContents());
 
-        return $this->dataEmail;
 
     }
 
-    private function getLatLong($address, $number, $neighborhood, $city)
+    private function getData()
     {
-        $client = new Client();
-
-        // Faz a requisição POST usando o cliente Guzzle HTTP
-        $response = $client->get("https://maps.googleapis.com/maps/api/geocode/json?address=$address+$number+$neighborhood+$city&key=AIzaSyAU22qEwlrC4cLLyTAFviFZGBG3ZIrpCKM", [
-            'headers' => [
-                'Content-Type' => 'application/json'
-            ]
-        ]);
-        $body = $response->getBody();
-
-        $response = json_decode($body);
-
-        return $response;
+        $this->data = DB::connection('voalle')->select($this->getQuery());
     }
 
-
-    public function edit($id)
-    {
-
-        $client = new Client();
-        $form = [
-            "os" => "123456789",
-            "contrato" => "OP01",
-            "projeto" => "CASA CLIENTE",
-            "codigoCliente" => 123456789,
-            "data" => "2023-11-22",
-            "janela" => "Manhã",
-            "settings" => [
-                "user" => $this->user,
-                "password" => $this->password,
-                "token" => $this->token
-            ]
-        ];
-
-        $client = $client->post('https://cliente01.sinapseinformatica.com.br/AGE/Servicos/API_Aniel/api/OsApiController/AgendarOs', [
-            'json' => $form
-        ]);
-
-        $response = $client->getBody()->getContents();
-
-        return $response;
-
-    }
     private function getQuery() : string
     {
         $query = '
@@ -397,12 +302,9 @@ class OrderController extends Controller
         inner join erp.schedules s on s.assignment_id = assignments.id
         where incident_types.active = \'1\' and assignments.deleted = \'0\' and incident_types.deleted = \'0\'
         and incident_status.id <> \'8\'
-        and assignment_incidents.protocol in (
-      1151755, 1151325, 1151091, 1151004, 1150671, 1150299, 1149828, 1149706, 1149681, 1148827, 1147138, 1146966, 1151535, 1151535, 1150412, 1149098, 1147681, 1148708, 1148242, 1146807, 1147000, 1146999, 1146686, 1151563, 1145337, 1150208, 1149159, 1148858, 1146964, 1149938, 1110823, 1147047
-      )
         and (
         select DATE(s.start_date) from erp.schedules s where s.assignment_id = assignments.id order by s.id desc limit 1
-        ) between \'2024-07-03\' and \'2024-07-03\'
+        ) between \'2024-07-05\' and \'2024-07-10\'
         and incident_types.id in (\'1105\',\'1106\',\'1074\', \'1090\', \'1080\', \'1081\', \'1082\', \'1088\', \'1071\', \'1087\',\'1058\',\'1067\', \'1036\', \'1091\', \'1094\', \'1011\', \'1026\', \'1027\', \'1028\', \'1029\',\'1086\',\'1086\',\'1020\')
         order by 2 desc';
 
@@ -410,5 +312,6 @@ class OrderController extends Controller
         return $query;
 
     }
+
 
 }
