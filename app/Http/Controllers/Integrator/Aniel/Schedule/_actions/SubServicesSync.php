@@ -24,7 +24,6 @@ class SubServicesSync
 
         }
 
-        return $this->syncIdAniel();
 
         return response()->json([
             'message' => 'Serviços sincronizados com sucesso!',
@@ -70,7 +69,7 @@ class SubServicesSync
                     id,
                     title
                 from erp.incident_types it
-                where active is true and service_field is true
+                where active is true
         SQL;
     }
 

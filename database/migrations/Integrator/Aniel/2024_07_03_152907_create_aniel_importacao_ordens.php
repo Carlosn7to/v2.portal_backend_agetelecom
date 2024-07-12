@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('grupo')->default('DISTRITO FEDERAL');
             $table->dateTime('data_agendamento')->nullable();
             $table->enum('status', ['PENDENTE', 'IMPORTADA', 'ERRO'])->default('PENDENTE');
-            $table->json('error')->nullable();
+            $table->json('resposta')->nullable();
             $table->timestamps();
         });
     }

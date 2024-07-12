@@ -47,24 +47,6 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
-//        $tracking = new TrackingAgeAtende();
-//
-
-        $aniel = new OrderController();
-
-        try {
-            return $aniel->store();
-
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-
-        return response()->json([
-            'status' => 'success'
-        ], 200);
-
-
-
 
         return (new API())->capacity();
 

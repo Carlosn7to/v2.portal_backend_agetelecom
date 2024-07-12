@@ -3,24 +3,36 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle;
 
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use App\Models\Integrator\Aniel\Schedule\SubService;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Random;
 
 class OrderSync
 {
+    private $data; // Dados da consulta no voalle
+    private $idServices; // Dados dos serviços que serão consultados na tabela aniel_agenda_subservicos
+    private $lastProtocol;  // Dados do último protocolo inserido na tabela aniel_agenda_importacao_ordens
+
+    public function __construct()
+    {
+        $idServices = $this->getIdOrders();
+        $this->idServices = implode(',', array_map('intval', $idServices));
+        $this->lastProtocol = (ImportOrder::orderBy('protocolo', 'desc')->first('protocolo'))->protocolo;
+    }
 
     public function response()
     {
 
         $this->getData();
-
-        return $this->importOrder();
+        $this->importOrder();
 
     }
 
     private function importOrder()
     {
+        set_time_limit(200000000);
         $import = new ImportOrder();
 
         foreach($this->data as $key => $value) {
@@ -50,79 +62,100 @@ class OrderSync
                 'area_despacho' => 'INDIFERENTE',
                 'observacao' => $value->observation,
                 'grupo' => $value->group,
-                'data_agendamento' => $value->schedule_date
+                'data_agendamento' => $value->schedule_date?? null
             ]);
-
         }
+
+        $this->importAniel();
 
 
     }
 
     private function importAniel()
     {
-        $client = new Client();
+        $exportOrder = new ImportOrder();
+
+        $orders = $exportOrder->where('status', 'PENDENTE')->whereNotNull('data_agendamento')->get();
 
 
-        foreach($this->data as $key => $data) {
+        foreach($orders as $key => $data) {
+            $client = new Client();
+
             $form = [
-                "cpf" => $data->doc,
-                "codigoIntegratorTipoServico" => "",
-                "tipoServico" => $data->type_service,
-                "subTipoServico" => $data->type_service,
-                "plano" => "",
-                "descricaoPlanoProduto" => "",
-                "origem" => 0,
+                "cpf" => $data->cliente_documento,
+                "tipoServico" => $data->tipo_servico,
+                "subTipoServico" => $data->tipo_servico,
                 "projeto" => "CASA CLIENTE",
                 "codCt" => "OP01",
-                "numOS" => $data->protocol,//$data->protocol,
-                "uni" => "",
-                "dataHoraAgendamento" => Carbon::parse($data->schedule_date)->format('Y-m-d\TH:i:s.v\Z'),
+                "numOS" => $data->protocolo,
+                "dataHoraAgendamento" => Carbon::parse($data->data_agendamento)->format('Y-m-d\TH:i:s.v\Z'),
                 "tipoImovel" => "INDIFERENTE",
-                "grupoArea" => $data->group,
-                "area" => $data->dispatch_area,
+                "grupoArea" => $data->grupo,
+                "area" => $data->area_despacho,
                 "localidade" => $data->Node,
-                "endereco" => $data->address,
-                "numeroEndereco" => $data->number,
+                "endereco" => $data->endereco,
+                "numeroEndereco" => $data->numero,
                 "cep" => $data->cep,
-                "complemento" => $data->complement,
-                "bairro" => $data->neighborhood,
-                "cidade" => $data->city,
+                "complemento" => $data->complemento,
+                "bairro" => $data->bairro.Random::generate('300'),
+                "cidade" => $data->cidade,
                 "pontoReferencia" => "",
                 "uf" => "DF",
-                "observacao" => "",
-                "facilidade" => "",
-                "latitude" => $lat,
-                "longitude" => $lng,
+                "observacao" => $data->observacao,
+                "latitude" => $data->latitude,
+                "longitude" => $data->longitude,
                 "tecnico" => "",
-                "nomeCliente" => $data->client_name,
-                "telefoneCelularCliente" => $data->cell_phone,
-                "telefoneFixoCliente" => $data->cell_phone_2,
+                "nomeCliente" => $data->cliente_nome,
+                "telefoneCelularCliente" => $data->celular_1,
+                "telefoneFixoCliente" => $data->celular_2,
                 "emailCliente" => $data->email,
-                "loginRadius" => "",
-                "senhaRadius" => "",
-                "contratoCliente" => $data->contract_id,
-                "categoriaCliente" => "",
-                "numDoc" => $data->protocol,
+                "contratoCliente" => $data->contrato_id,
+                "numDoc" => $data->protocolo,
                 "settings" => [
-                    "user" => $this->user,
-                    "password" => $this->password,
-                    "token" => $this->token
+                    "user" => config('services.aniel.user'),
+                    "password" => config('services.aniel.password'),
+                    "token" => config('services.aniel.token')
                 ]
             ];
-
 
 
             $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/CriarOrdemServico', [
                 'json' => $form
             ]);
 
+
+            $response = json_decode($client->getBody()->getContents());
+            $status = $response->ok;
+
+            // Define o status da ordem de serviço baseado na resposta e no status atual
+            $statusOs = (!$status && $response->mensagem == 'Erro: Ordem de servico ja cadastrada')
+                ? 'IMPORTADA'  // Se o status for falso e a mensagem for 'Erro: Ordem de servico ja cadastrada', define como 'IMPORTADA'
+                : ($status ? 'IMPORTADA' : 'ERRO');  // Caso contrário, se o status for verdadeiro, define como 'IMPORTADA', senão, define como 'ERRO'
+
+            // Atualiza o status e a resposta no banco de dados
+            $exportOrder->where('protocolo', $data->protocolo)->update([
+                'status' => $statusOs,
+                'resposta' => json_encode($response)
+            ]);
+
+
+
         }
 
 
 
 
-        $response = json_decode($client->getBody()->getContents());
+    }
 
+    private function getIdOrders()
+    {
+        $subServices = SubService::get('voalle_id');
+        $idServices = [];
+        foreach($subServices as $key => $value) {
+            $idServices[] = $value->voalle_id;
+        }
+
+        return $idServices;
 
     }
 
@@ -302,10 +335,9 @@ class OrderSync
         inner join erp.schedules s on s.assignment_id = assignments.id
         where incident_types.active = \'1\' and assignments.deleted = \'0\' and incident_types.deleted = \'0\'
         and incident_status.id <> \'8\'
-        and (
-        select DATE(s.start_date) from erp.schedules s where s.assignment_id = assignments.id order by s.id desc limit 1
-        ) between \'2024-07-05\' and \'2024-07-10\'
-        and incident_types.id in (\'1105\',\'1106\',\'1074\', \'1090\', \'1080\', \'1081\', \'1082\', \'1088\', \'1071\', \'1087\',\'1058\',\'1067\', \'1036\', \'1091\', \'1094\', \'1011\', \'1026\', \'1027\', \'1028\', \'1029\',\'1086\',\'1086\',\'1020\')
+        and assignment_incidents.protocol > '.$this->lastProtocol.'
+        and DATE(assignments.created) >= \'2024-06-01\'
+        and incident_types.id in ('.$this->idServices.')
         order by 2 desc';
 
 

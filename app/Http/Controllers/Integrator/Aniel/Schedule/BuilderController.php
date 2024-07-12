@@ -8,6 +8,7 @@ use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
 use App\Http\Controllers\Test\Portal\Aniel\API;
 use App\Models\Integrator\Aniel\Schedule\Capacity;
+use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\SubService;
 use Carbon\Carbon;
@@ -28,56 +29,67 @@ class BuilderController extends Controller
             ], 400);
         }
 
+        $response = [
+            'period' => Carbon::parse($request->period)->format('Y-m-d'),
+            'dayName' => Carbon::parse($request->period)->locale('pt_BR')->isoFormat('dddd'),
+            'capacity' => []
+        ];
 
-        $orderSync = new OrderSync();
-
-        return $orderSync->response();
-
-
-        $period = Carbon::parse($request->period)->format('Y-m-d');
-
-        $this->dataAniel = (new CapacityAniel($period))->getCapacityAniel();
-
-        return $this->dataAniel;
+        $capacity = (new CapacityWeekly())->where('dia_semana', $response['dayName'])
+            ->whereNull('data_final')
+            ->with('service')
+            ->get();
 
 
-        $services = Service::where('titulo','!=', 'Sem vinculo')->with(['subServices', 'capacity'])->get(['id', 'titulo', 'segmento'])->toArray();
+       $this->dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
 
-        $anielCountOs = $this->getCountOsAniel($services);
+        foreach($capacity as $key => $value) {
 
-        return $anielCountOs;
+            $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
 
-        $response = [];
-
-        foreach($services as $key => $service) {
-
-            foreach($service['capacity'] as $kk => $value) {
-
-                $response[$service['segmento']][$value['periodo']][] = [
-                    'titulo' => $service['titulo'],
-                    'capacidade' => $value['capacidade'],
-                    'data_inicio' => $value['data_inicio'],
-                    'data_fim' => $value['data_fim'],
+            if(isset($response['capacity'][$value->service->titulo])) {
+                $response['capacity'][$value->service->titulo][$period] = [
+                    'start_period' => $value->hora_inicio,
+                    'end_period' => $value->hora_fim,
+                    'capacity' => $value->capacidade,
+                    'used' => $this->getCountOsAniel($value->servico_id, $value->hora_inicio, $value->hora_fim),
+                    'status' => $value->status,
                 ];
+            } else {
+                $response['capacity'][$value->service->titulo][$period] = [
+                    'start' => $value->hora_inicio,
+                    'end' => $value->hora_fim,
+                    'capacity' => $value->capacidade,
+                    'used' => $this->getCountOsAniel($value->servico_id, $value->hora_inicio, $value->hora_fim),
+                    'status' => $value->status,
+                ];
+            }
+        }
 
+        return $response;
+
+    }
+
+    private function getCountOsAniel($service, $start, $end)
+    {
+        $subServices = (new SubService())->whereServicoId($service)->get('titulo');
+        $count = 0;
+
+        foreach ($this->dataAniel as $key => $value) {
+
+            foreach($subServices as $k => $v) {
+                if(
+                    ($value->Hora_do_Agendamento >= $start && $value->Hora_do_Agendamento <= $end) &&
+                    trim($value->TIPO_SERVICO_ANIEL) == trim(mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8'))
+                ) {
+                    $count++;
+                }
             }
 
         }
 
 
-        return response()->json(
-            $response,
-            200);
-
-    }
-
-    private function getCountOsAniel($services)
-    {
-        $result = [];
-
-        dd($services);
-
-
+        return $count;
 
 
     }
