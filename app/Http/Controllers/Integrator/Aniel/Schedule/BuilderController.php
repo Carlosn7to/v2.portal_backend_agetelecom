@@ -66,14 +66,17 @@ class BuilderController extends Controller
             }
         }
 
-        return $response;
+        return $response['capacity']['Visita Técnica']['manha']['used']['extract'];
 
     }
 
     private function getCountOsAniel($service, $start, $end)
     {
         $subServices = (new SubService())->whereServicoId($service)->get('titulo');
-        $count = 0;
+        $extract = [
+            'count' => 0,
+            'extract' => []
+        ];
 
         foreach ($this->dataAniel as $key => $value) {
 
@@ -82,14 +85,15 @@ class BuilderController extends Controller
                     ($value->Hora_do_Agendamento >= $start && $value->Hora_do_Agendamento <= $end) &&
                     trim($value->TIPO_SERVICO_ANIEL) == trim(mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8'))
                 ) {
-                    $count++;
+                    $extract['count']++;
+                    $extract['extract'][] = $value;
                 }
             }
 
         }
 
 
-        return $count;
+        return $extract;
 
 
     }

@@ -48,8 +48,6 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        return (new API())->capacity();
-
         $result = \DB::connection('aniel')->select($this->getQueryAniel());
 
         return $result;
