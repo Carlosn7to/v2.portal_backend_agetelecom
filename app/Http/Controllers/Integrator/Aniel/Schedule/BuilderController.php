@@ -66,7 +66,7 @@ class BuilderController extends Controller
             }
         }
 
-        return $response['capacity']['Visita Técnica']['manha']['used']['extract'];
+        return $response;
 
     }
 
