@@ -74,19 +74,38 @@ class AuthController extends Controller
 
             if ($connection->auth()->attempt($username, $password)) {
                 // Separa o nome e o sobrenome
-                $separeName = explode(".", explode("@", $username)[0]);
+                $emailParts = explode("@", $username);
+                $nameParts = explode(".", $emailParts[0]);
 
-                $username = $separeName[0] . "." . $separeName[1];
+                if (empty($nameParts[1])) {
+                    $nameParts[1] = "";
+                    $username = $nameParts[0] . "@agetelecom.com.br";
+                } else {
+                    $username = $nameParts[0] . "." . $nameParts[1] . "@agetelecom.com.br";
+                }
 
+                $username = $nameParts[0] . "." . $nameParts[1];
 
                 $user = User::where('login', $username)->first();
 
 
-                if(isset($user->login)) {
+                if (isset($user->login)) {
                     return $this->login($user);
                 } else {
-                    return $this->ldapAdNew($request->input('user'), $password);
 
+                    $fullName = implode(' ', array_map('ucfirst', $nameParts));
+
+
+                    $user = User::create([
+                        'nome' => $fullName,
+                        'login' => $username,
+                        'email' => $username . "@agetelecom.com.br",
+                        'password' => Hash::make("hW*nN'v_*Pl8T8$36|L_LC!!I3}VC)f6:\9Jw"),
+                        'criado_por' => 1,
+                        'modificado_por' => 1,
+                    ]);
+
+                    return $this->login($user);
                 }
 
             } else {
@@ -131,6 +150,7 @@ class AuthController extends Controller
         try {
             $connection->connect();
 
+
             $username = $username . '@age.corp';
 
 
@@ -157,6 +177,7 @@ class AuthController extends Controller
                 } else {
 
                     $fullName = implode(' ', array_map('ucfirst', $nameParts));
+
 
                     $user = User::create([
                         'nome' => $fullName,
