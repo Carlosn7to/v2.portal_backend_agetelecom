@@ -30,6 +30,6 @@ class trackingServices extends Command
     public function handle()
     {
 
-        $ageAtende = (new TrackingAgeAtende())->getStatus();
+//        $ageAtende = (new TrackingAgeAtende())->getStatus();
     }
 }
