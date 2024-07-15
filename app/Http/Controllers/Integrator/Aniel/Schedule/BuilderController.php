@@ -73,10 +73,7 @@ class BuilderController extends Controller
     private function getCountOsAniel($service, $start, $end)
     {
         $subServices = (new SubService())->whereServicoId($service)->get('titulo');
-        $extract = [
-            'count' => 0,
-            'extract' => []
-        ];
+        $count = 0;
 
         foreach ($this->dataAniel as $key => $value) {
 
@@ -85,15 +82,14 @@ class BuilderController extends Controller
                     ($value->Hora_do_Agendamento >= $start && $value->Hora_do_Agendamento <= $end) &&
                     trim($value->TIPO_SERVICO_ANIEL) == trim(mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8'))
                 ) {
-                    $extract['count']++;
-                    $extract['extract'][] = $value;
+                    $count++;
                 }
             }
 
         }
 
 
-        return $extract;
+        return $count;
 
 
     }
