@@ -86,6 +86,7 @@ class BuilderController extends Controller
 
         $this->dataAniel = (new CapacityAniel($this->response['period']))->getCapacityAniel();
 
+
         $response = [];
         $response['period'] = $this->response['period'];
         $response['dayName'] = $this->response['dayName'];

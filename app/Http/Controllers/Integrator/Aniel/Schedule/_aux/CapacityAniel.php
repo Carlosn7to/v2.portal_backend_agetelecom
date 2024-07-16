@@ -31,7 +31,9 @@ class CapacityAniel
     private function getQuery()
     {
 //        return <<<SQL
-//            SELECT tse.COD_TIPO_SERV, tse.descricao FROM TB_TIPO_SERVICO_EQUIPE tse
+//            SELECT * FROM TB_DOCUMENTO_PRODUCAO tdp
+//            where tdp.
+//            rows 1
 //        SQL;
 
 
