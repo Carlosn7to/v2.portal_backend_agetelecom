@@ -28,6 +28,6 @@ class Capacity extends Command
     {
         $syncCapacity = new BuilderController();
 
-        $syncCapacity->updateAllCapacity();
+        $syncCapacity->__invoke();
     }
 }
