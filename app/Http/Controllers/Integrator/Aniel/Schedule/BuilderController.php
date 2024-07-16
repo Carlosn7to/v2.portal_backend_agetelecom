@@ -83,6 +83,7 @@ class BuilderController extends Controller
             ->with('service')
             ->get();
 
+
         $this->dataAniel = (new CapacityAniel($this->response['period']))->getCapacityAniel();
 
         $response = [];
@@ -117,11 +118,13 @@ class BuilderController extends Controller
             ->get(['data', 'dia_semana'])->unique('data')->toArray();
 
 
+
         $dataCapacityWeekly = [];
 
         foreach($capacity as $key => $value) {
             $dataCapacityWeekly[] = $value['dia_semana'];
         }
+
 
 
         $capacityWeekly = (new CapacityWeekly())
@@ -130,30 +133,38 @@ class BuilderController extends Controller
             ->with('service')
             ->get();
 
+
         $response = [];
 
 
         foreach($capacity as $k => $capacityInfo) {
 
+
+
             foreach($capacityWeekly as $key => $value) {
 
-                $response['period'] = $capacityInfo['data'];
-                $response['dayName'] = $capacityInfo['dia_semana'];
 
-                $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
+                if($value->dia_semana == $capacityInfo['dia_semana']) {
+                    $response['period'] = $capacityInfo['data'];
+                    $response['dayName'] = $capacityInfo['dia_semana'];
 
-                $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
+                    $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
+
+                    $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
+
+                    $response['capacity'][$value->service->titulo][$period] = [
+                        'start' => $value->hora_inicio,
+                        'end' => $value->hora_fim,
+                        'capacity' => $value->capacidade,
+                        'used' => $this->getCountOsAniel($dataAniel, $value->servico_id, $value->hora_inicio, $value->hora_fim),
+                        'status' => $value->status,
+                    ];
+
+                    $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
+                }
 
 
-                $response['capacity'][$value->service->titulo][$period] = [
-                    'start' => $value->hora_inicio,
-                    'end' => $value->hora_fim,
-                    'capacity' => $value->capacidade,
-                    'used' => $this->getCountOsAniel($dataAniel, $value->servico_id, $value->hora_inicio, $value->hora_fim),
-                    'status' => $value->status,
-                ];
 
-                $syncSchedule = (new ScheduleCapacitySync([$response]))->sync();
 
             }
         }

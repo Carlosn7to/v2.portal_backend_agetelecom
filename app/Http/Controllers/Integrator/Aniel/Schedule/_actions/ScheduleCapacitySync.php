@@ -6,20 +6,13 @@ use App\Models\Integrator\Aniel\Schedule\Capacity;
 
 class ScheduleCapacitySync
 {
-    private $data;
 
-    public function __construct($data)
-    {
-        $this->data = $data;
-    }
-
-    public function sync()
+    public function sync($data)
     {
 
-        foreach($this->data as $key => $value) {
+        foreach($data as $key => $value) {
 
             foreach($value['capacity'] as $service => $valueCapacity) {
-
 
                 foreach($valueCapacity as $period => $capacity) {
 
