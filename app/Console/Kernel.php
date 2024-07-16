@@ -21,6 +21,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('tracking:services')
             ->everySecond();
 
+        $schedule->command('aniel:capacity')
+            ->everySecond();
     }
 
     /**
