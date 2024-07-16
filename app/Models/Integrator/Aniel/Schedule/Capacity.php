@@ -11,11 +11,17 @@ class Capacity extends Model
 
     protected $table = 'aniel_agenda_capacidade';
     protected $fillable = [
-        'servico_id',
+        'data',
+        'dia_semana',
+        'servico',
         'periodo',
+        'hora_inicio',
+        'hora_fim',
         'capacidade',
-        'data_inicio',
-        'data_fim'
+        'utilizado',
+        'status',
+        'atualizado_por',
+        'motivo_fechamento'
     ];
     protected $connection = 'portal';
 

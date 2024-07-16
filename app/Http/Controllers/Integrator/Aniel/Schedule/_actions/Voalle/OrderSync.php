@@ -149,7 +149,7 @@ class OrderSync
 
     private function getIdOrders()
     {
-        $subServices = SubService::get('voalle_id');
+        $subServices = SubService::where('servico_id', '!=', '1')->get('voalle_id');
         $idServices = [];
         foreach($subServices as $key => $value) {
             $idServices[] = $value->voalle_id;
