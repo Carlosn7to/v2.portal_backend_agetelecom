@@ -41,6 +41,7 @@ class BuilderController extends Controller
             'capacity' => []
         ];
 
+
         return $this->getCapacitySchedule() == null ? $this->updateCapacity() : $this->getCapacitySchedule();
 
     }
