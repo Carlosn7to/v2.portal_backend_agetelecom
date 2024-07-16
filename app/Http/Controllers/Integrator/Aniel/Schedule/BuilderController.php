@@ -105,7 +105,7 @@ class BuilderController extends Controller
         }
 
 
-        $syncSchedule = (new ScheduleCapacitySync([$response]))->sync();
+        $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
 
 
         return $this->getCapacitySchedule();
