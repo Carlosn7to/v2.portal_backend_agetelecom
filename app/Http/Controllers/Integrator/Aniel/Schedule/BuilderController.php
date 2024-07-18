@@ -27,6 +27,7 @@ class BuilderController extends Controller
 
     public function getCapacity(Request $request)
     {
+        set_time_limit(2000000);
 
         if($request->period == null) {
             return response()->json([
@@ -87,7 +88,29 @@ class BuilderController extends Controller
 
         $this->dataAniel = (new CapacityAniel($this->response['period']))->getCapacityAniel();
 
+//        return $this->dataAniel;
 
+//        return $this->dataAniel->whereIn('TIPO_SERVICO_ANIEL',
+//        [
+//            'visita para reinstalação do modem',
+//            'ponto adicional',
+//            'retorno garantia instalação 15 dias b2b',
+//            'visita tecnica dr age',
+//            'visita_técnica b2b',
+//            'visita técnica',
+//            'retorno garantia instalacao 15 dias',
+//            'visita técnica - ponto adicional',
+//            'retorno garantia reparo 30 dias b2b',
+//            'visita técnica nps',
+//            'visita técnica rede mesh',
+//            'visita técnica retenção - rede mesh',
+//            'reparo preventivo',
+//            'visita técnica retenção',
+//            'retorno garantia reparo 30 dias'
+//        ])
+////            ->where('Hora_do_Agendamento', '<', '12:00:00')
+////            ->where('N_OS', '=', '1163805')
+//            ->sortBy('N_OS')->pluck('N_OS')->count();
         $response = [];
         $response['period'] = $this->response['period'];
         $response['dayName'] = $this->response['dayName'];
@@ -95,7 +118,6 @@ class BuilderController extends Controller
         foreach($capacityWeekly as $key => $value) {
 
             $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
-
 
             $response['capacity'][$value->service->titulo][$period] = [
                 'start' => $value->hora_inicio,
@@ -151,6 +173,7 @@ class BuilderController extends Controller
                     $response['dayName'] = $capacityInfo['dia_semana'];
 
                     $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
+                    $dataAniel = $dataAniel->where('Data_do_Agendamento', $response['period']);
 
                     $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
 
@@ -178,6 +201,7 @@ class BuilderController extends Controller
     {
         $subServices = (new SubService())->whereServicoId($service)->get('titulo');
         $count = 0;
+//        $extract = [];
 
         foreach ($dataAniel as $key => $value) {
 
@@ -187,6 +211,7 @@ class BuilderController extends Controller
                     trim($value->TIPO_SERVICO_ANIEL) == trim(mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8'))
                 ) {
                     $count++;
+//                    $extract[] = $value->N_OS;
                 }
             }
 

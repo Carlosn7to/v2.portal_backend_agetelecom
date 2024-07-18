@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
             ->everySecond();
 
         $schedule->command('aniel:capacity')
-            ->everySecond();
+            ->everyMinute();
     }
 
     /**
