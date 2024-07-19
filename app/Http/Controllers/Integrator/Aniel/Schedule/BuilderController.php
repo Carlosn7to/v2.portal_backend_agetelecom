@@ -27,6 +27,11 @@ class BuilderController extends Controller
 
     public function getCapacity(Request $request)
     {
+
+        $syncOrders = (new OrderSync())->response();
+
+        return true;
+
         set_time_limit(2000000);
 
         if($request->period == null) {
@@ -127,7 +132,6 @@ class BuilderController extends Controller
                 'status' => $value->status,
             ];
         }
-
 
         $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
 

@@ -35,6 +35,7 @@ class OrderSync
         set_time_limit(200000000);
         $import = new ImportOrder();
 
+
         foreach($this->data as $key => $value) {
             $import->firstOrCreate(
                 ['protocolo' => $value->protocol],
@@ -66,7 +67,7 @@ class OrderSync
             ]);
         }
 
-        $this->importAniel();
+//        $this->importAniel();
 
 
     }
@@ -186,6 +187,8 @@ class OrderSync
         cliente.phone as  "cell_phone_2",
         \'INDIFERENTE\' as "type_immobile",
         incident_types.title as "type_service",
+        incident_status.title as "status_title",
+        incident_status.id as "status_id",
         case WHEN cliente.neighborhood = \'Recanto das Emas\' THEN \'RECANTO DAS EMAS\'
         WHEN cliente.neighborhood = \'Samambaia Sul (Samambaia)\' THEN \'Samambaia\'
         WHEN cliente.neighborhood = \'Ceilândia Norte (Ceilândia)\' THEN \'Ceilândia Norte\'
