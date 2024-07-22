@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('portal')->table('aniel_importacao_ordens', function (Blueprint $table) {
-            $table->string('status_os')
         });
     }
 

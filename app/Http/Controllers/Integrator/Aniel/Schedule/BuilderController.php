@@ -28,9 +28,6 @@ class BuilderController extends Controller
     public function getCapacity(Request $request)
     {
 
-        $syncOrders = (new OrderSync())->response();
-
-        return true;
 
         set_time_limit(2000000);
 
@@ -133,6 +130,7 @@ class BuilderController extends Controller
             ];
         }
 
+
         $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
 
 
@@ -142,8 +140,15 @@ class BuilderController extends Controller
 
     private function updateAllCapacity()
     {
-        $capacity = (new Capacity())->where('data', '>=', Carbon::today()->toDateString())
-            ->get(['data', 'dia_semana'])->unique('data')->toArray();
+
+        $today = Carbon::today()->addDay();
+
+        $capacity = (new Capacity())
+            ->where('data', '>=', clone $today)
+            ->orderBy('data')
+            ->get(['data', 'dia_semana'])
+            ->unique('data')
+            ->toArray();
 
 
 
@@ -173,10 +178,13 @@ class BuilderController extends Controller
 
 
                 if($value->dia_semana == $capacityInfo['dia_semana']) {
+
+
                     $response['period'] = $capacityInfo['data'];
                     $response['dayName'] = $capacityInfo['dia_semana'];
 
                     $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
+
                     $dataAniel = $dataAniel->where('Data_do_Agendamento', $response['period']);
 
                     $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
@@ -189,7 +197,10 @@ class BuilderController extends Controller
                         'status' => $value->status,
                     ];
 
+
+
                     $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
+
                 }
 
 
@@ -197,6 +208,7 @@ class BuilderController extends Controller
 
             }
         }
+
 
 
     }
