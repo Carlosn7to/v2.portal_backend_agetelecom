@@ -37,6 +37,7 @@ class ImportOrder extends Model
         'grupo',
         'data_agendamento',
         'status',
-        'resposta'
+        'resposta',
+        'status_id'
     ];
 }

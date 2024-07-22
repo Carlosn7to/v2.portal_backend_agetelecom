@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('portal')->table('aniel_importacao_ordens', function (Blueprint $table) {
+            $table->foreignId('status_id')->nullable()->constrained('aniel_agenda_status');
         });
     }
 
@@ -20,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::connection('portal')->table('aniel_importacao_ordens', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+        });
     }
 };

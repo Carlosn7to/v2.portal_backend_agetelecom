@@ -63,11 +63,12 @@ class OrderSync
                 'area_despacho' => 'INDIFERENTE',
                 'observacao' => $value->observation,
                 'grupo' => $value->group,
-                'data_agendamento' => $value->schedule_date?? null
+                'data_agendamento' => $value->schedule_date?? null,
+                'status_id' => 1
             ]);
         }
 
-//        $this->importAniel();
+        $this->importAniel();
 
 
     }
@@ -76,7 +77,9 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', 'PENDENTE')->whereNotNull('data_agendamento')->get();
+        $orders = $exportOrder->where('status', 'PENDENTE')->get();
+
+        $ordersValidated = $this->identifyCapacity($orders);
 
 
         foreach($orders as $key => $data) {
@@ -89,7 +92,7 @@ class OrderSync
                 "projeto" => "CASA CLIENTE",
                 "codCt" => "OP01",
                 "numOS" => $data->protocolo,
-                "dataHoraAgendamento" => Carbon::parse($data->data_agendamento)->format('Y-m-d\TH:i:s.v\Z'),
+                "dataHoraAgendamento" => $data->data_agendamento != null ? Carbon::parse($data->data_agendamento)->format('Y-m-d\TH:i:s.v\Z') : '',
                 "tipoImovel" => "INDIFERENTE",
                 "grupoArea" => $data->grupo,
                 "area" => $data->area_despacho,
@@ -136,7 +139,8 @@ class OrderSync
             // Atualiza o status e a resposta no banco de dados
             $exportOrder->where('protocolo', $data->protocolo)->update([
                 'status' => $statusOs,
-                'resposta' => json_encode($response)
+                'resposta' => json_encode($response),
+                'status_id' => 11
             ]);
 
 
@@ -157,6 +161,12 @@ class OrderSync
         }
 
         return $idServices;
+
+    }
+
+    private function identifyCapacity($orders)
+    {
+        dd($orders);
 
     }
 

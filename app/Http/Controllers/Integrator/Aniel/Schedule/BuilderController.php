@@ -13,6 +13,7 @@ use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\SubService;
 use Carbon\Carbon;
+use HarryGulliford\Firebird\Tests\Support\Models\Order;
 use Illuminate\Http\Request;
 
 class BuilderController extends Controller
@@ -28,8 +29,13 @@ class BuilderController extends Controller
     public function getCapacity(Request $request)
     {
 
-
         set_time_limit(2000000);
+
+        $sync = new OrderSync();
+
+        return $sync->response();
+
+        return true;
 
         if($request->period == null) {
             return response()->json([
@@ -141,7 +147,7 @@ class BuilderController extends Controller
     private function updateAllCapacity()
     {
 
-        $today = Carbon::today()->addDay();
+        $today = Carbon::today();
 
         $capacity = (new Capacity())
             ->where('data', '>=', clone $today)
