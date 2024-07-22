@@ -25,6 +25,8 @@ class OrderSync
     public function response()
     {
 
+        return $this->importAniel();
+
         $this->getData();
         $this->importOrder();
 
@@ -33,6 +35,7 @@ class OrderSync
     private function importOrder()
     {
         set_time_limit(200000000);
+
         $import = new ImportOrder();
 
 
@@ -77,10 +80,12 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', 'PENDENTE')->get();
+        $orders = $exportOrder->where('status', 'PENDENTE')->where('data_agendamento', '>=', Carbon::today())->get();
+
 
         $ordersValidated = $this->identifyCapacity($orders);
 
+        dd('para');
 
         foreach($orders as $key => $data) {
             $client = new Client();
@@ -166,7 +171,71 @@ class OrderSync
 
     private function identifyCapacity($orders)
     {
-        dd($orders);
+
+
+        $grouped = [];
+
+        foreach ($orders as $order) {
+
+            $dateTime = Carbon::parse($order['data_agendamento']);
+            $date = $dateTime->toDateString();
+
+            $hour = $dateTime->hour;
+            if ($hour < 12) {
+                $period = 'manha';
+            } elseif ($hour < 18) {
+                $period = 'tarde';
+            } else {
+                $period = 'noite';
+            }
+
+            $typeService = $order['tipo_servico'];
+
+            if (!isset($grouped[$date])) {
+                $grouped[$date] = [];
+            }
+            if (!isset($grouped[$date][$period])) {
+                $grouped[$date][$period] = [];
+            }
+            if (!isset($grouped[$date][$period][$typeService])) {
+                $grouped[$date][$period][$typeService] = [];
+            }
+
+            $grouped[$date][$period][$typeService][] = $order;
+        }
+
+
+        dd($grouped);
+
+
+
+//        $dateOrders = [];
+//        $ordersValidated = [];
+//
+//        foreach($orders as $key => $value) {
+//            $date = Carbon::parse($value->data_agendamento)->format('Y-m-d');
+//
+//
+//            if(! in_array($date, $dateOrders)) {
+//                $dateOrders[] = $date;
+//            }
+//
+//        }
+//
+//
+//        foreach($dateOrders as $key => $value) {
+//
+//
+//            foreach($orders as $k => $v) {
+//                if(Carbon::parse($v->data_agendamento)->format('Y-m-d') == $value) {
+//                    $ordersValidated[$value][] = $v;
+//                }
+//            }
+//
+//        }
+//
+//        dd($ordersValidated);
+
 
     }
 
