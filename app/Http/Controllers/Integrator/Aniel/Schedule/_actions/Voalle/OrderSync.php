@@ -67,7 +67,7 @@ class OrderSync
                 'tipo_imovel' => $value->type_immobile,
                 'tipo_servico' => $value->type_service,
                 'node' => $value->Node,
-                'area_despacho' => 'INDIFERENTE',
+                'area_despacho' => $value->dispatch_area,
                 'observacao' => $value->observation,
                 'grupo' => $value->group,
                 'data_agendamento' => $value->schedule_date?? null,
@@ -136,7 +136,6 @@ class OrderSync
                 ]
             ];
 
-            dd($form);
 
 
             $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/CriarOrdemServico', [
