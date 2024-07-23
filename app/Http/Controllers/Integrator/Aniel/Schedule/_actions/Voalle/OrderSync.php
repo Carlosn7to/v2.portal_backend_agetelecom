@@ -96,6 +96,7 @@ class OrderSync
                 continue;
             }
 
+
             $client = new Client();
 
             $form = [
@@ -109,7 +110,7 @@ class OrderSync
                 "tipoImovel" => "INDIFERENTE",
                 "grupoArea" => $data['grupo'],
                 "area" => $data['area_despacho'],
-                "localidade" => $data['Node'],
+                "localidade" => $data['node'],
                 "endereco" => $data['endereco'],
                 "numeroEndereco" => $data['numero'],
                 "cep" => $data['cep'],
