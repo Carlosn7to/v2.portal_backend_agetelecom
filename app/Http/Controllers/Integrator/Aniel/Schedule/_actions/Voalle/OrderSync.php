@@ -16,6 +16,11 @@ class OrderSync
     private $idServices; // Dados dos serviços que serão consultados na tabela aniel_agenda_subservicos
     private $lastProtocol;  // Dados do último protocolo inserido na tabela aniel_agenda_importacao_ordens
 
+    public function __invoke()
+    {
+        return $this->response();
+    }
+
     public function __construct()
     {
         $idServices = $this->getIdOrders();
@@ -26,7 +31,7 @@ class OrderSync
     public function response()
     {
 
-        return $this->importAniel();
+//        return $this->importAniel();
 
         $this->getData();
         $this->importOrder();
@@ -72,6 +77,7 @@ class OrderSync
             ]);
         }
 
+
         $this->importAniel();
 
 
@@ -81,12 +87,11 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', 'PENDENTE')->where('data_agendamento', '>=', Carbon::today())->limit(15)->get();
+        $orders = $exportOrder->where('status', 'PENDENTE')->whereDate('data_agendamento', '<>', '2024-07-24')->get();
 
-
-        $ordersValidated = $this->identifyCapacity($orders);
-
-        dd('para');
+//        $ordersValidated = $this->identifyCapacity($orders);
+//
+//        dd('para');
 
         foreach($orders as $key => $data) {
             $client = new Client();

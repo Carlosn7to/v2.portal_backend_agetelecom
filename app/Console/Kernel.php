@@ -23,6 +23,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('aniel:capacity')
             ->everyMinute();
+
+        $schedule->command('aniel:export')
+            ->everySecond();
     }
 
     /**

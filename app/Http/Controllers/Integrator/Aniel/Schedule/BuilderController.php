@@ -33,7 +33,7 @@ class BuilderController extends Controller
 
 //        $sync = new OrderSync();
 //
-//        return $sync->response();
+//        return $sync->__invoke();
 //
 //        return true;
 
