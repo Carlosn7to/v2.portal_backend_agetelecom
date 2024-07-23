@@ -31,11 +31,6 @@ class BuilderController extends Controller
 
         set_time_limit(2000000);
 
-//        $sync = new OrderSync();
-//
-//        return $sync->__invoke();
-//
-//        return true;
 
         if($request->period == null) {
             return response()->json([
@@ -246,7 +241,6 @@ class BuilderController extends Controller
 
     }
 
-
     public function getCalendar()
     {
 
@@ -269,5 +263,7 @@ class BuilderController extends Controller
         return $dateArray;
 
     }
+
+
 
 }

@@ -9,3 +9,7 @@ Route::prefix('capacity')->controller(\App\Http\Controllers\Integrator\Aniel\Sch
     Route::get('/', 'getCapacity');
     Route::get('/calendar', 'getCalendar');
 });
+
+Route::prefix('management-schedule')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule::class)->group(function () {
+    Route::post('/approval-order', 'approvalOrder');
+});

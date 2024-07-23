@@ -27,7 +27,6 @@ class OrderSync
     {
         $idServices = $this->getIdOrders();
         $this->idServices = implode(',', array_map('intval', $idServices));
-        $this->lastProtocol = (ImportOrder::orderBy('protocolo', 'desc')->first('protocolo'))->protocolo;
     }
 
     public function response()
@@ -41,7 +40,6 @@ class OrderSync
         set_time_limit(200000000);
 
         $import = new ImportOrder();
-
 
         foreach($this->data as $key => $value) {
             $import->firstOrCreate(
@@ -468,8 +466,7 @@ class OrderSync
         inner join erp.schedules s on s.assignment_id = assignments.id
         where incident_types.active = \'1\' and assignments.deleted = \'0\' and incident_types.deleted = \'0\'
         and incident_status.id <> \'8\'
-        and assignment_incidents.protocol > '.$this->lastProtocol.'
-        and DATE(assignments.created) >= \'2024-06-01\'
+        and DATE(assignments.created) >= \''.Carbon::now()->subDays(3)->format('Y-m-d').'\'
         and incident_types.id in ('.$this->idServices.')
         order by 2 desc';
 
