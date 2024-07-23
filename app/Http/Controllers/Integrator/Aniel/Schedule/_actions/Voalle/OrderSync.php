@@ -32,11 +32,8 @@ class OrderSync
 
     public function response()
     {
-
-
         $this->getData();
         $this->importOrder();
-
     }
 
     private function importOrder()
