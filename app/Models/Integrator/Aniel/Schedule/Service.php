@@ -23,9 +23,10 @@ class Service extends Model
                 ->select('id as subservice_id', 'servico_id', 'aniel_id', 'titulo');
     }
 
-    public function capacity()
+    public function capacityWeekly()
     {
-        return $this->hasMany(Capacity::class, 'servico_id')
-                ->select('id as id_capacity', 'servico_id', 'periodo', 'capacidade', 'data_inicio', 'data_fim');
+        return $this->hasMany(CapacityWeekly::class, 'servico_id')
+                ->select('id as id_capacity', 'servico_id', 'dia_semana', 'capacidade', 'hora_inicio', 'hora_fim');
     }
+
 }

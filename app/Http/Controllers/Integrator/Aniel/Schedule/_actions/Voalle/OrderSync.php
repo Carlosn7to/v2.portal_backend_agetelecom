@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle;
 
+use App\Models\Integrator\Aniel\Schedule\Capacity;
+use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\SubService;
@@ -31,7 +33,6 @@ class OrderSync
     public function response()
     {
 
-//        return $this->importAniel();
 
         $this->getData();
         $this->importOrder();
@@ -87,45 +88,49 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', '<>', 'IMPORTADA')->whereDate('data_agendamento', '<>', '2024-07-24')->get();
+        $orders = $exportOrder->where('status', '<>', 'IMPORTADA')
+            ->get();
 
-//        $ordersValidated = $this->identifyCapacity($orders);
-//
-//        dd('para');
+        $ordersValidated = $this->identifyCapacity($orders);
 
-        foreach($orders as $key => $data) {
+        foreach($ordersValidated as $key => $data) {
+
+            if($data['status_id'] != 1) {
+                continue;
+            }
+
             $client = new Client();
 
             $form = [
-                "cpf" => $data->cliente_documento,
-                "tipoServico" => $data->tipo_servico,
-                "subTipoServico" => $data->tipo_servico,
+                "cpf" => $data['cliente_documento'],
+                "tipoServico" => $data['tipo_servico'],
+                "subTipoServico" => $data['tipo_servico'],
                 "projeto" => "CASA CLIENTE",
                 "codCt" => "OP01",
-                "numOS" => $data->protocolo,
-                "dataHoraAgendamento" => $data->data_agendamento != null ? Carbon::parse($data->data_agendamento)->format('Y-m-d\TH:i:s.v\Z') : '',
+                "numOS" => $data['protocolo'],
+                "dataHoraAgendamento" => $data['data_agendamento'] != null ? Carbon::parse($data['data_agendamento'])->format('Y-m-d\TH:i:s.v\Z') : '',
                 "tipoImovel" => "INDIFERENTE",
-                "grupoArea" => $data->grupo,
-                "area" => $data->area_despacho,
-                "localidade" => $data->Node,
-                "endereco" => $data->endereco,
-                "numeroEndereco" => $data->numero,
-                "cep" => $data->cep,
-                "complemento" => $data->complemento,
-                "bairro" => $data->bairro.Random::generate('300'),
-                "cidade" => $data->cidade,
+                "grupoArea" => $data['grupo'],
+                "area" => $data['area_despacho'],
+                "localidade" => $data['Node'],
+                "endereco" => $data['endereco'],
+                "numeroEndereco" => $data['numero'],
+                "cep" => $data['cep'],
+                "complemento" => $data['complemento'],
+                "bairro" => $data['bairro'],
+                "cidade" => $data['cidade'],
                 "pontoReferencia" => "",
                 "uf" => "DF",
-                "observacao" => $data->observacao,
-                "latitude" => $data->latitude,
-                "longitude" => $data->longitude,
+                "observacao" => $data['observacao'],
+                "latitude" => $data['latitude'],
+                "longitude" => $data['longitude'],
                 "tecnico" => "",
-                "nomeCliente" => $data->cliente_nome,
-                "telefoneCelularCliente" => $data->celular_1,
-                "telefoneFixoCliente" => $data->celular_2,
-                "emailCliente" => $data->email,
-                "contratoCliente" => $data->contrato_id,
-                "numDoc" => $data->protocolo,
+                "nomeCliente" => $data['cliente_nome'],
+                "telefoneCelularCliente" => $data['celular_1'],
+                "telefoneFixoCliente" => $data['celular_2'],
+                "emailCliente" => $data['email'],
+                "contratoCliente" => $data['contrato_id'],
+                "numDoc" => $data['protocolo'],
                 "settings" => [
                     "user" => config('services.aniel.user'),
                     "password" => config('services.aniel.password'),
@@ -177,29 +182,22 @@ class OrderSync
 
     private function identifyCapacity($orders)
     {
-        $services = Service::with('subServices')
+        $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
             ->get();
+
+        $capacity = new Capacity();
+
+        $orderUpdate = new ImportOrder();
 
         $grouped = [];
 
-        foreach ($orders as $order) {
-
-            $dateTime = Carbon::parse($order['data_agendamento']);
-            $date = $dateTime->toDateString();
-
-            $hour = $dateTime->hour;
-            if ($hour < 12) {
-                $period = 'manha';
-            } elseif ($hour < 18) {
-                $period = 'tarde';
-            } else {
-                $period = 'noite';
-            }
-
-
-            $typeService = null;
+        foreach ($orders->toArray() as &$order) {
             $typeSubService = mb_convert_case($order['tipo_servico'], MB_CASE_LOWER, 'UTF-8');
-
+            $typeService = null;
+            $dateTime = Carbon::parse($order['data_agendamento']);
+            $dayName = $dateTime->dayName;
+            $date = $dateTime->toDateString();
+            $period = $dateTime->hour < 12 ? 'manha' : 'tarde';
 
             foreach ($services as $key => $service) {
 
@@ -217,58 +215,79 @@ class OrderSync
 
                 }
 
+
+                foreach ($service['capacityWeekly'] as $v) {
+                    if ($v->dia_semana == $dayName && $service->id == $v->servico_id &&
+                        $subServiceTitle == mb_convert_case($order['tipo_servico'], MB_CASE_LOWER, 'UTF-8')
+                    ) {
+                        $hour = $dateTime->hour;
+
+                        // Determina o período do dia
+                        if ($hour < 12) {
+                            $order['periodo'] = 'manha';
+                        } elseif ($hour < 18) {
+                            $order['periodo'] = 'tarde';
+                        } else {
+                            $order['periodo'] = 'noite';
+                        }
+
+                        if ($hour >= intval($v->hora_inicio) && $hour < intval($v->hora_fim)) {
+                            $order['status_id'] = 1;
+                            break;
+                        }
+
+                        $order['status_id'] = 12;
+                    }
+                }
+
             }
 
-            if (!isset($grouped[$date])) {
-                $grouped[$date] = [];
-            }
-            if (!isset($grouped[$date][$period])) {
-                $grouped[$date][$period] = [];
+
+
+            $capacityVerify = $capacity->where('data', $date)
+                ->where('periodo', $order['periodo'])
+                ->where('servico', $typeService)
+                ->first();
+
+
+            if ($capacityVerify) {
+
+                if($capacityVerify->status == 'fechada') {
+                    $order['status_id'] = 14;
+                }
+
+                if($capacityVerify->utilizado >= $capacityVerify->capacidade) {
+                    $order['status_id'] = 13;
+                }
+
             }
 
-            if (!isset($grouped[$date][$period][$typeService])) {
-                $grouped[$date][$period][$typeService] = [];
-            }
+//            if (!isset($grouped[$date])) {
+//                $grouped[$date] = [];
+//            }
+//            if (!isset($grouped[$date][$period])) {
+//                $grouped[$date][$period] = [];
+//            }
+//
+//            if (!isset($grouped[$date][$period][$typeService])) {
+//                $grouped[$date][$period][$typeService] = [];
+//            }
+//
+//            if (!isset($grouped[$date][$period][$typeService][$typeSubService])) {
+//                $grouped[$date][$period][$typeService][$typeSubService] = [];
+//            }
 
-            if (!isset($grouped[$date][$period][$typeService][$typeSubService])) {
-                $grouped[$date][$period][$typeService][$typeSubService] = [];
-            }
 
-            $grouped[$date][$period][$typeService][$typeSubService][] = $order;
+
+            $grouped[] = $order;
+
+            $orderUpdate->where('protocolo', $order['protocolo'])->update([
+                'status_id' => $order['status_id']
+            ]);
         }
 
 
-        dd($grouped);
-
-
-
-//        $dateOrders = [];
-//        $ordersValidated = [];
-//
-//        foreach($orders as $key => $value) {
-//            $date = Carbon::parse($value->data_agendamento)->format('Y-m-d');
-//
-//
-//            if(! in_array($date, $dateOrders)) {
-//                $dateOrders[] = $date;
-//            }
-//
-//        }
-//
-//
-//        foreach($dateOrders as $key => $value) {
-//
-//
-//            foreach($orders as $k => $v) {
-//                if(Carbon::parse($v->data_agendamento)->format('Y-m-d') == $value) {
-//                    $ordersValidated[$value][] = $v;
-//                }
-//            }
-//
-//        }
-//
-//        dd($ordersValidated);
-
+        return $grouped;
 
     }
 
