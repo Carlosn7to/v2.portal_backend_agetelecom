@@ -136,6 +136,8 @@ class OrderSync
                 ]
             ];
 
+            dd($form);
+
 
             $client = $client->post('https://cliente01.sinapseinformatica.com.br:4383/AGE/Servicos/API_Aniel/api/OsApiController/CriarOrdemServico', [
                 'json' => $form
