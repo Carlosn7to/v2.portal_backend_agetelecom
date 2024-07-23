@@ -90,12 +90,12 @@ class OrderSync
 
         $ordersValidated = $this->identifyCapacity($orders);
 
-        foreach($ordersValidated as $key => $data) {
+        $newOrdersValidated = array_filter($ordersValidated, function($order) {
+            return $order['status_id'] == 1;
+        });
 
-            if($data['status_id'] != 1) {
-                continue;
-            }
 
+        foreach($newOrdersValidated as $key => $data) {
 
             $client = new Client();
 
@@ -151,7 +151,7 @@ class OrderSync
                 : ($status ? 'IMPORTADA' : 'ERRO');  // Caso contrário, se o status for verdadeiro, define como 'IMPORTADA', senão, define como 'ERRO'
 
             // Atualiza o status e a resposta no banco de dados
-            $exportOrder->where('protocolo', $data->protocolo)->update([
+            $exportOrder->where('protocolo', $data['protocolo'])->update([
                 'status' => $statusOs,
                 'resposta' => json_encode($response),
                 'status_id' => 11
