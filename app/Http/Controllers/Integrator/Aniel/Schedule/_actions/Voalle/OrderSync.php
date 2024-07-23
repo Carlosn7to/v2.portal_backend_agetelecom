@@ -87,7 +87,7 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', 'PENDENTE')->whereDate('data_agendamento', '<>', '2024-07-24')->get();
+        $orders = $exportOrder->where('status', '<>', 'IMPORTADA')->whereDate('data_agendamento', '<>', '2024-07-24')->get();
 
 //        $ordersValidated = $this->identifyCapacity($orders);
 //
