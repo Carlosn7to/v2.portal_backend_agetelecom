@@ -31,11 +31,11 @@ class BuilderController extends Controller
 
         set_time_limit(2000000);
 
-        $sync = new OrderSync();
-
-        return $sync->response();
-
-        return true;
+//        $sync = new OrderSync();
+//
+//        return $sync->response();
+//
+//        return true;
 
         if($request->period == null) {
             return response()->json([
@@ -146,6 +146,7 @@ class BuilderController extends Controller
 
     private function updateAllCapacity()
     {
+        set_time_limit(2000000);
 
         $today = Carbon::today();
 

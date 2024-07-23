@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle;
 
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\SubService;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -80,7 +81,7 @@ class OrderSync
     {
         $exportOrder = new ImportOrder();
 
-        $orders = $exportOrder->where('status', 'PENDENTE')->where('data_agendamento', '>=', Carbon::today())->get();
+        $orders = $exportOrder->where('status', 'PENDENTE')->where('data_agendamento', '>=', Carbon::today())->limit(15)->get();
 
 
         $ordersValidated = $this->identifyCapacity($orders);
@@ -171,7 +172,8 @@ class OrderSync
 
     private function identifyCapacity($orders)
     {
-
+        $services = Service::with('subServices')
+            ->get();
 
         $grouped = [];
 
@@ -189,7 +191,28 @@ class OrderSync
                 $period = 'noite';
             }
 
-            $typeService = $order['tipo_servico'];
+
+            $typeService = null;
+            $typeSubService = mb_convert_case($order['tipo_servico'], MB_CASE_LOWER, 'UTF-8');
+
+
+            foreach ($services as $key => $service) {
+
+                foreach($service['subServices'] as $k => $v) {
+
+                    $subServiceTitle = mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8');
+                    $serviceTitle = mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8');
+
+
+                    if ($subServiceTitle == $typeSubService) {
+                        $typeService = $serviceTitle;
+                        break;
+
+                    }
+
+                }
+
+            }
 
             if (!isset($grouped[$date])) {
                 $grouped[$date] = [];
@@ -197,11 +220,16 @@ class OrderSync
             if (!isset($grouped[$date][$period])) {
                 $grouped[$date][$period] = [];
             }
+
             if (!isset($grouped[$date][$period][$typeService])) {
                 $grouped[$date][$period][$typeService] = [];
             }
 
-            $grouped[$date][$period][$typeService][] = $order;
+            if (!isset($grouped[$date][$period][$typeService][$typeSubService])) {
+                $grouped[$date][$period][$typeService][$typeSubService] = [];
+            }
+
+            $grouped[$date][$period][$typeService][$typeSubService][] = $order;
         }
 
 
