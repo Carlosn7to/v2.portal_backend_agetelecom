@@ -7,6 +7,7 @@ use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\StatusOrder;
+use App\Models\Portal\User\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -41,7 +42,53 @@ class DashboardSchedule
 
         $orders = $orderBroken
             ->where('data', $request->period)
-            ->get();
+            ->get()
+            ->map(function ($order) {
+                $decodedStatus = json_decode($order->status, true);
+                foreach ($decodedStatus as &$statusItem) {
+                    if (is_string($statusItem)) {
+                        $statusItem = json_decode($statusItem, true);
+                    }
+                }
+                $order->status_order = $decodedStatus;
+
+                $approval = User::where('id', $order->aprovador_id)->first();
+
+                $order->aprovador = $approval ? $approval->nome : '';
+
+                $order->servico = mb_convert_case($order->servico, MB_CASE_TITLE, 'UTF-8');
+
+                if (isset($order->aberta_por)) {
+                    $words = explode(' ', $order->aberta_por);
+                    // Filtrar palavras com menos de 3 letras
+                    $filteredWords = array_filter($words, function ($word) {
+                        return strlen($word) >= 3;
+                    });
+                    // Pegar as duas primeiras palavras
+                    $filteredWords = array_slice($filteredWords, 0, 2);
+                    // Capitalizar a primeira letra de cada palavra
+                    $filteredWords = array_map('ucfirst', $filteredWords);
+                    // Unir as palavras novamente
+                    $order->aberta_por = implode(' ', $filteredWords);
+                }
+
+                if (isset($order->aprovador)) {
+                    $words = explode(' ', $order->aprovador);
+                    // Filtrar palavras com menos de 3 letras
+                    $filteredWords = array_filter($words, function ($word) {
+                        return strlen($word) >= 3;
+                    });
+                    // Pegar as duas primeiras palavras
+                    $filteredWords = array_slice($filteredWords, 0, 2);
+                    // Capitalizar a primeira letra de cada palavra
+                    $filteredWords = array_map('ucfirst', $filteredWords);
+                    // Unir as palavras novamente
+                    $order->aprovador = implode(' ', $filteredWords);
+                }
+
+                unset($order->status);
+                return $order;
+            });
 
         return $orders;
 
@@ -210,7 +257,7 @@ class DashboardSchedule
                'subservico' => $order['tipo_servico'],
                'hora_agendamento' => $dateTime->format('H:i:s'),
                'periodo' => $period,
-               'status' => json_encode($order['status_order']),
+               'status' => json_encode([$order['status_order']]),
                'aberta_por' => $order['criado_por'],
                'setor' => $order['setor']
            ]);
