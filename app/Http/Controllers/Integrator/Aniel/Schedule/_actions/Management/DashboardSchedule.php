@@ -26,6 +26,7 @@ class DashboardSchedule
     {
         set_time_limit(2000000);
 
+
         $validator = \Validator::make($request->all(), [
             'period' => 'required|date', // Adicione outras regras de validação conforme necessário
         ]);
@@ -53,6 +54,8 @@ class DashboardSchedule
                 $order->status_order = $decodedStatus;
 
                 $approval = User::where('id', $order->aprovador_id)->first();
+
+                $order->periodo = mb_convert_case($order->periodo, MB_CASE_TITLE, 'UTF-8');
 
                 $order->aprovador = $approval ? $approval->nome : '';
 

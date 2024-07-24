@@ -472,7 +472,10 @@ class OrderSync
         left join erp.profiles p on p.id = vu.profile_id
         where incident_types.active = \'1\' and assignments.deleted = \'0\' and incident_types.deleted = \'0\'
         and incident_status.id <> \'8\'
-        and DATE(assignments.created) >= \''.Carbon::now()->subDays(3)->format('Y-m-d').'\'
+        and
+        (
+        select DATE(s.start_date) from erp.schedules s where s.assignment_id = assignments.id order by s.id desc limit 1
+        ) between \''.Carbon::now()->subDay(1)->format('Y-m-d')."' and '".Carbon::now()->addDays(10)->format('Y-m-d').'\'
         and incident_types.id in ('.$this->idServices.')
         order by 2 desc';
 
