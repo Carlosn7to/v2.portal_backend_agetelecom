@@ -6,6 +6,7 @@ use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
+use App\Models\Integrator\Aniel\Schedule\StatusOrder;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -61,11 +62,6 @@ class DashboardSchedule
 
         $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
 
-//        $orders = ImportOrder::where('status', 'Pendente')->get()->toArray();
-//
-//        foreach($orders as $order) {
-//            $this->storeAniel($order);
-//        }
         return $this->storeAniel($order);
     }
 
@@ -136,6 +132,28 @@ class DashboardSchedule
             'status_id' => 15
         ]);
 
+        $orderBroken = new OrderBroken();
+
+        $order = $orderBroken->where('protocolo', $data['protocolo'])->first();
+        if ($order) {
+
+
+            // Adicione o novo status ao array
+            $newStatus = StatusOrder::where('id', 15)->first()->toArray();
+            $currentStatus[] = $newStatus;
+            $currentStatus[] = $order->status;
+
+            // Codifique novamente o array para JSON
+            $updatedStatus = json_encode($currentStatus);
+
+            // Atualize o registro
+            $order->update([
+                'status' => $updatedStatus,
+                'aprovador_id' => auth('portal')->user()->id
+            ]);
+        }
+
+
         return response()->json([
             'message' => 'Ordem de serviço aprovada com sucesso!',
             'status' => 'Sucesso'
@@ -196,7 +214,6 @@ class DashboardSchedule
                'aberta_por' => $order['criado_por'],
                'setor' => $order['setor']
            ]);
-
 
 
         }

@@ -30,7 +30,7 @@ class Capacity extends Command
         $syncCapacity = new BuilderController();
         $syncCapacity->__invoke();
 
-        $syncBrokensOrders = new DashboardSchedule();
-        $syncBrokensOrders->__invoke();
+        $syncBrokenOrders = new DashboardSchedule();
+        $syncBrokenOrders->__invoke();
     }
 }
