@@ -143,14 +143,14 @@ class BuilderController extends Controller
     {
         set_time_limit(2000000);
 
-        $today = Carbon::today();
+        $today = Carbon::today()->toDateString();
 
         $capacity = (new Capacity())
+            ->where('data', '>=', $today)
             ->orderBy('data')
             ->get(['data', 'dia_semana'])
             ->unique('data')
             ->toArray();
-
 
 
         $dataCapacityWeekly = [];
@@ -158,6 +158,7 @@ class BuilderController extends Controller
         foreach($capacity as $key => $value) {
             $dataCapacityWeekly[] = $value['dia_semana'];
         }
+
 
 
 
@@ -186,6 +187,7 @@ class BuilderController extends Controller
 
                     $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
 
+
                     $dataAniel = $dataAniel->where('Data_do_Agendamento', $response['period']);
 
                     $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
@@ -197,7 +199,6 @@ class BuilderController extends Controller
                         'used' => $this->getCountOsAniel($dataAniel, $value->servico_id, $value->hora_inicio, $value->hora_fim),
                         'status' => $value->status,
                     ];
-
 
 
                     $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
