@@ -69,7 +69,9 @@ class OrderSync
                 'observacao' => $value->observation,
                 'grupo' => $value->group,
                 'data_agendamento' => $value->schedule_date?? null,
-                'status_id' => 1
+                'status_id' => 1,
+                'criador_por' => $value->created_by,
+                'setor' => $value->team
             ]);
         }
 
@@ -451,7 +453,9 @@ class OrderSync
         regexp_replace(assignments.description, \'<[^>]+>\', \'\', \'g\') as "observation",
     	\'DISTRITO FEDERAL\' as "group",
     	assignments.id as "assignment_id",
-    	s.start_date as "schedule_date"
+    	s.start_date as "schedule_date",
+    	vu."name" as "created_by",
+    	p."name" as "team"
         from erp.assignments
         inner join erp.assignment_incidents on (assignment_incidents.assignment_id = assignments.id )
         inner join erp.incident_types on (incident_types.id = assignment_incidents.incident_type_id)
@@ -464,6 +468,8 @@ class OrderSync
         inner join erp.people on (assignments.requestor_id = people.id)
         left join erp.contracts on (contracts.client_id = people.id)
         inner join erp.schedules s on s.assignment_id = assignments.id
+        left join erp.v_users vu on vu.id = assignments.created_by
+        left join erp.profiles p on p.id = vu.profile_id
         where incident_types.active = \'1\' and assignments.deleted = \'0\' and incident_types.deleted = \'0\'
         and incident_status.id <> \'8\'
         and DATE(assignments.created) >= \''.Carbon::now()->subDays(3)->format('Y-m-d').'\'

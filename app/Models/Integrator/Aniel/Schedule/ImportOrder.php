@@ -38,6 +38,17 @@ class ImportOrder extends Model
         'data_agendamento',
         'status',
         'resposta',
-        'status_id'
+        'status_id',
+        'criador_por',
+        'setor'
     ];
+
+
+    public function statusOrder()
+    {
+        return $this->belongsTo(StatusOrder::class, 'status_id')
+            ->select('id', 'titulo', 'descricao', 'cor_indicativa');
+    }
+
+
 }

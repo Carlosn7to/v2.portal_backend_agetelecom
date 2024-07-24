@@ -4,12 +4,34 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use App\Models\Integrator\Aniel\Schedule\Service;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class DashboardSchedule
 {
+
+    public function getDashboard(Request $request)
+    {
+        set_time_limit(2000000);
+
+        $validator = \Validator::make($request->all(), [
+            'period' => 'required|date', // Adicione outras regras de validação conforme necessário
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'Erro',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+
+        return $this->mountDashboard();
+
+
+    }
 
     public function approvalOrder(Request $request)
     {
@@ -22,14 +44,14 @@ class DashboardSchedule
             ], 400);
         }
 
-//        $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
+        $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
 
-        $orders = ImportOrder::where('status', 'Pendente')->get()->toArray();
-
-        foreach($orders as $order) {
-            $this->storeAniel($order);
-        }
-//        return $this->storeAniel($order);
+//        $orders = ImportOrder::where('status', 'Pendente')->get()->toArray();
+//
+//        foreach($orders as $order) {
+//            $this->storeAniel($order);
+//        }
+        return $this->storeAniel($order);
     }
 
     private function storeAniel($data)
@@ -106,4 +128,60 @@ class DashboardSchedule
 
     }
 
+    private function mountDashboard()
+    {
+
+        $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
+            ->get();
+
+        $orders = ImportOrder::where('status', 'Pendente')
+            ->where('status_id', '<>', 1)
+            ->with('statusOrder')
+            ->get(['protocolo', 'data_agendamento', 'tipo_servico', 'status_id']);
+
+        $grouped = [];
+
+
+        foreach ($orders->toArray() as &$order) {
+            $typeSubService = mb_convert_case($order['tipo_servico'], MB_CASE_LOWER, 'UTF-8');
+            $typeService = null;
+            $dateTime = Carbon::parse($order['data_agendamento']);
+            $date = $dateTime->toDateString();
+            $period = $dateTime->hour < 12 ? 'manha' : 'tarde';
+
+            $order['periodo'] = $period;
+
+            foreach ($services as $key => $service) {
+
+                foreach($service['subServices'] as $k => $v) {
+                    $subServiceTitle = mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8');
+                    $serviceTitle = mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8');
+                    if ($subServiceTitle == $typeSubService) {
+                        $typeService = $serviceTitle;
+                        break;
+                    }
+
+                }
+
+            }
+
+            if (!isset($grouped[$date])) {
+                $grouped[$date] = [];
+            }
+            if (!isset($grouped[$date][$typeService])) {
+                $grouped[$date][$typeService] = [];
+            }
+
+            if (!isset($grouped[$date][$typeService][$typeSubService])) {
+                $grouped[$date][$typeService][$typeSubService] = [];
+            }
+
+
+            $grouped[$date][$typeService][$typeSubService][] = $order;
+
+        }
+
+
+        return $grouped;
+    }
 }
