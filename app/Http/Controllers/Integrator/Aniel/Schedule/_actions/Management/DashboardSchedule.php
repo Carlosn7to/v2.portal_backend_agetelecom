@@ -22,9 +22,14 @@ class DashboardSchedule
             ], 400);
         }
 
-        $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
+//        $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
 
-        return $this->storeAniel($order);
+        $orders = ImportOrder::where('status', 'Pendente')->get()->toArray();
+
+        foreach($orders as $order) {
+            $this->storeAniel($order);
+        }
+//        return $this->storeAniel($order);
     }
 
     private function storeAniel($data)

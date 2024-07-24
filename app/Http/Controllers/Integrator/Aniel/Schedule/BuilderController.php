@@ -146,7 +146,6 @@ class BuilderController extends Controller
         $today = Carbon::today();
 
         $capacity = (new Capacity())
-            ->where('data', '>=', clone $today)
             ->orderBy('data')
             ->get(['data', 'dia_semana'])
             ->unique('data')
