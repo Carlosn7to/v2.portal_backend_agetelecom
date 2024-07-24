@@ -13,10 +13,16 @@ use Illuminate\Http\Request;
 class DashboardSchedule
 {
 
-    public function getDashboard(Request $request)
+    public function __invoke()
     {
         set_time_limit(2000000);
 
+        return $this->mountDashboard();
+    }
+
+    public function getDashboard(Request $request)
+    {
+        set_time_limit(2000000);
 
         $validator = \Validator::make($request->all(), [
             'period' => 'required|date', // Adicione outras regras de validação conforme necessário
@@ -30,7 +36,14 @@ class DashboardSchedule
         }
 
 
-        return $this->mountDashboard();
+        $orderBroken = new OrderBroken();
+
+        $orders = $orderBroken
+            ->where('data', $request->period)
+            ->get();
+
+        return $orders;
+
 
 
     }
@@ -139,9 +152,8 @@ class DashboardSchedule
         $orders = ImportOrder::where('status', 'Pendente')
             ->where('status_id', '<>', 1)
             ->with('statusOrder')
-            ->get(['protocolo', 'data_agendamento', 'tipo_servico', 'status_id', 'criado_por', 'setor']);
+            ->get(['id', 'protocolo', 'data_agendamento', 'tipo_servico', 'status_id', 'criado_por', 'setor']);
 
-        return $orders;
 
         $orderBroken = new OrderBroken();
 
@@ -152,7 +164,6 @@ class DashboardSchedule
             $dateTime = Carbon::parse($order['data_agendamento']);
             $date = $dateTime->toDateString();
             $period = $dateTime->hour < 12 ? 'manha' : 'tarde';
-
             $order['periodo'] = $period;
 
             foreach ($services as $key => $service) {
@@ -168,24 +179,28 @@ class DashboardSchedule
                 }
 
             }
-
-            if (!isset($grouped[$date])) {
-                $grouped[$date] = [];
-            }
-            if (!isset($grouped[$date][$typeService])) {
-                $grouped[$date][$typeService] = [];
-            }
-
-            if (!isset($grouped[$date][$typeService][$typeSubService])) {
-                $grouped[$date][$typeService][$typeSubService] = [];
-            }
+            $order['servico'] = $typeService;
 
 
-            $grouped[$date][$typeService][$typeSubService][] = $order;
+            $orderBroken->firstOrCreate(
+                ['os_id' => $order['id']],
+                [
+               'os_id' => $order['id'],
+               'data' => $date,
+               'protocolo' => $order['protocolo'],
+               'servico' => $order['servico'],
+               'subservico' => $order['tipo_servico'],
+               'hora_agendamento' => $dateTime->format('H:i:s'),
+               'periodo' => $period,
+               'status' => json_encode($order['status_order']),
+               'aberta_por' => $order['criado_por'],
+               'setor' => $order['setor']
+           ]);
+
+
 
         }
 
 
-        return $grouped;
     }
 }

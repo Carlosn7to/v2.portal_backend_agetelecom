@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Integrator\Schedule;
 
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
 use App\Http\Controllers\Integrator\Aniel\Schedule\BuilderController;
 use Illuminate\Console\Command;
 
@@ -27,7 +28,9 @@ class Capacity extends Command
     public function handle()
     {
         $syncCapacity = new BuilderController();
-
         $syncCapacity->__invoke();
+
+        $syncBrokensOrders = new DashboardSchedule();
+        $syncBrokensOrders->__invoke();
     }
 }

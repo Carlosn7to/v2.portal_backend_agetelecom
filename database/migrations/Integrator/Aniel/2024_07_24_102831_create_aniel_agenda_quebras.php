@@ -15,13 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('os_id')->constrained('aniel_importacao_ordens');
             $table->date('data');
-            $table->string('procolo');
+            $table->string('protocolo');
             $table->string('servico');
             $table->string('subservico');
             $table->time('hora_agendamento');
             $table->string('periodo');
-            $table->string('status');
-            $table->string('descricao');
+            $table->json('status');
             $table->string('aberta_por');
             $table->string('setor');
             $table->foreignId('solicitante_id')->nullable()->constrained('portal_usuarios');

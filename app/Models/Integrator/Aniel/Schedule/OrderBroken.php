@@ -13,6 +13,7 @@ class OrderBroken extends Model
     protected $table = 'aniel_agenda_quebras';
 
     protected $fillable = [
+      'os_id',
       'data',
       'protocolo',
       'servico',
@@ -20,7 +21,6 @@ class OrderBroken extends Model
       'hora_agendamento',
       'periodo',
       'status',
-      'descricao',
       'aberta_por',
       'setor',
       'solicitante_id',
