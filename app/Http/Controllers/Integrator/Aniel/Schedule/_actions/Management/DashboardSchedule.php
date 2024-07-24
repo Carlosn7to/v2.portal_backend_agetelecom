@@ -217,7 +217,7 @@ class DashboardSchedule
         $orders = ImportOrder::where('status', 'Pendente')
             ->where('status_id', '<>', 1)
             ->with('statusOrder')
-            ->get(['id', 'protocolo', 'data_agendamento', 'tipo_servico', 'status_id', 'criado_por', 'setor']);
+            ->get(['id', 'protocolo', 'data_agendamento', 'tipo_servico', 'status_id', 'criado_por', 'setor', 'area_despacho']);
 
 
         $orderBroken = new OrderBroken();
@@ -258,6 +258,7 @@ class DashboardSchedule
                'hora_agendamento' => $dateTime->format('H:i:s'),
                'periodo' => $period,
                'status' => json_encode([$order['status_order']]),
+               'localidade' => $order['area_despacho'],
                'aberta_por' => $order['criado_por'],
                'setor' => $order['setor']
            ]);

@@ -21,6 +21,7 @@ class OrderBroken extends Model
       'hora_agendamento',
       'periodo',
       'status',
+      'localidade',
       'aberta_por',
       'setor',
       'solicitante_id',
