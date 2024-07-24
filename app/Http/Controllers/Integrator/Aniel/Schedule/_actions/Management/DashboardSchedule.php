@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -15,6 +16,7 @@ class DashboardSchedule
     public function getDashboard(Request $request)
     {
         set_time_limit(2000000);
+
 
         $validator = \Validator::make($request->all(), [
             'period' => 'required|date', // Adicione outras regras de validação conforme necessário
@@ -137,9 +139,11 @@ class DashboardSchedule
         $orders = ImportOrder::where('status', 'Pendente')
             ->where('status_id', '<>', 1)
             ->with('statusOrder')
-            ->get(['protocolo', 'data_agendamento', 'tipo_servico', 'status_id']);
+            ->get(['protocolo', 'data_agendamento', 'tipo_servico', 'status_id', 'criado_por', 'setor']);
 
-        $grouped = [];
+        return $orders;
+
+        $orderBroken = new OrderBroken();
 
 
         foreach ($orders->toArray() as &$order) {

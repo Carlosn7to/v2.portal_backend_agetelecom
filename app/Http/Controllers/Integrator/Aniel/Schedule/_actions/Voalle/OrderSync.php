@@ -70,7 +70,7 @@ class OrderSync
                 'grupo' => $value->group,
                 'data_agendamento' => $value->schedule_date?? null,
                 'status_id' => 1,
-                'criador_por' => $value->created_by,
+                'criado_por' => mb_convert_case($value->created_by, MB_CASE_TITLE, 'UTF-8'),
                 'setor' => $value->team
             ]);
         }

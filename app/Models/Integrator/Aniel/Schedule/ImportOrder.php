@@ -39,7 +39,7 @@ class ImportOrder extends Model
         'status',
         'resposta',
         'status_id',
-        'criador_por',
+        'criado_por',
         'setor'
     ];
 
