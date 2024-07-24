@@ -27,8 +27,8 @@ class Capacity extends Command
      */
     public function handle()
     {
-        $syncCapacity = new BuilderController();
-        $syncCapacity->__invoke();
+//        $syncCapacity = new BuilderController();
+//        $syncCapacity->__invoke();
 
         $syncBrokenOrders = new DashboardSchedule();
         $syncBrokenOrders->__invoke();

@@ -196,7 +196,7 @@ class BuilderController extends Controller
                         'start' => $value->hora_inicio,
                         'end' => $value->hora_fim,
                         'capacity' => $value->capacidade,
-                        'used' => $this->getCountOsAniel($dataAniel, $value->servico_id, $value->hora_inicio, $value->hora_fim),
+                        'used' => $this->getCountOsAniel($dataAniel, $value->servico_id, $period),
                         'status' => $value->status,
                     ];
 
@@ -215,11 +215,13 @@ class BuilderController extends Controller
 
     }
 
-    private function getCountOsAniel($dataAniel, $service, $start, $end)
+    private function getCountOsAniel($dataAniel, $service, $period)
     {
         $subServices = (new SubService())->whereServicoId($service)->get('titulo');
         $count = 0;
-//        $extract = [];
+
+        $start = $period == 'manha' ? '00:00:00' : '12:00:00';
+        $end = $period == 'manha' ? '11:59:59' : '23:59:59';
 
         foreach ($dataAniel as $key => $value) {
 
