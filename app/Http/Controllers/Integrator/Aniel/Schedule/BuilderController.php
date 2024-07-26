@@ -28,7 +28,6 @@ class BuilderController extends Controller
 
     public function getCapacity(Request $request)
     {
-
         set_time_limit(2000000);
 
         if($request->period == null) {
@@ -90,6 +89,7 @@ class BuilderController extends Controller
 
         $this->dataAniel = (new CapacityAniel($this->response['period']))->getCapacityAniel();
 
+
 //        return $this->dataAniel;
 
 //        return $this->dataAniel->whereIn('TIPO_SERVICO_ANIEL',
@@ -114,24 +114,28 @@ class BuilderController extends Controller
 ////            ->where('N_OS', '=', '1163805')
 //            ->sortBy('N_OS')->pluck('N_OS')->count();
         $response = [];
-        $response['period'] = $this->response['period'];
-        $response['dayName'] = $this->response['dayName'];
+        $response[$this->response['period']] = [
+            'dayName' => $this->response['dayName'],
+            'capacity' => []
+        ];
+
 
         foreach($capacityWeekly as $key => $value) {
 
             $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
 
-            $response['capacity'][$value->service->titulo][$period] = [
+            $response[$this->response['period']]['capacity'][$value->service->titulo][$period] = [
                 'start' => $value->hora_inicio,
                 'end' => $value->hora_fim,
                 'capacity' => $value->capacidade,
                 'used' => $this->getCountOsAniel($this->dataAniel, $value->servico_id, $value->hora_inicio, $value->hora_fim),
                 'status' => $value->status,
             ];
+
         }
 
 
-        $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
+        $syncSchedule = (new ScheduleCapacitySync())->sync($response);
 
 
         return $this->getCapacitySchedule();

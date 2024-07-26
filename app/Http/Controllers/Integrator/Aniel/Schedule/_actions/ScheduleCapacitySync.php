@@ -10,6 +10,7 @@ class ScheduleCapacitySync
     public function sync($data)
     {
 
+
         foreach($data as $key => $value) {
 
             foreach($value['capacity'] as $service => $valueCapacity) {
