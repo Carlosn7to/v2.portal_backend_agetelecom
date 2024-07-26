@@ -30,6 +30,10 @@ class BuilderController extends Controller
     {
         set_time_limit(2000000);
 
+        $sync = new OrderSync();
+
+        return $sync->response();
+
         if($request->period == null) {
             return response()->json([
                 'message' => 'O período é obrigatório!',
