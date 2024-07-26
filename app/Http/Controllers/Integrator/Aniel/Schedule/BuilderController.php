@@ -178,23 +178,20 @@ class BuilderController extends Controller
 
                 if($value->dia_semana == $capacityInfo['dia_semana']) {
 
+                    if(!isset($response[$capacityInfo['data']])){
+                        $response[$capacityInfo['data']] = [
+                            'dayName' => $capacityInfo['dia_semana'],
+                            'capacity' => []
+                        ];
+                    }
 
-                    $response['period'] = $capacityInfo['data'];
-                    $response['dayName'] = $capacityInfo['dia_semana'];
+                    $dataAniel = (new CapacityAniel($capacityInfo['data']))->getCapacityAniel();
 
-                    $dataAniel = (new CapacityAniel($response['period']))->getCapacityAniel();
-
-
-                    $dataAniel = $dataAniel->where('Data_do_Agendamento', $response['period']);
+                    $dataAniel = $dataAniel->where('Data_do_Agendamento', $capacityInfo['data']);
 
                     $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
 
-                    // Adiciona ou atualiza a capacidade no array
-                    if (!isset($response['capacity'][$value->service->titulo])) {
-                        $response['capacity'][$value->service->titulo] = [];
-                    }
-
-                    $response['capacity'][$value->service->titulo][$period] = [
+                    $response[$capacityInfo['data']]['capacity'][$value->service->titulo][$period] = [
                         'start' => $value->hora_inicio,
                         'end' => $value->hora_fim,
                         'capacity' => $value->capacidade,
@@ -203,16 +200,13 @@ class BuilderController extends Controller
                     ];
 
 
-                    $debug[] = $response;
-
-
-                    $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
-
                 }
 
             }
 
         }
+
+        $syncSchedule = (new ScheduleCapacitySync())->sync($response);
 
 
 

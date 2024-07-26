@@ -10,7 +10,6 @@ class ScheduleCapacitySync
     public function sync($data)
     {
 
-
         foreach($data as $key => $value) {
 
             foreach($value['capacity'] as $service => $valueCapacity) {
@@ -23,13 +22,11 @@ class ScheduleCapacitySync
                         'noite' => 3
                     ];
 
-                    $capacityFind = Capacity::where('data', $value['period'])
+                    $capacityFind = Capacity::where('data', $key)
                         ->where('dia_semana', $value['dayName'])
                         ->where('periodo', $periodMap[$period])
                         ->where('servico', $service)
                         ->first();
-
-
 
                     if($capacityFind) {
                         $capacityFind->update([
@@ -38,7 +35,7 @@ class ScheduleCapacitySync
 
                     } else {
                         Capacity::create([
-                            'data' => $value['period'],
+                            'data' => $key,
                             'dia_semana' => $value['dayName'],
                             'servico' => $service,
                             'periodo' => $periodMap[$period],
