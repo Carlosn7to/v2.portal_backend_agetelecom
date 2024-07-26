@@ -159,8 +159,6 @@ class BuilderController extends Controller
         }
 
 
-
-
         $capacityWeekly = (new CapacityWeekly())
             ->whereIn('dia_semana', $dataCapacityWeekly)
             ->whereNull('data_final')
@@ -170,9 +168,9 @@ class BuilderController extends Controller
 
         $response = [];
 
+        $debug = [];
 
         foreach($capacity as $k => $capacityInfo) {
-
 
 
             foreach($capacityWeekly as $key => $value) {
@@ -191,6 +189,11 @@ class BuilderController extends Controller
 
                     $period = $value->hora_inicio < '12:00:00' ? 'manha' : 'tarde';
 
+                    // Adiciona ou atualiza a capacidade no array
+                    if (!isset($response['capacity'][$value->service->titulo])) {
+                        $response['capacity'][$value->service->titulo] = [];
+                    }
+
                     $response['capacity'][$value->service->titulo][$period] = [
                         'start' => $value->hora_inicio,
                         'end' => $value->hora_fim,
@@ -200,14 +203,15 @@ class BuilderController extends Controller
                     ];
 
 
+                    $debug[] = $response;
+
+
                     $syncSchedule = (new ScheduleCapacitySync())->sync([$response]);
 
                 }
 
-
-
-
             }
+
         }
 
 
@@ -230,7 +234,6 @@ class BuilderController extends Controller
                     trim($value->TIPO_SERVICO_ANIEL) == trim(mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8'))
                 ) {
                     $count++;
-//                    $extract[] = $value->N_OS;
                 }
             }
 

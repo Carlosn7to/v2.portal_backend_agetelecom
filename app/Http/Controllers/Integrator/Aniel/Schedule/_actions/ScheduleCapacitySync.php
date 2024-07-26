@@ -30,6 +30,7 @@ class ScheduleCapacitySync
                         ->first();
 
 
+
                     if($capacityFind) {
                         $capacityFind->update([
                             'utilizado' => $capacity['used'],
