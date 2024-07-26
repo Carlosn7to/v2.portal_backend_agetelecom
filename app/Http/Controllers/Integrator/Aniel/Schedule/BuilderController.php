@@ -32,6 +32,8 @@ class BuilderController extends Controller
         set_time_limit(2000000);
 
 
+        return $this->updateAllCapacity();
+
         if($request->period == null) {
             return response()->json([
                 'message' => 'O período é obrigatório!',
