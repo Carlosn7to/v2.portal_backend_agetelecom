@@ -11,9 +11,11 @@ use App\Models\Portal\User\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardSchedule
 {
+    private $typeCommand;
 
     public function __invoke()
     {
@@ -110,14 +112,116 @@ class DashboardSchedule
             ], 400);
         }
 
+
         $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
 
+
+        if(!$order) {
+            return response()->json([
+                'message' => 'Ordem de serviço não encontrada!',
+                'status' => 'Erro'
+            ], 400);
+        }
+
+        $this->typeCommand = 'approval';
         return $this->storeAniel($order);
+    }
+
+    public function rescheduleOrder(Request $request)
+    {
+        set_time_limit(2000000);
+
+        // Validação inicial dos campos
+        $validator = Validator::make($request->all(), [
+            'order' => 'required',
+            'dateHour' => 'required|date_format:Y-m-d H:i:s'
+        ], [
+            'order.required' => 'O Nº da OS é obrigatório!',
+            'dateHour.required' => 'A data e hora são obrigatórias!',
+            'dateHour.date_format' => 'A data e hora devem estar no formato válido (YYYY-MM-DD HH:MM:SS)!'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Erro de validação',
+                'errors' => $validator->errors(),
+                'status' => 'Erro'
+            ], 400);
+        }
+
+        // Validação adicional da data e hora com Carbon
+        try {
+            $validateDate = Carbon::createFromFormat('Y-m-d H:i:s', $request->dateHour);
+
+            $dateHour = $request->dateHour;
+
+            $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
+
+            if(!$order) {
+                return response()->json([
+                    'message' => 'Ordem de serviço não encontrada!',
+                    'status' => 'Erro'
+                ], 400);
+            }
+
+            $order['data_agendamento'] = $dateHour;
+
+
+            $this->typeCommand = 'reschedule';
+
+            return $this->storeAniel($order);
+
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'A data e hora devem estar no formato válido (YYYY-MM-DD HH:MM:SS)!',
+                'status' => 'Erro'
+            ], 400);
+        }
+
+    }
+
+    private function updateStatus($order, $response, $statusOs)
+    {
+        $status = [
+            'approval' => 15,
+            'reschedule' => 16
+        ];
+
+        $exportOrder = new ImportOrder();
+
+        // Atualiza o status e a resposta no banco de dados
+        $exportOrder->where('protocolo', $order['protocolo'])->update([
+            'status' => $statusOs,
+            'resposta' => json_encode($response),
+            'status_id' => $status[$this->typeCommand],
+            'data_agendamento' => $order['data_agendamento']
+        ]);
+
+        $orderBroken = new OrderBroken();
+
+        $getOrderBroken = $orderBroken->where('protocolo', $order['protocolo'])->first();
+        if ($getOrderBroken) {
+            // Adicione o novo status ao array
+            $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
+            $currentStatus[] = $newStatus;
+            $currentStatus[] = $getOrderBroken->status;
+
+            // Codifique novamente o array para JSON
+            $updatedStatus = json_encode($currentStatus);
+
+            // Atualize o registro
+            $getOrderBroken->update([
+                'status' => $updatedStatus,
+                'aprovador_id' => auth('portal')->user()->id
+            ]);
+        }
+
     }
 
     private function storeAniel($data)
     {
-
         $client = new Client();
 
         $form = [
@@ -173,39 +277,10 @@ class DashboardSchedule
             : ($status ? 'IMPORTADA' : 'ERRO');  // Caso contrário, se o status for verdadeiro, define como 'IMPORTADA', senão, define como 'ERRO'
 
 
-        $exportOrder = new ImportOrder();
-
-        // Atualiza o status e a resposta no banco de dados
-        $exportOrder->where('protocolo', $data['protocolo'])->update([
-            'status' => $statusOs,
-            'resposta' => json_encode($response),
-            'status_id' => 15
-        ]);
-
-        $orderBroken = new OrderBroken();
-
-        $order = $orderBroken->where('protocolo', $data['protocolo'])->first();
-        if ($order) {
-
-
-            // Adicione o novo status ao array
-            $newStatus = StatusOrder::where('id', 15)->first()->toArray();
-            $currentStatus[] = $newStatus;
-            $currentStatus[] = $order->status;
-
-            // Codifique novamente o array para JSON
-            $updatedStatus = json_encode($currentStatus);
-
-            // Atualize o registro
-            $order->update([
-                'status' => $updatedStatus,
-                'aprovador_id' => auth('portal')->user()->id
-            ]);
-        }
-
+        $this->updateStatus($data, $response, $statusOs);
 
         return response()->json([
-            'message' => 'Ordem de serviço aprovada com sucesso!',
+            'message' => 'Ordem de serviço alterada com sucesso!',
             'status' => 'Sucesso'
         ], 200);
 
@@ -271,4 +346,6 @@ class DashboardSchedule
 
 
     }
+
+
 }

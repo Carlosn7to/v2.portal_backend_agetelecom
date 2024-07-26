@@ -13,4 +13,5 @@ Route::prefix('capacity')->controller(\App\Http\Controllers\Integrator\Aniel\Sch
 Route::prefix('management-schedule')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule::class)->group(function () {
     Route::get('/dashboard', 'getDashboard');
     Route::post('/approval-order', 'approvalOrder');
+    Route::post('/reschedule-order', 'rescheduleOrder');
 });
