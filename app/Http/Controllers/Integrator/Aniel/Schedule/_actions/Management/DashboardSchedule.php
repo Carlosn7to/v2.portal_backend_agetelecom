@@ -210,12 +210,12 @@ class DashboardSchedule
         $getOrderBroken = $orderBroken->where('protocolo', $order['protocolo'])->first();
         if ($getOrderBroken) {
             // Adicione o novo status ao array
-            $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
+            $newStatus = StatusOrder::where('id', $status['approval'])->first()->toArray();
 
             $newStatus['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
-            $currentStatus[0] = $newStatus;
-            $currentStatus[1] = json_decode($getOrderBroken->status, true);
+            $currentStatus[] = $newStatus;
+            $currentStatus[] = json_decode($getOrderBroken->status, true)[0];
 
             // Codifique novamente o array para JSON
             $updatedStatus = json_encode($currentStatus);
