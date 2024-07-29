@@ -44,7 +44,7 @@ class DashboardSchedule
         $orderBroken = new OrderBroken();
 
         $orders = $orderBroken
-            ->where('data', '2024-07-29')
+            ->where('data', $request->period)
             ->get()
             ->map(function ($order) {
                 $decodedStatus = json_decode($order->status, true);
