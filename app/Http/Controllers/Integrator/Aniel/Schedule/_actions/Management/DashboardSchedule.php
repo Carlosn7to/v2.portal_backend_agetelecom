@@ -210,7 +210,7 @@ class DashboardSchedule
         $getOrderBroken = $orderBroken->where('protocolo', $order['protocolo'])->first();
         if ($getOrderBroken) {
             // Adicione o novo status ao array
-            $newStatus = StatusOrder::where('id', $status['approval'])->first()->toArray();
+            $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
 
             $newStatus['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
