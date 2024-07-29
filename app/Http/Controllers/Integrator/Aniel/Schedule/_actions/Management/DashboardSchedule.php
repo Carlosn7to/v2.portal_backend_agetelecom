@@ -131,29 +131,31 @@ class DashboardSchedule
     {
         set_time_limit(2000000);
 
-        // Validação inicial dos campos
-        $validator = Validator::make($request->all(), [
-            'order' => 'required',
-            'dateHour' => 'required|date_format:Y-m-d H:i:s'
-        ], [
-            'order.required' => 'O Nº da OS é obrigatório!',
-            'dateHour.required' => 'A data e hora são obrigatórias!',
-            'dateHour.date_format' => 'A data e hora devem estar no formato válido (YYYY-MM-DD HH:MM:SS)!'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Erro de validação',
-                'errors' => $validator->errors(),
-                'status' => 'Erro'
-            ], 400);
-        }
+//        // Validação inicial dos campos
+//        $validator = Validator::make($request->all(), [
+//            'order' => 'required',
+//            'dateHour' => 'required|date_format:Y-m-d H:i:s'
+//        ], [
+//            'order.required' => 'O Nº da OS é obrigatório!',
+//            'dateHour.required' => 'A data e hora são obrigatórias!',
+//            'dateHour.date_format' => 'A data e hora devem estar no formato válido (YYYY-MM-DD HH:MM:SS)!'
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->json([
+//                'message' => 'Erro de validação',
+//                'errors' => $validator->errors(),
+//                'status' => 'Erro'
+//            ], 400);
+//        }
 
         // Validação adicional da data e hora com Carbon
         try {
-            $validateDate = Carbon::createFromFormat('Y-m-d H:i:s', $request->dateHour);
+//            $validateDate = Carbon::createFromFormat('Y-m-d H:i:s', $request->dateHour);
 
-            $dateHour = $request->dateHour;
+            $date = $request->date;
+            $period = $request->period;
+
 
             $order = ImportOrder::where('protocolo', $request->order)->first()->toArray();
 
@@ -164,8 +166,16 @@ class DashboardSchedule
                 ], 400);
             }
 
-            $order['data_agendamento'] = $dateHour;
 
+            if($period == 'manha') {
+                $dateHour = Carbon::parse($date . ' 09:00:00');
+            } else {
+                $dateHour = Carbon::parse($date . ' 13:00:00');
+            }
+
+
+
+            $order['data_agendamento'] = Carbon::parse($dateHour)->format('Y-m-d H:i:s');
 
             $this->typeCommand = 'reschedule';
 

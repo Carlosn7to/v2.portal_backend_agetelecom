@@ -266,5 +266,34 @@ class BuilderController extends Controller
 
     }
 
+    public function capacityReschedule(Request $request)
+    {
+        $typeService = $request->typeService;
 
+        $datesAvailable = Capacity::where('data', '>=', Carbon::today()->toDateString())
+            ->where('servico', $typeService)
+            ->orderBy('data')
+            ->orderBy('periodo')
+            ->get(['data', 'dia_semana', 'periodo', 'status'])
+            ->toArray();
+
+        $response = [];
+        foreach($datesAvailable as $key => $value){
+
+            if(!isset($response[$value['data']])){
+                $response[$value['data']] = [
+                    'dayName' => mb_convert_case($value['dia_semana'], MB_CASE_TITLE, 'utf8'),
+                    'period' => []
+                ];
+            }
+
+            $response[$value['data']]['period'][$value['periodo']] = [
+                'status' => $value['status']
+            ];
+
+        }
+
+        return $response;
+
+    }
 }
