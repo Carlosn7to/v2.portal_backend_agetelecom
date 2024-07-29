@@ -212,6 +212,8 @@ class DashboardSchedule
             // Adicione o novo status ao array
             $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
 
+            $newStatus['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
+
             $currentStatus[0] = $newStatus;
             $currentStatus[1] = json_decode($getOrderBroken->status, true);
 
@@ -330,7 +332,7 @@ class DashboardSchedule
 
             }
             $order['servico'] = $typeService;
-
+            $order['status_order']['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
             $orderBroken->firstOrCreate(
                 ['os_id' => $order['id']],
                 [
