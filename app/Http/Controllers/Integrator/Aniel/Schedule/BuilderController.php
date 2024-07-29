@@ -305,7 +305,7 @@ class BuilderController extends Controller
 //            $newStatus[] = $status[0];
 //
 //            if(isset($status[1])) {
-//                $newStatus[] = $status[1][0];
+//                $newStatus[] = $status[1];
 //            }
 //
 //            // Atualiza o status no banco de dados
