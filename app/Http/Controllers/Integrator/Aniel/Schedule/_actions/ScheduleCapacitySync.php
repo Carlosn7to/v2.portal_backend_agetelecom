@@ -38,7 +38,7 @@ class ScheduleCapacitySync
                             $capacityFind->update([
                                 'status' => $infoSchedule['status'],
                                 'motivo_fechamento' => $infoSchedule['description'],
-                                'hora_fechamento' => $infoSchedule['hour'],
+                                'hora_fechamento' => Carbon::now()->format('H:i:s'),
                                 'atualizado_por' => 1
                             ]);
                         }
@@ -81,8 +81,7 @@ class ScheduleCapacitySync
             if($overCapacity) {
                 $info = [
                     'status' => 'fechada',
-                    'description' => 'Capacidade atingida',
-                    'hour' => Carbon::now()->format('H:i:s')
+                    'description' => 'Capacidade atingida'
                 ];
 
                 return $info;
