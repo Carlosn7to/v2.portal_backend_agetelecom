@@ -212,8 +212,8 @@ class DashboardSchedule
             // Adicione o novo status ao array
             $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
 
-            $currentStatus[] = $newStatus;
-            $currentStatus[] = json_decode($getOrderBroken->status, true);
+            $currentStatus[0] = $newStatus;
+            $currentStatus[1] = json_decode($getOrderBroken->status, true);
 
             // Codifique novamente o array para JSON
             $updatedStatus = json_encode($currentStatus);
