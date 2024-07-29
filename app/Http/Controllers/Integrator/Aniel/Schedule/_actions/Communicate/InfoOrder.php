@@ -22,7 +22,7 @@ class InfoOrder
         // Configurar o cliente Guzzle
         $client = new Client([
             'base_uri' => $integrator['configuracao']['configuration']['host'],
-            'http_errors' => false, // Impedir que Guzzle gere exceções para códigos de erro HTTP
+            'http_errors' => false
         ]);
 
 

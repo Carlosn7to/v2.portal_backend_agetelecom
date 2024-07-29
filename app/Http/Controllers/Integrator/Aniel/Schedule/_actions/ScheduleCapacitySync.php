@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions;
 
 use App\Models\Integrator\Aniel\Schedule\Capacity;
+use Carbon\Carbon;
 
 class ScheduleCapacitySync
 {
 
     public function sync($data)
     {
-
 
         foreach($data as $key => $value) {
 
@@ -30,6 +30,20 @@ class ScheduleCapacitySync
                         ->first();
 
                     if($capacityFind) {
+
+                        $infoSchedule = $this->buildScheduleStatus($capacityFind);
+
+
+                        if($infoSchedule != null) {
+                            $capacityFind->update([
+                                'status' => $infoSchedule['status'],
+                                'motivo_fechamento' => $infoSchedule['description'],
+                                'hora_fechamento' => $infoSchedule['hour'],
+                                'atualizado_por' => 1
+                            ]);
+                        }
+
+
                         $capacityFind->update([
                             'utilizado' => $capacity['used'],
                         ]);
@@ -57,4 +71,26 @@ class ScheduleCapacitySync
 
     }
 
+    private function buildScheduleStatus($schedule)
+    {
+
+        if($schedule->status == 'aberta') {
+
+            $overCapacity = $schedule->utilizado >= $schedule->capacidade ? 1 : 0;
+
+            if($overCapacity) {
+                $info = [
+                    'status' => 'fechada',
+                    'description' => 'Capacidade atingida',
+                    'hour' => Carbon::now()->format('H:i:s')
+                ];
+
+                return $info;
+            }
+
+        }
+
+        return null;
+
+    }
 }
