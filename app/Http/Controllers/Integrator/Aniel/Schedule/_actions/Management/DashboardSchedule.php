@@ -215,8 +215,9 @@ class DashboardSchedule
         if ($getOrderBroken) {
             // Adicione o novo status ao array
             $newStatus = StatusOrder::where('id', $status[$this->typeCommand])->first()->toArray();
+
             $currentStatus[] = $newStatus;
-            $currentStatus[] = $getOrderBroken->status;
+            $currentStatus[] = json_decode($getOrderBroken->status, true);
 
             // Codifique novamente o array para JSON
             $updatedStatus = json_encode($currentStatus);
@@ -334,7 +335,6 @@ class DashboardSchedule
             }
             $order['servico'] = $typeService;
 
-
             $orderBroken->firstOrCreate(
                 ['os_id' => $order['id']],
                 [
@@ -345,7 +345,7 @@ class DashboardSchedule
                'subservico' => $order['tipo_servico'],
                'hora_agendamento' => $dateTime->format('H:i:s'),
                'periodo' => $period,
-               'status' => json_encode([$order['status_order']]),
+               'status' => json_encode($order['status_order']),
                'localidade' => $order['area_despacho'],
                'aberta_por' => $order['criado_por'],
                'setor' => $order['setor']

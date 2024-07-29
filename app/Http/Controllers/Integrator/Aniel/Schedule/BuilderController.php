@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\ScheduleCapacitySync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
@@ -10,7 +12,9 @@ use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
 use App\Http\Controllers\Test\Portal\Aniel\API;
 use App\Models\Integrator\Aniel\Schedule\Capacity;
 use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
+use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
+use App\Models\Integrator\Aniel\Schedule\StatusOrder;
 use App\Models\Integrator\Aniel\Schedule\SubService;
 use Carbon\Carbon;
 use HarryGulliford\Firebird\Tests\Support\Models\Order;
@@ -268,6 +272,11 @@ class BuilderController extends Controller
 
     public function capacityReschedule(Request $request)
     {
+
+//        $infoOrder = new InfoOrder();
+//
+//        return $infoOrder->sendConfirmation();
+
         $typeService = $request->typeService;
 
         $datesAvailable = Capacity::where('data', '>=', Carbon::today()->toDateString())

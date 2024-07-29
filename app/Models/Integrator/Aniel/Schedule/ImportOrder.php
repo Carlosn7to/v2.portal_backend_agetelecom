@@ -47,7 +47,7 @@ class ImportOrder extends Model
     public function statusOrder()
     {
         return $this->belongsTo(StatusOrder::class, 'status_id')
-            ->select('id', 'titulo', 'descricao', 'cor_indicativa');
+            ->select('id', 'titulo', 'descricao', 'cor_indicativa', 'created_at');
     }
 
 
