@@ -273,7 +273,7 @@ class BuilderController extends Controller
     public function capacityReschedule(Request $request)
     {
 
-//        $ordersBroken = OrderBroken::whereProtocolo('1178387')->get();
+//        $ordersBroken = OrderBroken::whereProtocolo('1178424')->get();
 //
 //
 //        foreach ($ordersBroken as $key => $order) {
@@ -305,8 +305,6 @@ class BuilderController extends Controller
 //            // Atualiza o status no banco de dados
 //            $order->status = json_encode($newStatus);
 //            $order->save();
-//
-//            return $order;
 //
 //        }
 //

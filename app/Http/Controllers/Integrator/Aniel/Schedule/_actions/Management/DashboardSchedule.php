@@ -44,15 +44,11 @@ class DashboardSchedule
         $orderBroken = new OrderBroken();
 
         $orders = $orderBroken
-            ->where('data', $request->period)
+            ->where('data', '2024-07-29')
             ->get()
             ->map(function ($order) {
                 $decodedStatus = json_decode($order->status, true);
-                foreach ($decodedStatus as &$statusItem) {
-                    if (is_string($statusItem)) {
-                        $statusItem = json_decode($statusItem, true);
-                    }
-                }
+
                 $order->status_order = $decodedStatus;
 
                 $approval = User::where('id', $order->aprovador_id)->first();
