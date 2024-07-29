@@ -345,7 +345,7 @@ class DashboardSchedule
                'subservico' => $order['tipo_servico'],
                'hora_agendamento' => $dateTime->format('H:i:s'),
                'periodo' => $period,
-               'status' => json_encode($order['status_order']),
+               'status' => json_encode([$order['status_order']]),
                'localidade' => $order['area_despacho'],
                'aberta_por' => $order['criado_por'],
                'setor' => $order['setor']

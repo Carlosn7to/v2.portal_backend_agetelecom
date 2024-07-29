@@ -273,6 +273,46 @@ class BuilderController extends Controller
     public function capacityReschedule(Request $request)
     {
 
+//        $ordersBroken = OrderBroken::whereProtocolo('1178387')->get();
+//
+//
+//        foreach ($ordersBroken as $key => $order) {
+//            $status = json_decode($order->status, true);
+//
+//            if(!isset($status[0])) {
+//                $status[0] = $status;
+//            }
+//
+//            if (is_array($status)) {
+//                foreach ($status as $index => $subStatus) {
+//                    if (is_string($subStatus)) {
+//                        $status[$index] = json_decode($subStatus, true);
+//                    }
+//                }
+//            } elseif (is_string($status)) {
+//                $status = json_decode($status, true);
+//            }
+//
+//
+//            $newStatus = [];
+//
+//            $newStatus[] = $status[0];
+//
+//            if(isset($status[1])) {
+//                $newStatus[] = $status[1][0];
+//            }
+//
+//            // Atualiza o status no banco de dados
+//            $order->status = json_encode($newStatus);
+//            $order->save();
+//
+//            return $order;
+//
+//        }
+//
+//
+//        return true;
+
 //        $infoOrder = new InfoOrder();
 //
 //        return $infoOrder->sendConfirmation();
