@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('aniel:export')
             ->everySecond();
+
+        $schedule->command('aniel:mirror')
+            ->everySecond();
     }
 
     /**

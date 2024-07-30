@@ -12,15 +12,6 @@ class SendingController extends Controller
 {
     public function updateStatusSending(Request $request)
     {
-//        $info = new InfoOrder();
-//
-//        $data = [
-//          'os_id' => 5234,
-//            'protocolo' => '1153840',
-//            'celular_1' => '5561984700440',
-//        ];
-//
-//        return $info->sendAlterOs($data);
 
         $status = [
             'confirm' => 'confirmado',
