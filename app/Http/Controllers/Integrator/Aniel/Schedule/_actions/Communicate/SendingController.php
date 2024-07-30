@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate;
 
 use App\Http\Controllers\Controller;
+use App\Models\Integrator\Aniel\Schedule\Communicate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SendingController extends Controller
@@ -11,8 +13,27 @@ class SendingController extends Controller
     {
 //        $info = new InfoOrder();
 //
-//        return $info->sendAlterOs();
+//        $data = [
+//          'os_id' => 5234,
+//            'protocolo' => '1153840',
+//            'celular_1' => '5561984700440',
+//        ];
+//
+//        return $info->sendAlterOs($data);
 
-        return response()->json($request->response);
+        $status = [
+          'confirm' => 'confirmado',
+          'attendant' => 'atendente',
+          'reschedule' => 'reagendamento'
+        ];
+
+        $communicate = new Communicate();
+
+        $communicate->whereCelularCliente($request->phone)
+            ->whereDate('data_envio', '>=', Carbon::now()->subDays(2))
+            ->update([
+            'status_resposta' => $status[$request->response]
+        ]);
+
     }
 }

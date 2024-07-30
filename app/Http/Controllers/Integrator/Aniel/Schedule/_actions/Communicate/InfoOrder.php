@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate;
 
+use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Portal\AgeCommunicate\BillingRule\Integrator;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 class InfoOrder
@@ -80,9 +82,8 @@ class InfoOrder
 
     }
 
-    public function sendAlterOs()
+    public function sendAlterOs($data)
     {
-
 
         $integrator = (new Integrator())->whereTitulo('InfoBip')
             ->first();
@@ -105,14 +106,14 @@ class InfoOrder
                 'messages' => [
                     [
                         'from' => '5561920023969',
-                        'to' => '5561984700440',
+                        'to' => $data['celular_1'],
                         'messageId' => '',
                         'content' => [
-                            'templateName' => 'informar_deslocalmento_os_portal',
+                            'templateName' => 'informar_deslocamento_os_portal',
                             'templateData' => [
                                 'body' => [
                                     'placeholders' => [
-                                        '17292712'
+                                        $data['protocolo']
                                     ]
                                 ],
                                 'buttons' => [
@@ -141,7 +142,25 @@ class InfoOrder
         // Obter a resposta como JSON
         $responseData = json_decode($response->getBody(), true);
 
-        return $responseData;
+
+        $communicate = new Communicate();
+
+        $communicate->firstOrCreate(
+            ['protocolo' => $data['protocolo']],
+            [
+                'os_id' => $data['os_id'],
+                'protocolo' => $data['protocolo'],
+                'celular_cliente' => $data['celular_1'],
+                'template' => 'informar_deslocamento_os_portal',
+                'dados' => json_encode($data),
+                'status_envio' => 'enviado',
+                'status_resposta' => 'pendente',
+                'mensagem_id' => $responseData['messages'][0]['messageId'],
+                'data_envio' => Carbon::now()
+            ]
+        );
+
+
 
     }
 
