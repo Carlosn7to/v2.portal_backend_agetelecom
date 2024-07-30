@@ -9,8 +9,10 @@ class SendingController extends Controller
 {
     public function updateStatusSending(Request $request)
     {
-        $info = new InfoOrder();
+//        $info = new InfoOrder();
+//
+//        return $info->sendAlterOs();
 
-        return response()->json([$request->phone, $request->response]);
+        return response()->json($request->response);
     }
 }
