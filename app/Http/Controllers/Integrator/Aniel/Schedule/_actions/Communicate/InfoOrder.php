@@ -36,7 +36,7 @@ class InfoOrder
                 'messages' => [
                     [
                         'from' => '5561920023969',
-                        'to' => '5561984700440',
+                        'to' => '5561998003186',
                         'messageId' => '',
                         'content' => [
                             'templateName' => 'confirmacao_agendamento_portal',

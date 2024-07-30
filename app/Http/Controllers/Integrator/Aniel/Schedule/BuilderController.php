@@ -273,8 +273,6 @@ class BuilderController extends Controller
     public function capacityReschedule(Request $request)
     {
 
-        $
-
 
 //
 //        $dash = new DashboardSchedule();
