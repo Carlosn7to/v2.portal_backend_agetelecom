@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate;
 
 use App\Http\Controllers\Controller;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
+use App\Models\Integrator\Aniel\Schedule\CommunicateLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -35,6 +36,14 @@ class SendingController extends Controller
             ->update([
             'status_resposta' => $status[$request->response]
         ]);
+
+        $log = new CommunicateLog();
+
+        $log->envio_id = $communicate->id;
+        $log->status_envio = 'enviado';
+        $log->status_resposta = $status[$request->response];
+        $log->atualizado_em = Carbon::now();
+        $log->save();
 
         return response()->json(true);
     }

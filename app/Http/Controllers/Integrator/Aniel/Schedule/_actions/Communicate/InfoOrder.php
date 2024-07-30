@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate;
 
 use App\Models\Integrator\Aniel\Schedule\Communicate;
+use App\Models\Integrator\Aniel\Schedule\CommunicateLog;
 use App\Models\Portal\AgeCommunicate\BillingRule\Integrator;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -145,23 +146,24 @@ class InfoOrder
 
         $communicate = new Communicate();
 
-        $communicate->firstOrCreate(
-            ['protocolo' => $data['protocolo']],
-            [
-                'os_id' => $data['os_id'],
-                'protocolo' => $data['protocolo'],
-                'celular_cliente' => $data['celular_1'],
-                'template' => 'informar_deslocamento_os_portal',
-                'dados' => json_encode($data),
-                'status_envio' => 'enviado',
-                'status_resposta' => 'pendente',
-                'mensagem_id' => $responseData['messages'][0]['messageId'],
-                'data_envio' => Carbon::now()
-            ]
-        );
+        $communicate->os_id = $data['os_id'];
+        $communicate->protocolo = $data['protocolo'];
+        $communicate->celular_cliente = $data['celular_1'];
+        $communicate->template = 'informar_deslocamento_os_portal';
+        $communicate->dados = json_encode($data);
+        $communicate->status_envio = 'enviado';
+        $communicate->status_resposta = 'pendente';
+        $communicate->mensagem_id = $responseData['messages'][0]['messageId'];
+        $communicate->data_envio = Carbon::now();
+        $communicate->save();
 
+        $log = new CommunicateLog();
 
-
+        $log->envio_id = $communicate->id;
+        $log->status_envio = 'enviado';
+        $log->status_resposta = 'pendente';
+        $log->atualizado_em = Carbon::now();
+        $log->save();
     }
 
     private function watchStatusOrders()
