@@ -321,33 +321,6 @@ class BuilderController extends Controller
 //
 //        return $infoOrder->sendAlterOs();
 
-//        $service = Service::whereTitulo('Ativação')->first();
-//
-//        $capacityWeekly = CapacityWeekly::whereServicoId($service->id)
-//                                    ->whereDiaSemana('terça-feira')
-//                                    ->get(['servico_id', 'dia_semana', 'hora_fim']);
-//
-//        $hourActual = Carbon::now();
-//        $diffTarget = -3;
-//        foreach($capacityWeekly as $key => $value) {
-//            $horaFim = Carbon::createFromFormat('H:i:s', $value->hora_fim);
-//
-//            // Calcula a diferença em horas
-//            $diffInHours = $horaFim->diffInHours($hourActual, false); // A flag 'false' garante que a diferença negativa seja considerada
-//
-//            if ($diffTarget >= $diffInHours) {
-//
-//                $info = [
-//                    'status' => 'fechada',
-//                    'description' => 'O período de agendamento expirou.'
-//                ];
-//
-//                return $info;
-//            }
-//        }
-//
-//        return true;
-
 
         $typeService = $request->typeService;
 
