@@ -12,6 +12,9 @@ class SendingController extends Controller
 {
     public function updateStatusSending(Request $request)
     {
+        $info = new InfoOrder();
+
+        return $info->__invoke();
 
         $status = [
             'confirm' => 'confirmado',

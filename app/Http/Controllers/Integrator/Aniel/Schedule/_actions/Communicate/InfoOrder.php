@@ -16,6 +16,8 @@ class InfoOrder
 {
     public function __invoke()
     {
+        set_time_limit(2000000);
+
         return $this->watchStatusOrders();
     }
 
