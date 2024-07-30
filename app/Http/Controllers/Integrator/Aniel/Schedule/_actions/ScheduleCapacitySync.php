@@ -104,7 +104,7 @@ class ScheduleCapacitySync
                 // Calcula a diferença em horas
                 $diffInHours = $horaFim->diffInHours($hourActual, false); // A flag 'false' garante que a diferença negativa seja considerada
 
-                if ($diffInHours >= $diffTarget) {
+                if ($diffTarget >= $diffInHours) {
 
                     $info = [
                         'status' => 'fechada',
