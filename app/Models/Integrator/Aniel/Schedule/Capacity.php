@@ -20,6 +20,7 @@ class Capacity extends Model
         'capacidade',
         'utilizado',
         'status',
+        'data_fechamento',
         'hora_fechamento',
         'atualizado_por',
         'motivo_fechamento'

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions;
 
 use App\Models\Integrator\Aniel\Schedule\Capacity;
+use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
+use App\Models\Integrator\Aniel\Schedule\Service;
 use Carbon\Carbon;
 
 class ScheduleCapacitySync
@@ -38,6 +40,7 @@ class ScheduleCapacitySync
                             $capacityFind->update([
                                 'status' => $infoSchedule['status'],
                                 'motivo_fechamento' => $infoSchedule['description'],
+                                'data_fechamento' => Carbon::now()->format('Y-m-d'),
                                 'hora_fechamento' => Carbon::now()->format('H:i:s'),
                                 'atualizado_por' => 1
                             ]);
@@ -86,6 +89,33 @@ class ScheduleCapacitySync
 
                 return $info;
             }
+
+            $service = Service::whereTitulo($schedule->servico)->first();
+
+            $capacityWeekly = CapacityWeekly::whereServicoId($service->id)
+                ->whereDiaSemana($schedule->dia_semana)
+                ->get(['servico_id', 'dia_semana', 'hora_fim']);
+
+            $hourActual = Carbon::now();
+            $diffTarget = -3;
+            foreach($capacityWeekly as $key => $value) {
+                $horaFim = Carbon::createFromFormat('H:i:s', $value->hora_fim);
+
+                // Calcula a diferença em horas
+                $diffInHours = $horaFim->diffInHours($hourActual, false); // A flag 'false' garante que a diferença negativa seja considerada
+
+                if ($diffInHours >= $diffTarget) {
+
+                    $info = [
+                        'status' => 'fechada',
+                        'description' => 'O período de agendamento expirou.'
+                    ];
+
+                    return $info;
+                }
+            }
+
+
 
         }
 

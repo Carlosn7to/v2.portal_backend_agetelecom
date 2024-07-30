@@ -319,7 +319,8 @@ class BuilderController extends Controller
 
 //        $infoOrder = new InfoOrder();
 //
-//        return $infoOrder->sendConfirmation();
+//        return $infoOrder->sendAlterOs();
+
 
         $typeService = $request->typeService;
 
