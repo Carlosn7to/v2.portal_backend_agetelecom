@@ -36,5 +36,6 @@ class SendingController extends Controller
             'status_resposta' => $status[$request->response]
         ]);
 
+        return response()->json(true);
     }
 }
