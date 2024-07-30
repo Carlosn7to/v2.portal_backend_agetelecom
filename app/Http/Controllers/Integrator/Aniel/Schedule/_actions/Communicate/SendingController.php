@@ -23,27 +23,28 @@ class SendingController extends Controller
 //        return $info->sendAlterOs($data);
 
         $status = [
-          'confirm' => 'confirmado',
-          'attendant' => 'atendente',
-          'reschedule' => 'reagendamento'
+            'confirm' => 'confirmado',
+            'attendant' => 'atendente',
+            'reschedule' => 'reagendamento'
         ];
 
-        $communicate = new Communicate();
-
-        $communicate->whereCelularCliente($request->phone)
+        $communicate = Communicate::whereCelularCliente($request->phone)
             ->whereDate('data_envio', '>=', Carbon::now()->subDay())
             ->whereStatusResposta('pendente')
-            ->update([
-            'status_resposta' => $status[$request->response]
-        ]);
+            ->first();
 
-        $log = new CommunicateLog();
+        if ($communicate) {
+            $communicate->status_resposta = $status[$request->response];
+            $communicate->save();
 
-        $log->envio_id = $communicate->id;
-        $log->status_envio = 'enviado';
-        $log->status_resposta = $status[$request->response];
-        $log->atualizado_em = Carbon::now();
-        $log->save();
+            $log = new CommunicateLog();
+
+            $log->envio_id = $communicate->id;
+            $log->status_envio = 'enviado';
+            $log->status_resposta = $status[$request->response];
+            $log->atualizado_em = Carbon::now();
+            $log->save();
+        }
 
         return response()->json(true);
     }
