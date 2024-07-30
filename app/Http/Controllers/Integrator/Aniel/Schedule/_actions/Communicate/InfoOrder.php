@@ -197,7 +197,7 @@ class InfoOrder
     private function watchStatusOrders()
     {
         $this->storeOrdersAniel();
-
+//        return $this->buildAlterOs();
     }
 
     private function storeOrdersAniel()
@@ -224,7 +224,7 @@ class InfoOrder
 
 
                     if ($voalleOrder) {
-                        $dateSchedule = $order->Data_do_Agendamento . ' ' . $order->Hora_do_Agendamento;
+                        $dateSchedule = $voalleOrder->data_agendamento;
 
                         $communicateMirror->updateOrCreate(
                             ['os_id' => $voalleOrder->id], // Condição para encontrar o registro
@@ -244,7 +244,15 @@ class InfoOrder
 
     }
 
+    private function buildAlterOs()
+    {
+        $getOrders = CommunicateMirror::where('status_aniel', 6)
+                    ->where('envio_deslocamento', false)
+                    ->get();
 
+        return $getOrders;
+
+    }
 
 
 }
