@@ -90,30 +90,30 @@ class ScheduleCapacitySync
                 return $info;
             }
 
-            $service = Service::whereTitulo($schedule->servico)->first();
-
-            $capacityWeekly = CapacityWeekly::whereServicoId($service->id)
-                ->whereDiaSemana($schedule->dia_semana)
-                ->get(['servico_id', 'dia_semana', 'hora_fim']);
-
-            $hourActual = Carbon::now();
-            $diffTarget = -3;
-            foreach($capacityWeekly as $key => $value) {
-                $horaFim = Carbon::createFromFormat('H:i:s', $value->hora_fim);
-
-                // Calcula a diferença em horas
-                $diffInHours = $horaFim->diffInHours($hourActual, false); // A flag 'false' garante que a diferença negativa seja considerada
-
-                if ($diffInHours >= $diffTarget) {
-
-                    $info = [
-                        'status' => 'fechada',
-                        'description' => 'O período de agendamento expirou.'
-                    ];
-
-                    return $info;
-                }
-            }
+//            $service = Service::whereTitulo($schedule->servico)->first();
+//
+//            $capacityWeekly = CapacityWeekly::whereServicoId($service->id)
+//                ->whereDiaSemana($schedule->dia_semana)
+//                ->get(['servico_id', 'dia_semana', 'hora_fim']);
+//
+//            $hourActual = Carbon::now();
+//            $diffTarget = -3;
+//            foreach($capacityWeekly as $key => $value) {
+//                $horaFim = Carbon::createFromFormat('H:i:s', $value->hora_fim);
+//
+//                // Calcula a diferença em horas
+//                $diffInHours = $horaFim->diffInHours($hourActual, false); // A flag 'false' garante que a diferença negativa seja considerada
+//
+//                if ($diffInHours >= $diffTarget) {
+//
+//                    $info = [
+//                        'status' => 'fechada',
+//                        'description' => 'O período de agendamento expirou.'
+//                    ];
+//
+//                    return $info;
+//                }
+//            }
 
 
 
