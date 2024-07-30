@@ -30,7 +30,7 @@ class SendingController extends Controller
         $communicate = new Communicate();
 
         $communicate->whereCelularCliente($request->phone)
-            ->whereDate('data_envio', '>=', Carbon::now()->subDays(2))
+            ->whereDate('data_envio', '>=', Carbon::now()->subDay())
             ->whereStatusResposta('pendente')
             ->update([
             'status_resposta' => $status[$request->response]
