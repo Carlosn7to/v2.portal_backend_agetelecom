@@ -224,7 +224,7 @@ class InfoOrder
 
 
                     if ($voalleOrder) {
-                        $dateSchedule = $voalleOrder->data_agendamento;
+                        $dateSchedule = $order->Data_do_Agendamento . ' ' . $order->Hora_do_Agendamento;
 
                         $communicateMirror->updateOrCreate(
                             ['os_id' => $voalleOrder->id], // Condição para encontrar o registro
