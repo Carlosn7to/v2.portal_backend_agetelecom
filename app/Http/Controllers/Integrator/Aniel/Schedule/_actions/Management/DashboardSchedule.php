@@ -113,99 +113,47 @@ class DashboardSchedule
         }
 
         $ordersVoalle = ImportOrder::whereDate('data_agendamento', $request->period)
-                        ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+            ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
 
-        $ordersVoalle->map(function ($order) {
+        $ordersVoalle->each(function ($order) {
 
-            $order->protocolo = "$order->protocolo";
-            $anielOrder = ($this->getDataUniqueOrder($order->protocolo));
-
+            $order->protocolo = (string)$order->protocolo;
+            $anielOrder = $this->getDataUniqueOrder($order->protocolo);
             $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
 
-            if($anielOrder) {
+            $dateScheduleAniel = null;
+
+            if ($anielOrder) {
                 $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
-
-
                 $order->status = $anielOrder->Status_Descritivo;
-
-                $statusDetails = StatusOrder::whereTitulo($order->status)
-                    ->first();
-
-                if($statusDetails) {
-                    $order->cor_indicativa = $statusDetails->cor_indicativa;
-                    $order->status_descricao = $statusDetails->descricao;
-                }
-
+                $statusDetails = StatusOrder::where('titulo', $order->status)->first();
             } else {
-                $statusDetails = StatusOrder::whereId($order->status_id)
-                    ->first();
-
-                if($statusDetails) {
-                    $order->cor_indicativa = $statusDetails->cor_indicativa;
-                    $order->status_descricao = $statusDetails->descricao;
-                }
+                $statusDetails = StatusOrder::where('id', $order->status_id)->first();
             }
 
-            $order->data_agendamento = Carbon::parse($order->data_agendamento)->format('d/m/Y H:i:s');
+            if ($statusDetails) {
+                $order->cor_indicativa = $statusDetails->cor_indicativa;
+                $order->status_descricao = $statusDetails->descricao;
+            }
 
-            $order->data_agendamento = $dateScheduleAniel ?? $order->data_agendamento;
-
+            $order->data_agendamento = $dateScheduleAniel ?? Carbon::parse($order->data_agendamento)->format('d/m/Y H:i:s');
             $order->localidade = mb_convert_case($order->localidade, MB_CASE_TITLE, 'UTF-8');
             $order->tipo_servico = mb_convert_case($order->tipo_servico, MB_CASE_TITLE, 'UTF-8');
 
-
-
-
             $brokenOrder = OrderBroken::where('protocolo', $order->protocolo)->first();
 
-            if($brokenOrder) {
-
-                if (isset($brokenOrder->aprovador_id)) {
-                    $order->aprovador = User::where('id', $brokenOrder->aprovador_id)->first(['nome']);
-
-
-                    $words = explode(' ', $order->aprovador->nome);
-                    // Filtrar palavras com menos de 3 letras
-                    $filteredWords = array_filter($words, function ($word) {
-                        return strlen($word) >= 3;
-                    });
-                    // Pegar as duas primeiras palavras
-                    $filteredWords = array_slice($filteredWords, 0, 2);
-                    // Capitalizar a primeira letra de cada palavra
-                    $filteredWords = array_map('ucfirst', $filteredWords);
-                    // Unir as palavras novamente
-                    $order->aprovador = implode(' ', $filteredWords);
-                }
-
-                if (isset($brokenOrder->solicitante_id)) {
-                    $order->solicitante = User::where('id', $brokenOrder->solicitante_id)->first(['nome']);
-
-                    $words = explode(' ', $order->solicitante->nome);
-                    // Filtrar palavras com menos de 3 letras
-                    $filteredWords = array_filter($words, function ($word) {
-                        return strlen($word) >= 3;
-                    });
-                    // Pegar as duas primeiras palavras
-                    $filteredWords = array_slice($filteredWords, 0, 2);
-                    // Capitalizar a primeira letra de cada palavra
-                    $filteredWords = array_map('ucfirst', $filteredWords);
-                    // Unir as palavras novamente
-                    $order->solicitante = implode(' ', $filteredWords);
-                }
-
+            if ($brokenOrder) {
+                $order->aprovador = $this->getFormattedName($brokenOrder->aprovador_id);
+                $order->solicitante = $this->getFormattedName($brokenOrder->solicitante_id);
             }
 
-            $communication = Communicate::whereProtocolo($order->protocolo)
-                ->whereTemplate('confirmacao_agendamento_portal')
+            $communication = Communicate::where('protocolo', $order->protocolo)
+                ->where('template', 'confirmacao_agendamento_portal')
                 ->first();
 
-            $order->comunicacao = null;
-
-
-
-            if($communication) {
-                $order->comunicacao = mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8');
-            }
+            $order->comunicacao = $communication
+                ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
+                : null;
 
             return $order;
         });
@@ -547,6 +495,19 @@ class DashboardSchedule
 
     }
 
+    private function getFormattedName($userId) {
+        if ($userId) {
+            $user = User::find($userId, ['nome']);
+            if ($user) {
+                $words = explode(' ', $user->nome);
+                $filteredWords = array_filter($words, fn($word) => strlen($word) >= 3);
+                $filteredWords = array_slice($filteredWords, 0, 2);
+                $filteredWords = array_map('ucfirst', $filteredWords);
+                return implode(' ', $filteredWords);
+            }
+        }
+        return null;
+    }
 
 
 }
