@@ -111,7 +111,6 @@ class BuilderBillingRuleController extends Controller
     private function getData() : void
     {
         $this->data = (new DataVoalle())->getDataResults();
-
     }
 
     private function buildingData()
