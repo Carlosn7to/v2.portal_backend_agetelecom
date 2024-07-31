@@ -224,7 +224,13 @@ class InfoOrder
 
 
                     if ($voalleOrder) {
-                        $dateSchedule = $order->Data_do_Agendamento . ' ' . $order->Hora_do_Agendamento;
+                        $period = $order->Hora_do_Agendamento < '12:00:00' ? 'manhã' : 'tarde';
+
+                        $start = $period == 'manhã' ? '08:00' : '13:00';
+                        $end = $period == 'manhã' ? '12:00' : '18:00';
+
+                        $dateSchedule = $order->Data_do_Agendamento . ' ' . $start;
+
 
                         $communicateMirror->updateOrCreate(
                             ['os_id' => $voalleOrder->id], // Condição para encontrar o registro
