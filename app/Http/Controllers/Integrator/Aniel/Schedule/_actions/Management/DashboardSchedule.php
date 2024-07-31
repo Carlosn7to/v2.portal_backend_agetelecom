@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
+use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
@@ -93,6 +95,122 @@ class DashboardSchedule
 
         return $orders;
 
+
+
+    }
+
+    public function getDashboardOperational(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'period' => 'required|date', // Adicione outras regras de validação conforme necessário
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'Erro',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $ordersVoalle = ImportOrder::whereDate('data_agendamento', $request->period)
+                        ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+
+        $ordersVoalle->map(function ($order) {
+
+            $order->protocolo = "$order->protocolo";
+            $anielOrder = ($this->getDataUniqueOrder($order->protocolo));
+
+            $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
+
+            if($anielOrder) {
+                $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
+
+
+                $order->status = $anielOrder->Status_Descritivo;
+
+                $statusDetails = StatusOrder::whereTitulo($order->status)
+                    ->first();
+
+                if($statusDetails) {
+                    $order->cor_indicativa = $statusDetails->cor_indicativa;
+                    $order->status_descricao = $statusDetails->descricao;
+                }
+
+            } else {
+                $statusDetails = StatusOrder::whereId($order->status_id)
+                    ->first();
+
+                if($statusDetails) {
+                    $order->cor_indicativa = $statusDetails->cor_indicativa;
+                    $order->status_descricao = $statusDetails->descricao;
+                }
+            }
+
+            $order->data_agendamento = Carbon::parse($order->data_agendamento)->format('d/m/Y H:i:s');
+
+            $order->data_agendamento = $dateScheduleAniel ?? $order->data_agendamento;
+
+            $order->localidade = mb_convert_case($order->localidade, MB_CASE_TITLE, 'UTF-8');
+            $order->tipo_servico = mb_convert_case($order->tipo_servico, MB_CASE_TITLE, 'UTF-8');
+
+
+
+
+            $brokenOrder = OrderBroken::where('protocolo', $order->protocolo)->first();
+
+            if($brokenOrder) {
+
+                if (isset($brokenOrder->aprovador_id)) {
+                    $order->aprovador = User::where('id', $brokenOrder->aprovador_id)->first(['nome']);
+
+
+                    $words = explode(' ', $order->aprovador->nome);
+                    // Filtrar palavras com menos de 3 letras
+                    $filteredWords = array_filter($words, function ($word) {
+                        return strlen($word) >= 3;
+                    });
+                    // Pegar as duas primeiras palavras
+                    $filteredWords = array_slice($filteredWords, 0, 2);
+                    // Capitalizar a primeira letra de cada palavra
+                    $filteredWords = array_map('ucfirst', $filteredWords);
+                    // Unir as palavras novamente
+                    $order->aprovador = implode(' ', $filteredWords);
+                }
+
+                if (isset($brokenOrder->solicitante_id)) {
+                    $order->solicitante = User::where('id', $brokenOrder->solicitante_id)->first(['nome']);
+
+                    $words = explode(' ', $order->solicitante->nome);
+                    // Filtrar palavras com menos de 3 letras
+                    $filteredWords = array_filter($words, function ($word) {
+                        return strlen($word) >= 3;
+                    });
+                    // Pegar as duas primeiras palavras
+                    $filteredWords = array_slice($filteredWords, 0, 2);
+                    // Capitalizar a primeira letra de cada palavra
+                    $filteredWords = array_map('ucfirst', $filteredWords);
+                    // Unir as palavras novamente
+                    $order->solicitante = implode(' ', $filteredWords);
+                }
+
+            }
+
+            $communication = Communicate::whereProtocolo($order->protocolo)
+                ->whereTemplate('confirmacao_agendamento_portal')
+                ->first();
+
+            $order->comunicacao = null;
+
+
+
+            if($communication) {
+                $order->comunicacao = mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8');
+            }
+
+            return $order;
+        });
+
+        return $ordersVoalle;
 
 
     }
@@ -354,6 +472,81 @@ class DashboardSchedule
 
 
     }
+
+    public function getDataUniqueOrder($protocol)
+    {
+        return \DB::connection('aniel')->select($this->getQueryUniqueOrder($protocol));
+    }
+
+    private function getQueryUniqueOrder($protocol)
+    {
+
+        return <<<SQL
+            SELECT DISTINCT
+                dp.NUM_OBRA_ORIGINAL AS "N_OS",
+                dp.NUM_OBRA,
+                dp.PROJETO,
+                dp.COD_TIPO_SERV,
+                LOWER(tse.descricao) AS "TIPO_SERVICO_ANIEL",
+                c.RAZAO_SOCIAL AS "Nome Cliente",
+                CASE WHEN e.NOME IS NULL THEN 'SEM TÉCNICO ATRIBUIDO'
+                     ELSE e.NOME END AS "Nome Tecnico",
+                dp.DIA AS "Criacao",
+                ts.DESCRICAO AS "Turno",
+                dp.DATA_MAXIMA AS "Data_do_Agendamento",
+                dp.HORA_MAXIMA AS "Hora_do_Agendamento",
+                dp.STATUS_EXECUCAO as "Status",
+                TRIM(
+                    CASE
+                        WHEN dp.STATUS_EXECUCAO = 0 THEN 'Aberta Aguardando Atendimento'
+                        WHEN dp.STATUS_EXECUCAO = 1 THEN 'Fechada Improdutiva'
+                        WHEN dp.STATUS_EXECUCAO = 2 THEN 'Fechada Produtiva'
+                        WHEN dp.STATUS_EXECUCAO = 3 THEN 'Atendimento Iniciado'
+                        WHEN dp.STATUS_EXECUCAO = 4 THEN 'Aberta Aguardando Agendamento'
+                        WHEN dp.STATUS_EXECUCAO = 6 THEN 'OS em Deslocamento'
+                        WHEN dp.STATUS_EXECUCAO = 9 THEN 'Cancelada'
+                        WHEN dp.STATUS_EXECUCAO = 10 THEN 'Paralisado'
+                        WHEN dp.STATUS_EXECUCAO = 11 THEN 'Atendimento Reiniciado'
+                        WHEN dp.STATUS_EXECUCAO = 13 THEN 'Aberta Aguardando Responsável'
+                        ELSE 'Status Desconhecido'
+                    END
+                ) AS "Status_Descritivo"
+            FROM TB_DOCUMENTO_PRODUCAO dp
+            LEFT JOIN TB_CLIENTE c ON c.RAZAO_SOCIAL = dp.TITULAR
+            LEFT JOIN TB_EQUIPE e ON e.EQUIPE = dp.EQUIPE
+            LEFT JOIN TB_TURNO_SERVICO ts ON ts.ID = dp.COD_TURNO_SERV
+            LEFT JOIN TB_TIPO_SERVICO_EQUIPE tse ON tse.COD_TIPO_SERV = dp.COD_TIPO_SERV
+            JOIN (
+                SELECT
+                    NUM_OBRA_ORIGINAL,
+                    MAX(NUM_OBRA) AS max_num_obra
+                FROM TB_DOCUMENTO_PRODUCAO
+                GROUP BY NUM_OBRA_ORIGINAL
+            ) sub ON dp.NUM_OBRA_ORIGINAL = sub.NUM_OBRA_ORIGINAL
+                  AND dp.NUM_OBRA = sub.max_num_obra
+            WHERE dp.NUM_OBRA_ORIGINAL = '{$protocol}'
+            ORDER BY dp.NUM_OBRA DESC;
+        SQL;
+
+
+//        return <<<SQL
+//            SELECT tdp.NUM_OBRA, tdp.NUM_OBRA_ORIGINAL, tdp.STATUS_EXECUCAO,
+//                   tdp.DIA,
+//                   tdp.DATA_MAXIMA
+//            FROM TB_DOCUMENTO_PRODUCAO tdp
+//            where tdp.NUM_OBRA_ORIGINAL = '1166450'
+//        SQL;
+//
+//        return <<<SQL
+//            SELECT DISTINCT
+//                dp.NUM_OBRA_ORIGINAL AS "N_OS"
+//            FROM TB_DOCUMENTO_PRODUCAO dp
+//            WHERE dp.DATA_MAXIMA = '{$this->period}'
+//        SQL;
+
+
+    }
+
 
 
 }

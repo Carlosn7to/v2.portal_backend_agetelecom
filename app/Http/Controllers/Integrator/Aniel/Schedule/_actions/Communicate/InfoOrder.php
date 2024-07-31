@@ -197,6 +197,7 @@ class InfoOrder
     private function watchStatusOrders()
     {
         $this->storeOrdersAniel();
+//        $this->buildConfirmOs();
         $this->buildAlterOs();
     }
 
@@ -272,6 +273,44 @@ class InfoOrder
 
             $this->sendAlterOs($data);
             $order->envio_deslocamento = true;
+            $order->save();
+        }
+
+        return $getOrders;
+
+    }
+
+    private function buildConfirmOs()
+    {
+        $getOrders = CommunicateMirror::where('status_aniel', 0)
+            ->where('envio_deslocamento', false)
+            ->where('envio_confirmacao', false)
+            ->where('data_agendamento', '=', '2024-08-01 08:00:00')
+            ->get();
+
+        foreach($getOrders as $order) {
+
+            $detailsOrder = ImportOrder::whereId($order->os_id)->first();
+
+
+            $period = Carbon::parse($order->data_agendamento)->format('H:i') < '12:00:00' ? 'manhã' : 'tarde';
+
+
+            $start = $period == 'manhã' ? '08:00' : '13:00';
+            $end = $period == 'manhã' ? '12:00' : '18:00';
+
+
+            $data = [
+            'os_id' => $order->os_id,
+            'protocolo' => $order->protocolo,
+            'celular_1' => $this->sanitizeCellphone($detailsOrder->celular_1),
+            'hora_inicio' => $start,
+            'hora_fim' => $end,
+            'data_agendamento' => Carbon::parse($order->data_agendamento)->format('d/m/Y')
+            ];
+
+            $this->sendConfirmation($data);
+            $order->envio_confirmacao = true;
             $order->save();
         }
 

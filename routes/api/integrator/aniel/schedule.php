@@ -19,6 +19,7 @@ Route::prefix('management-schedule')->controller(\App\Http\Controllers\Integrato
 
 Route::prefix('management-schedule')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule::class)->group(function () {
     Route::get('/dashboard', 'getDashboard');
+    Route::get('/dashboard-operational', 'getDashboardOperational');
     Route::post('/approval-order', 'approvalOrder');
     Route::post('/reschedule-order', 'rescheduleOrder');
 });
