@@ -196,8 +196,8 @@ class InfoOrder
 
     private function watchStatusOrders()
     {
-//        $this->storeOrdersAniel();
-        return $this->buildAlterOs();
+        $this->storeOrdersAniel();
+        $this->buildAlterOs();
     }
 
     private function storeOrdersAniel()
