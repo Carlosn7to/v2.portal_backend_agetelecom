@@ -448,6 +448,9 @@ class DashboardSchedule
                 ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
                 : null;
 
+            $order->servico = ' ';
+
+
             foreach($services as $key => $service) {
                 foreach($service['subServices'] as $k => $v) {
                     $subServiceTitle = mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8');
@@ -457,7 +460,6 @@ class DashboardSchedule
                         break;
                     }
 
-                    $order->servico = ' ';
                 }
             }
 
