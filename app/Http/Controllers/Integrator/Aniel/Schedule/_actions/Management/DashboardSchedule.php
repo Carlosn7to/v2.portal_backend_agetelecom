@@ -114,6 +114,7 @@ class DashboardSchedule
             ], 400);
         }
 
+
         $dashboard = Mirror::whereDate('data_agendamento', $request->period)
             ->get();
 
@@ -409,6 +410,7 @@ class DashboardSchedule
         $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
             ->get();
 
+
         $ordersVoalle->each(function ($order) use($services) {
 
             $order->protocolo = (string)$order->protocolo;
@@ -451,12 +453,14 @@ class DashboardSchedule
             $order->servico = ' ';
 
 
+
             foreach($services as $key => $service) {
                 foreach($service['subServices'] as $k => $v) {
                     $subServiceTitle = mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8');
                     $serviceTitle = mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8');
-                    if ($subServiceTitle == $order->tipo_servico) {
-                        $order->servico = $serviceTitle;
+
+                    if ($subServiceTitle == mb_convert_case($order->tipo_servico, MB_CASE_LOWER, 'UTF-8')) {
+                        $order->servico = mb_convert_case($serviceTitle, MB_CASE_TITLE, 'UTF-8');
                         break;
                     }
 
