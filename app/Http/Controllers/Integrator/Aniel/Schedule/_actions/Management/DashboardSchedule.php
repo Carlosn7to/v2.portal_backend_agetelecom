@@ -439,7 +439,6 @@ class DashboardSchedule
             }
 
             $communication = Communicate::where('protocolo', $order->protocolo)
-                ->where('template', 'confirmacao_agendamento_portal')
                 ->first();
 
             $order->comunicacao = $communication
