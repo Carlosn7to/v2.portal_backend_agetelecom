@@ -400,10 +400,10 @@ class DashboardSchedule
 
         if($period) {
             $ordersVoalle = ImportOrder::whereDate('data_agendamento', $period)
-                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id', 'cliente_id']);
         } else {
             $ordersVoalle = ImportOrder::whereIn(\DB::raw('DATE(data_agendamento)'), $uniqueDates)
-                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id', 'cliente_id']);
         }
 
         $ordersVoalle->each(function ($order) {
@@ -445,6 +445,7 @@ class DashboardSchedule
                 ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
                 : null;
 
+
             return $order;
         });
 
@@ -455,6 +456,7 @@ class DashboardSchedule
             $mirror->updateOrCreate(
                 ['protocolo' => $order->protocolo],
                 [
+                    'cliente_id' => $order->cliente_id,
                     'protocolo' => $order->protocolo,
                     'servico' => $order->tipo_servico,
                     'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i:s', $order->data_agendamento)->format('Y-m-d H:i:s'),

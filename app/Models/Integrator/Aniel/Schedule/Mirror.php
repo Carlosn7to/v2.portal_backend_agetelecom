@@ -12,6 +12,7 @@ class Mirror extends Model
     protected $table = 'aniel_agenda_espelho';
     protected $connection = 'portal';
     protected $fillable = [
+        'cliente_id',
         'protocolo',
         'servico',
         'data_agendamento',
