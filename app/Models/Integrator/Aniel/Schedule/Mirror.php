@@ -15,6 +15,7 @@ class Mirror extends Model
         'cliente_id',
         'protocolo',
         'servico',
+        'sub_servico',
         'data_agendamento',
         'confirmacao_cliente',
         'localidade',

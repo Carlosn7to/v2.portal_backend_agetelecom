@@ -406,7 +406,10 @@ class DashboardSchedule
                 ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id', 'cliente_id']);
         }
 
-        $ordersVoalle->each(function ($order) {
+        $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
+            ->get();
+
+        $ordersVoalle->each(function ($order) use($services) {
 
             $order->protocolo = (string)$order->protocolo;
             $anielOrder = $this->getDataUniqueOrder($order->protocolo);
@@ -445,6 +448,19 @@ class DashboardSchedule
                 ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
                 : null;
 
+            foreach($services as $key => $service) {
+                foreach($service['subServices'] as $k => $v) {
+                    $subServiceTitle = mb_convert_case($v->titulo, MB_CASE_LOWER, 'UTF-8');
+                    $serviceTitle = mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8');
+                    if ($subServiceTitle == $order->tipo_servico) {
+                        $order->servico = $serviceTitle;
+                        break;
+                    }
+
+                    $order->servico = ' ';
+                }
+            }
+
 
             return $order;
         });
@@ -458,7 +474,8 @@ class DashboardSchedule
                 [
                     'cliente_id' => $order->cliente_id,
                     'protocolo' => $order->protocolo,
-                    'servico' => $order->tipo_servico,
+                    'servico' => $order->servico,
+                    'sub_servico' => $order->tipo_servico,
                     'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i:s', $order->data_agendamento)->format('Y-m-d H:i:s'),
                     'localidade' => $order->localidade,
                     'status' => $order->status ?? $order->status_descricao,
