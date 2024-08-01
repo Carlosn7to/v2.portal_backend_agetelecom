@@ -285,7 +285,7 @@ class InfoOrder
         $getOrders = CommunicateMirror::where('status_aniel', 0)
             ->where('envio_deslocamento', false)
             ->where('envio_confirmacao', false)
-            ->where('data_agendamento', '=', '2024-08-01 08:00:00')
+            ->where('data_agendamento', '=', '2024-08-01 13:00:00')
             ->get();
 
         foreach($getOrders as $order) {
@@ -298,6 +298,7 @@ class InfoOrder
 
             $start = $period == 'manhã' ? '08:00' : '13:00';
             $end = $period == 'manhã' ? '12:00' : '18:00';
+
 
 
             $data = [

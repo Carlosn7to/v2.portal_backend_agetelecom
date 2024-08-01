@@ -6,6 +6,7 @@ use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use App\Models\Integrator\Aniel\Schedule\Mirror;
 use App\Models\Integrator\Aniel\Schedule\OrderBroken;
 use App\Models\Integrator\Aniel\Schedule\Service;
 use App\Models\Integrator\Aniel\Schedule\StatusOrder;
@@ -23,7 +24,8 @@ class DashboardSchedule
     {
         set_time_limit(2000000);
 
-        return $this->mountDashboard();
+        $this->mountDashboard();
+        $this->mountDashboardOperational();
     }
 
     public function getDashboard(Request $request)
@@ -112,55 +114,18 @@ class DashboardSchedule
             ], 400);
         }
 
-        $ordersVoalle = ImportOrder::whereDate('data_agendamento', $request->period)
-            ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
-
-        $ordersVoalle->each(function ($order) {
-
-            $order->protocolo = (string)$order->protocolo;
-            $anielOrder = $this->getDataUniqueOrder($order->protocolo);
-            $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
-
-            $dateScheduleAniel = null;
-
-            if ($anielOrder) {
-                $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
-                $order->status = $anielOrder->Status_Descritivo;
-                $statusDetails = StatusOrder::where('titulo', $order->status)->first();
-            } else {
-                $statusDetails = StatusOrder::where('id', $order->status_id)->first();
-            }
-
-            if ($statusDetails) {
-                $order->cor_indicativa = $statusDetails->cor_indicativa;
-                $order->status_descricao = $statusDetails->descricao;
-            }
-
-            $order->data_agendamento = $dateScheduleAniel ?? Carbon::parse($order->data_agendamento)->format('d/m/Y H:i:s');
-            $order->localidade = mb_convert_case($order->localidade, MB_CASE_TITLE, 'UTF-8');
-            $order->tipo_servico = mb_convert_case($order->tipo_servico, MB_CASE_TITLE, 'UTF-8');
-
-            $brokenOrder = OrderBroken::where('protocolo', $order->protocolo)->first();
-
-            if ($brokenOrder) {
-                $order->aprovador = $this->getFormattedName($brokenOrder->aprovador_id);
-                $order->solicitante = $this->getFormattedName($brokenOrder->solicitante_id);
-            }
-
-            $communication = Communicate::where('protocolo', $order->protocolo)
-                ->where('template', 'confirmacao_agendamento_portal')
-                ->first();
-
-            $order->comunicacao = $communication
-                ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
-                : null;
-
-            return $order;
-        });
-
-        return $ordersVoalle;
+        $dashboard = Mirror::whereDate('data_agendamento', $request->period)
+            ->get();
 
 
+        if($dashboard->isEmpty()) {
+            $this->mountDashboardOperational($request->period);
+            $dashboard = Mirror::whereDate('data_agendamento', $request->period)
+                ->get();
+        }
+
+
+        return response()->json($dashboard);
     }
 
     public function approvalOrder(Request $request)
@@ -418,6 +383,91 @@ class DashboardSchedule
 
         }
 
+
+    }
+
+    private function mountDashboardOperational($period = null)
+    {
+
+        $startDate = Carbon::now()->subDays(5)->startOfDay();
+        $uniqueDates = Mirror::where('data_agendamento', '>=', $startDate)
+            ->get(['data_agendamento'])
+            ->map(function ($item) {
+                return Carbon::parse($item->data_agendamento)->toDateString();
+            })
+            ->unique()
+            ->values();
+
+        if($period) {
+            $ordersVoalle = ImportOrder::whereDate('data_agendamento', $period)
+                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+        } else {
+            $ordersVoalle = ImportOrder::whereIn(\DB::raw('DATE(data_agendamento)'), $uniqueDates)
+                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id']);
+        }
+
+        $ordersVoalle->each(function ($order) {
+
+            $order->protocolo = (string)$order->protocolo;
+            $anielOrder = $this->getDataUniqueOrder($order->protocolo);
+            $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
+
+            $dateScheduleAniel = null;
+
+            if ($anielOrder) {
+                $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
+                $order->status = $anielOrder->Status_Descritivo;
+                $statusDetails = StatusOrder::where('titulo', $order->status)->first();
+            } else {
+                $statusDetails = StatusOrder::where('id', $order->status_id)->first();
+            }
+
+            if ($statusDetails) {
+                $order->cor_indicativa = $statusDetails->cor_indicativa;
+                $order->status_descricao = $statusDetails->titulo;
+            }
+
+            $order->data_agendamento = $dateScheduleAniel ?? Carbon::parse($order->data_agendamento)->format('d/m/Y H:i:s');
+            $order->localidade = mb_convert_case($order->localidade, MB_CASE_TITLE, 'UTF-8');
+            $order->tipo_servico = mb_convert_case($order->tipo_servico, MB_CASE_TITLE, 'UTF-8');
+
+            $brokenOrder = OrderBroken::where('protocolo', $order->protocolo)->first();
+
+            if ($brokenOrder) {
+                $order->aprovador = $this->getFormattedName($brokenOrder->aprovador_id);
+                $order->solicitante = $this->getFormattedName($brokenOrder->solicitante_id);
+            }
+
+            $communication = Communicate::where('protocolo', $order->protocolo)
+                ->where('template', 'confirmacao_agendamento_portal')
+                ->first();
+
+            $order->comunicacao = $communication
+                ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
+                : null;
+
+            return $order;
+        });
+
+        $mirror = new Mirror();
+
+
+        foreach($ordersVoalle as $order) {
+            $mirror->updateOrCreate(
+                ['protocolo' => $order->protocolo],
+                [
+                    'protocolo' => $order->protocolo,
+                    'servico' => $order->tipo_servico,
+                    'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i:s', $order->data_agendamento)->format('Y-m-d H:i:s'),
+                    'localidade' => $order->localidade,
+                    'status' => $order->status ?? $order->status_descricao,
+                    'cor_indicativa' => $order->cor_indicativa,
+                    'confirmacao_cliente' => $order->comunicacao,
+                    'solicitante' => $order->solicitante ?? '',
+                    'aprovador' => $order->aprovador ?? ''
+                ]
+            );
+        }
 
     }
 
