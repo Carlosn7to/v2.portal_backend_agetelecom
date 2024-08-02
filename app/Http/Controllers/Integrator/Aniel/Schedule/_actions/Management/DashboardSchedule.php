@@ -615,7 +615,7 @@ class DashboardSchedule
 
         $permissions = [
             'approval' => false,
-            'pre-approval' => false,
+            'preApproval' => false,
             'reschedule' => true
         ];
 

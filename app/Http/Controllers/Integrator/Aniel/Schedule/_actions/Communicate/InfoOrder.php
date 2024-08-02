@@ -285,7 +285,7 @@ class InfoOrder
         $getOrders = CommunicateMirror::where('status_aniel', 0)
             ->where('envio_deslocamento', false)
             ->where('envio_confirmacao', false)
-            ->where('data_agendamento', '=', '2024-08-02 08:00:00')
+            ->where('data_agendamento', '=', '2024-08-03 08:00:00')
             ->get();
 
         foreach($getOrders as $order) {
@@ -330,7 +330,7 @@ class InfoOrder
         return $cellphone;
     }
 
-    private function sanitizeCellphone($cellphone)
+    public function sanitizeCellphone($cellphone)
     {
         $cellphoneFormmated = preg_replace('/[^0-9]/', '', $cellphone);
 
