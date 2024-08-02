@@ -196,9 +196,9 @@ class InfoOrder
 
     private function watchStatusOrders()
     {
-        $this->storeOrdersAniel();
-//        $this->buildConfirmOs();
-        $this->buildAlterOs();
+//        $this->storeOrdersAniel();
+        $this->buildConfirmOs();
+//        $this->buildAlterOs();
     }
 
     private function storeOrdersAniel()
@@ -285,7 +285,7 @@ class InfoOrder
         $getOrders = CommunicateMirror::where('status_aniel', 0)
             ->where('envio_deslocamento', false)
             ->where('envio_confirmacao', false)
-            ->where('data_agendamento', '=', '2024-08-01 13:00:00')
+            ->where('data_agendamento', '=', '2024-08-02 08:00:00')
             ->get();
 
         foreach($getOrders as $order) {

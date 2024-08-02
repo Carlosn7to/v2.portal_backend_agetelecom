@@ -126,7 +126,7 @@ class DashboardSchedule
         }
 
 
-        return response()->json($dashboard);
+        return response()->json(['dashboard' => $dashboard, 'permissions' => $this->mountPermissions()]);
     }
 
     public function approvalOrder(Request $request)
@@ -583,5 +583,58 @@ class DashboardSchedule
         return null;
     }
 
+    private function mountPermissions()
+    {
+        $approval = [
+            'eline.paulo',
+            'luciene.silva',
+            'ralmarley.menezes',
+            'thaina.araujo',
+            'vicktoria.motta',
+            'juliane.araujo',
+            'barbara.siqueira',
+            'camila.pereira',
+            'mauro.diogo',
+            'abdre.guilherme',
+            'michelly.pinheiro',
+            'carlos.neto'
+        ];
+
+        $preApproval = [
+            'betania.ferreira',
+//            'carlos.neto',
+            'larissa.tavares',
+            'larissa.soares',
+            'denise.araujo',
+            'victor.bezerra',
+            'matheus.fagundes',
+            'lais.pontes',
+            'thaina.silva',
+            'jheeferson.almeida'
+        ];
+
+        $permissions = [
+            'approval' => false,
+            'pre-approval' => false,
+            'reschedule' => true
+        ];
+
+
+        $login = auth('portal')->user()->login;
+
+
+        if(in_array($login, $approval)) {
+            $permissions['approval'] = true;
+        }
+
+        if(in_array($login, $preApproval)) {
+            $permissions['pre-approval'] = true;
+        }
+
+
+
+        return $permissions;
+
+    }
 
 }

@@ -22,4 +22,5 @@ class Communicate extends Model
         'status_resposta',
         'data_envio'
     ];
+
 }
