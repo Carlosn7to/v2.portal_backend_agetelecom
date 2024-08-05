@@ -412,6 +412,7 @@ class DashboardSchedule
             ->get();
 
 
+
         $ordersVoalle->each(function ($order) use($services) {
 
             $order->protocolo = (string)$order->protocolo;
@@ -447,7 +448,7 @@ class DashboardSchedule
             $communicationFirstConfirm = Communicate::where('protocolo', $order->protocolo)->whereTemplate('confirmacao_agendamento_portal')
                 ->first();
 
-            $communicationSecondConfirm = Communicate::where('protocolo', $order->protocolo)->whereTemplate('')
+            $communicationSecondConfirm = Communicate::where('protocolo', $order->protocolo)->whereTemplate('informar_deslocamento_os_portal')
                 ->first();
 
             $order->confirmacao_cliente = $communicationFirstConfirm
