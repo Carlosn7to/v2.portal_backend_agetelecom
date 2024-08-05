@@ -61,6 +61,9 @@ class OrderActionsController extends Controller
             ->whereEnvioDeslocamento(false)
             ->first();
 
+        dd($communicateMirror);
+
+
 
         if($communicateMirror) {
             $communicate = new InfoOrder();
