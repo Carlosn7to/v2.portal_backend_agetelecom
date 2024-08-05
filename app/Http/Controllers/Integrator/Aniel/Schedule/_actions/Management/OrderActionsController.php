@@ -16,6 +16,7 @@ class OrderActionsController extends Controller
     public function getDataOrder(Request $request)
     {
 
+
         $dataImport = ImportOrder::where('protocolo', $request->protocol)
                     ->first(['cliente_nome', 'protocolo', 'celular_1', 'email',
                         'contrato_id', 'endereco', 'numero', 'area_despacho', 'cidade'

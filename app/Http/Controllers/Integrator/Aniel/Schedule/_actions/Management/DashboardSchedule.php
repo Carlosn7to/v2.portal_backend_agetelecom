@@ -152,6 +152,7 @@ class DashboardSchedule
         }
 
         $this->typeCommand = 'approval';
+
         return $this->storeAniel($order);
     }
 
@@ -412,16 +413,17 @@ class DashboardSchedule
             ->get();
 
 
-
         $ordersVoalle->each(function ($order) use($services) {
 
             $order->protocolo = (string)$order->protocolo;
             $anielOrder = $this->getDataUniqueOrder($order->protocolo);
             $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
 
+
             $dateScheduleAniel = null;
 
             if ($anielOrder) {
+
                 $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
                 $order->status = $anielOrder->Status_Descritivo;
                 $statusDetails = StatusOrder::where('titulo', $order->status)->first();
@@ -460,8 +462,6 @@ class DashboardSchedule
                 : null;
 
             $order->servico = ' ';
-
-
 
             foreach($services as $key => $service) {
                 foreach($service['subServices'] as $k => $v) {
@@ -512,6 +512,15 @@ class DashboardSchedule
 
     private function getQueryUniqueOrder($protocol)
     {
+
+//        return <<<SQL
+//            SELECT e.*
+//            FROM TB_DOCUMENTO_PRODUCAO tdp
+//            LEFT JOIN TB_EQUIPE e ON e.EQUIPE = tdp.EQUIPE
+//            where tdp.NUM_OBRA_ORIGINAL = '1185772'
+//            rows 1
+//        SQL;
+
 
         return <<<SQL
             SELECT DISTINCT
@@ -612,7 +621,7 @@ class DashboardSchedule
 
         $preApproval = [
             'betania.ferreira',
-//            'carlos.neto',
+            'carlos.neto',
             'larissa.tavares',
             'larissa.soares',
             'denise.araujo',
@@ -638,7 +647,7 @@ class DashboardSchedule
         }
 
         if(in_array($login, $preApproval)) {
-            $permissions['pre-approval'] = true;
+            $permissions['preApproval'] = true;
         }
 
 
