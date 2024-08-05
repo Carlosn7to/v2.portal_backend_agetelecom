@@ -18,7 +18,7 @@ class DirectoryFake
      *
      * @throws \LdapRecord\ContainerException
      */
-    public static function setup(string $name = null): ConnectionFake
+    public static function setup(?string $name = null): ConnectionFake
     {
         $name = $name ?? Container::getDefaultConnectionName();
 
@@ -40,8 +40,9 @@ class DirectoryFake
     {
         foreach (static::$replaced as $name => $connection) {
             Container::getConnection($name)->tearDown();
-            Container::addConnection($connection, $name);
         }
+
+        Container::flush();
 
         static::$replaced = [];
     }

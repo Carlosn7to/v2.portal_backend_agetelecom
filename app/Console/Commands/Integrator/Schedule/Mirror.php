@@ -3,6 +3,10 @@
 namespace App\Console\Commands\Integrator\Schedule;
 
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
+use App\Jobs\UpdateMirrorAniel;
+use App\Models\Integrator\Aniel\Schedule\ImportOrder;
+use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 
 class Mirror extends Command
@@ -26,8 +30,38 @@ class Mirror extends Command
      */
     public function handle()
     {
-        $infoOrder = new InfoOrder();
+        $startDate = Carbon::now()->subDays(10)->startOfDay();
+        $uniqueDates = \App\Models\Integrator\Aniel\Schedule\Mirror::where('data_agendamento', '>=', $startDate)
+            ->get(['data_agendamento'])
+            ->map(function ($item) {
+                return Carbon::parse($item->data_agendamento)->toDateString();
+            })
+            ->unique()
+            ->values();
 
-        $infoOrder->__invoke();
+        $jobs = [];
+
+        foreach ($uniqueDates as $date) {
+
+            $ordersVoalle = ImportOrder::whereDate('data_agendamento', $date)
+                ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id', 'cliente_id']);
+
+            // Adicionar a job ao array de jobs
+            $jobs[] = new UpdateMirrorAniel($ordersVoalle);
+        }
+
+        // Despacha os jobs em um batch
+        \Bus::batch($jobs)->then(function (Batch $batch) {
+            // Todos os jobs foram processados com sucesso
+            $this->info('Todos os jobs foram processados com sucesso.');
+        })->catch(function (Batch $batch, \Throwable $e) {
+            // Algum job falhou
+            $this->error('Algum job falhou.');
+        })->finally(function (Batch $batch) {
+            // Todos os jobs foram concluídos
+            $this->info('Todos os jobs foram concluídos.');
+        })->dispatch();
+
+        return 0;
     }
 }

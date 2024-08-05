@@ -30,6 +30,7 @@ use DOMNode;
 use DOMXPath;
 use PHPUnit\Runner\TestSuiteSorter;
 use PHPUnit\Runner\Version;
+use PHPUnit\TextUI\Configuration\Configuration;
 use PHPUnit\TextUI\Configuration\Constant;
 use PHPUnit\TextUI\Configuration\ConstantCollection;
 use PHPUnit\TextUI\Configuration\Directory;
@@ -74,6 +75,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Colors;
 use SebastianBergmann\CodeCoverage\Report\Thresholds;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class Loader
@@ -863,15 +866,15 @@ final class Loader
 
     private function getColors(DOMDocument $document): string
     {
-        $colors = \PHPUnit\TextUI\Configuration\Configuration::COLOR_DEFAULT;
+        $colors = Configuration::COLOR_DEFAULT;
 
         if ($document->documentElement->hasAttribute('colors')) {
             /* only allow boolean for compatibility with previous versions
               'always' only allowed from command line */
             if ($this->getBoolean($document->documentElement->getAttribute('colors'), false)) {
-                $colors = \PHPUnit\TextUI\Configuration\Configuration::COLOR_AUTO;
+                $colors = Configuration::COLOR_AUTO;
             } else {
-                $colors = \PHPUnit\TextUI\Configuration\Configuration::COLOR_NEVER;
+                $colors = Configuration::COLOR_NEVER;
             }
         }
 

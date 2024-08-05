@@ -16,6 +16,9 @@ class OrderActionsController extends Controller
     public function getDataOrder(Request $request)
     {
 
+        $dashboard = new DashboardSchedule();
+
+        return $dashboard->__invoke();
 
         $dataImport = ImportOrder::where('protocolo', $request->protocol)
                     ->first(['cliente_nome', 'protocolo', 'celular_1', 'email',

@@ -15,10 +15,10 @@ use LdapRecord\Query\Model\Builder;
 
 class User extends Entry implements Authenticatable
 {
-    use HasPassword;
-    use HasPrimaryGroup;
     use CanAuthenticate;
     use HasAccountControl;
+    use HasPassword;
+    use HasPrimaryGroup;
 
     /**
      * The password's attribute name.
@@ -78,7 +78,7 @@ class User extends Entry implements Authenticatable
     /**
      * The groups relationship.
      *
-     * Retrieves groups that the user is apart of.
+     * Retrieves groups that the user is a part of.
      */
     public function groups(): HasMany
     {
@@ -98,7 +98,7 @@ class User extends Entry implements Authenticatable
     /**
      * The primary group relationship of the current user.
      *
-     * Retrieves the primary group the user is apart of.
+     * Retrieves the primary group the user is a part of.
      */
     public function primaryGroup(): HasOne
     {
@@ -127,7 +127,7 @@ class User extends Entry implements Authenticatable
      * @see https://ldapwiki.com/wiki/Active%20Directory%20Account%20Lockout
      * @see https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/account-lockout-duration
      */
-    public function isLockedOut(string|int $localTimezone, int $durationInMinutes = null): bool
+    public function isLockedOut(string|int $localTimezone, ?int $durationInMinutes = null): bool
     {
         $time = $this->getFirstAttribute('lockouttime');
 

@@ -143,7 +143,7 @@ trait HasPassword
      *
      * @throws LdapRecordException
      */
-    protected function getHashedPassword(string $method, string $password, string $salt = null): string
+    protected function getHashedPassword(string $method, string $password, ?string $salt = null): string
     {
         if (! method_exists(Password::class, $method)) {
             throw new LdapRecordException("Password hashing method [{$method}] does not exist.");
@@ -165,10 +165,16 @@ trait HasPassword
     {
         $connection = $this->getConnection();
 
+        $config = $connection->getConfiguration();
+
+        if ($config->get('allow_insecure_password_changes') === true) {
+            return;
+        }
+
         if ($connection->isConnected()) {
             $secure = $connection->getLdapConnection()->canChangePasswords();
         } else {
-            $secure = $connection->getConfiguration()->get('use_ssl') || $connection->getConfiguration()->get('use_tls');
+            $secure = $config->get('use_ssl') || $config->get('use_tls');
         }
 
         if (! $secure) {

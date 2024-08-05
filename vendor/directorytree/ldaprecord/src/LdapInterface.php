@@ -109,6 +109,11 @@ interface LdapInterface
     public function isBound(): bool;
 
     /**
+     * Determine if the connection is secure over TLS or SSL.
+     */
+    public function isSecure(): bool;
+
+    /**
      * Determine if the connection has been created.
      */
     public function isConnected(): bool;
@@ -201,7 +206,7 @@ interface LdapInterface
     /**
      * Compare value of attribute found in entry specified with DN.
      */
-    public function compare(string $dn, string $attribute, string $value, array $controls = null): bool|int;
+    public function compare(string $dn, string $attribute, string $value, ?array $controls = null): bool|int;
 
     /**
      * Set an option on the current connection.
@@ -243,7 +248,7 @@ interface LdapInterface
      *
      * @see http://php.net/manual/en/function.ldap-start-tls.php
      */
-    public function connect(string|array $hosts = [], int $port = 389): bool;
+    public function connect(string|array $hosts = [], int $port = 389, ?string $protocol = null): bool;
 
     /**
      * Closes the current connection.
@@ -261,7 +266,7 @@ interface LdapInterface
      *
      * @return \LDAP\Result
      */
-    public function search(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, array $controls = null): mixed;
+    public function search(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, ?array $controls = null): mixed;
 
     /**
      * Performs a single level search on the current connection.
@@ -270,7 +275,7 @@ interface LdapInterface
      *
      * @return \LDAP\Result
      */
-    public function list(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, array $controls = null): mixed;
+    public function list(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, ?array $controls = null): mixed;
 
     /**
      * Reads an entry on the current connection.
@@ -279,7 +284,7 @@ interface LdapInterface
      *
      * @return \LDAP\Result
      */
-    public function read(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, array $controls = null): mixed;
+    public function read(string $dn, string $filter, array $fields, bool $onlyAttributes = false, int $size = 0, int $time = 0, int $deref = LDAP_DEREF_NEVER, ?array $controls = null): mixed;
 
     /**
      * Extract information from an LDAP result.
@@ -288,7 +293,7 @@ interface LdapInterface
      *
      * @param  \LDAP\Result  $result
      */
-    public function parseResult(mixed $result, int &$errorCode = 0, string &$dn = null, string &$errorMessage = null, array &$referrals = null, array &$controls = null): LdapResultResponse|false;
+    public function parseResult(mixed $result, int &$errorCode = 0, ?string &$dn = null, ?string &$errorMessage = null, ?array &$referrals = null, ?array &$controls = null): LdapResultResponse|false;
 
     /**
      * Bind to the LDAP directory.
@@ -297,7 +302,7 @@ interface LdapInterface
      *
      * @throws LdapRecordException
      */
-    public function bind(string $dn = null, string $password = null, array $controls = null): LdapResultResponse;
+    public function bind(?string $dn = null, ?string $password = null, ?array $controls = null): LdapResultResponse;
 
     /**
      * Bind to the LDAP directory using SASL.
@@ -312,7 +317,7 @@ interface LdapInterface
      * @see https://php.net/manual/en/function.ldap-sasl-bind.php
      * @see https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml
      */
-    public function saslBind(string $dn = null, string $password = null, array $options = []): bool;
+    public function saslBind(?string $dn = null, ?string $password = null, array $options = []): bool;
 
     /**
      * Adds an entry to the current connection.

@@ -200,4 +200,14 @@ class DatabaseUserProvider extends UserProvider
 
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false): void
+    {
+        if (($this->synchronizer->getConfig()['password_column'] ?? 'password') !== false) {
+            $this->eloquent->rehashPasswordIfRequired($user, $credentials, $force);
+        }
+    }
 }

@@ -113,9 +113,9 @@ trait HasAttributes
      */
     public function arrayToOriginal(array $attributes): array
     {
-        return $this->decodeAttributes(
-            $this->convertAttributesFromJson($attributes)
-        );
+        $attributes = $this->decodeAttributes($attributes);
+
+        return $this->convertAttributesFromJson($attributes);
     }
 
     /**
@@ -125,9 +125,9 @@ trait HasAttributes
     {
         $attributes = $this->restoreDateAttributesFromArray($attributes);
 
-        return $this->decodeAttributes(
-            $this->convertAttributesFromJson($attributes)
-        );
+        $attributes = $this->decodeAttributes($attributes);
+
+        return $this->convertAttributesFromJson($attributes);
     }
 
     /**
@@ -220,7 +220,7 @@ trait HasAttributes
      */
     protected function decodeValue(string $value): string
     {
-        if (MbString::isLoaded() && MbString::isUtf8($value)) {
+        if (MbString::isLoaded() && ! MbString::isUtf8($value)) {
             return mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
         }
 
@@ -287,7 +287,7 @@ trait HasAttributes
     /**
      * Get the models attribute by its key.
      */
-    public function getAttribute(string $key = null, mixed $default = null): mixed
+    public function getAttribute(?string $key = null, mixed $default = null): mixed
     {
         if (! $key) {
             return null;
@@ -345,8 +345,21 @@ trait HasAttributes
         // array key case so they are merged properly.
         return array_merge(
             array_change_key_case($this->defaultDates),
-            array_change_key_case($this->dates)
+            array_change_key_case($this->dates),
+            array_change_key_case($this->getDateCasts()),
         );
+    }
+
+    /**
+     * Get the attributes casts that should be mutated to dates.
+     */
+    protected function getDateCasts(): array
+    {
+        return array_map(function (string $cast) {
+            return explode(':', $cast, 2)[1];
+        }, array_filter($this->getCasts(), function ($cast) {
+            return $this->isDateTimeCast($cast);
+        }));
     }
 
     /**
@@ -372,7 +385,7 @@ trait HasAttributes
     /**
      * Determine whether an attribute should be cast to a native type.
      */
-    public function hasCast(string $key, array|string $types = null): bool
+    public function hasCast(string $key, array|string|null $types = null): bool
     {
         if (array_key_exists($key, $this->getCasts())) {
             return ! $types || in_array($this->getCastType($key), (array) $types, true);
@@ -488,7 +501,7 @@ trait HasAttributes
     /**
      * Cast the given attribute to JSON.
      */
-    protected function castAttributeAsJson(string $key, string $value): string
+    protected function castAttributeAsJson(string $key, mixed $value): string
     {
         $value = $this->asJson($value);
 
@@ -496,10 +509,21 @@ trait HasAttributes
             $class = get_class($this);
             $message = json_last_error_msg();
 
-            throw new Exception("Unable to encode attribute [{$key}] for model [{$class}] to JSON: {$message}.");
+            throw new Exception("Unable to encode attribute [$key] for model [$class] to JSON: $message.");
         }
 
         return $value;
+    }
+
+    /**
+     * Cast the given attribute to an LDAP primitive type.
+     */
+    protected function castAttributeAsPrimitive(string $key, mixed $value): string
+    {
+        return match ($this->getCastType($key)) {
+            'bool', 'boolean' => $this->fromBoolean($value),
+            default => (string) $value,
+        };
     }
 
     /**
@@ -540,13 +564,27 @@ trait HasAttributes
     }
 
     /**
-     * Cast the value to a boolean.
+     * Cast the value from an LDAP boolean string to a primitive boolean.
      */
     protected function asBoolean(mixed $value): bool
     {
-        $map = ['true' => true, 'false' => false];
+        return match (strtolower($value)) {
+            'true' => true,
+            'false' => false,
+            default => (bool) $value,
+        };
+    }
 
-        return $map[strtolower($value)] ?? (bool) $value;
+    /**
+     * Cast the value from a primitive boolean to an LDAP boolean string.
+     */
+    protected function fromBoolean(mixed $value): string
+    {
+        if (is_string($value)) {
+            $value = $this->asBoolean($value);
+        }
+
+        return $value ? 'TRUE' : 'FALSE';
     }
 
     /**
@@ -656,16 +694,20 @@ trait HasAttributes
 
         if ($this->hasSetMutator($key)) {
             return $this->setMutatedAttributeValue($key, $value);
-        } elseif (
+        }
+
+        if (
             $value &&
             $this->isDateAttribute($key) &&
             ! $this->valueIsResetInteger($value)
         ) {
-            $value = $this->fromDateTime($value, $this->getDates()[$key]);
+            $value = (string) $this->fromDateTime($value, $this->getDates()[$key]);
         }
 
         if ($this->isJsonCastable($key) && ! is_null($value)) {
             $value = $this->castAttributeAsJson($key, $value);
+        } elseif ($this->hasCast($key) && ! is_null($value)) {
+            $value = $this->castAttributeAsPrimitive($key, $value);
         }
 
         $this->attributes[$key] = Arr::wrap($value);
@@ -921,7 +963,7 @@ trait HasAttributes
     /**
      * Determine if the model or any of the given attribute(s) were changed when the model was last saved.
      */
-    public function wasChanged(array|string $attributes = null): bool
+    public function wasChanged(array|string|null $attributes = null): bool
     {
         if (func_num_args() === 0) {
             return count($this->changes) > 0;

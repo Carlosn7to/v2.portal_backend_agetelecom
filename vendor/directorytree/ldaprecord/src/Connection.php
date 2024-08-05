@@ -71,7 +71,7 @@ class Connection
      *
      * @throws ConfigurationException
      */
-    public function __construct(DomainConfiguration|array $config = [], LdapInterface $ldap = null)
+    public function __construct(DomainConfiguration|array $config = [], ?LdapInterface $ldap = null)
     {
         $this->setConfiguration($config);
 
@@ -135,7 +135,11 @@ class Connection
     {
         $this->configure();
 
-        $this->ldap->connect($this->host, $this->configuration->get('port'));
+        $this->ldap->connect(
+            $this->host,
+            $this->configuration->get('port'),
+            $this->configuration->get('protocol')
+        );
     }
 
     /**
@@ -207,7 +211,7 @@ class Connection
      * @throws Auth\BindException
      * @throws LdapRecordException
      */
-    public function connect(string $username = null, string $password = null): void
+    public function connect(?string $username = null, ?string $password = null): void
     {
         $attempt = function () use ($username, $password) {
             $this->dispatch(new Events\Connecting($this));

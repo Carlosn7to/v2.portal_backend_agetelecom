@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_aux\CapacityAniel;
+use App\Jobs\UpdateMirrorAniel;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\Mirror;
@@ -13,7 +14,9 @@ use App\Models\Integrator\Aniel\Schedule\StatusOrder;
 use App\Models\Portal\User\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardSchedule
@@ -24,7 +27,7 @@ class DashboardSchedule
     {
         set_time_limit(2000000);
 
-        $this->mountDashboard();
+//        $this->mountDashboard();
         $this->mountDashboardOperational();
     }
 
@@ -390,16 +393,14 @@ class DashboardSchedule
 
     private function mountDashboardOperational($period = null)
     {
-
         $startDate = Carbon::now()->subDays(10)->startOfDay();
-        $uniqueDates = Mirror::where('data_agendamento', '>=', $startDate)
+        $uniqueDates = \App\Models\Integrator\Aniel\Schedule\Mirror::where('data_agendamento', '>=', $startDate)
             ->get(['data_agendamento'])
             ->map(function ($item) {
                 return Carbon::parse($item->data_agendamento)->toDateString();
             })
             ->unique()
             ->values();
-
 
         if($period) {
             $ordersVoalle = ImportOrder::whereDate('data_agendamento', $period)
@@ -411,7 +412,6 @@ class DashboardSchedule
 
         $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
             ->get();
-
 
         $ordersVoalle->each(function ($order) use($services) {
 
@@ -476,32 +476,9 @@ class DashboardSchedule
                 }
             }
 
-
             return $order;
         });
 
-        $mirror = new Mirror();
-
-
-        foreach($ordersVoalle as $order) {
-            $mirror->updateOrCreate(
-                ['protocolo' => $order->protocolo],
-                [
-                    'cliente_id' => $order->cliente_id,
-                    'protocolo' => $order->protocolo,
-                    'servico' => $order->servico,
-                    'sub_servico' => $order->tipo_servico,
-                    'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i:s', $order->data_agendamento)->format('Y-m-d H:i:s'),
-                    'localidade' => $order->localidade,
-                    'status' => $order->status ?? $order->status_descricao,
-                    'cor_indicativa' => $order->cor_indicativa,
-                    'confirmacao_cliente' => $order->confirmacao_cliente,
-                    'confirmacao_deslocamento' => $order->confirmacao_deslocamento,
-                    'solicitante' => $order->solicitante ?? '',
-                    'aprovador' => $order->aprovador ?? ''
-                ]
-            );
-        }
 
     }
 

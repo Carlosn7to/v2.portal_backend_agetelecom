@@ -73,14 +73,14 @@ class Guard
      * @throws BindException
      * @throws \LdapRecord\ConnectionException
      */
-    public function bind(string $username = null, string $password = null): void
+    public function bind(?string $username = null, ?string $password = null): void
     {
         $this->fireAuthEvent('binding', $username, $password);
 
         // Prior to binding, we will upgrade our connectivity to TLS on our current
         // connection and ensure we are not already bound before upgrading.
         // This is to prevent subsequent upgrading on several binds.
-        if ($this->connection->isUsingTLS() && ! $this->connection->isBound()) {
+        if ($this->connection->isUsingTLS() && ! $this->connection->isSecure()) {
             $this->connection->startTLS();
         }
 
@@ -91,9 +91,11 @@ class Guard
 
             $this->fireAuthEvent('bound', $username, $password);
         } catch (Exception $e) {
-            $this->fireAuthEvent('failed', $username, $password);
+            $exception = BindException::withDetailedError($e, $this->connection->getDetailedError());
 
-            throw BindException::withDetailedError($e, $this->connection->getDetailedError());
+            $this->fireAuthEvent('failed', $username, $password, $exception);
+
+            throw $exception;
         }
     }
 
@@ -102,7 +104,7 @@ class Guard
      *
      * @throws \LdapRecord\ConnectionException
      */
-    protected function authenticate(string $username = null, string $password = null): bool
+    protected function authenticate(?string $username = null, ?string $password = null): bool
     {
         if ($this->configuration->get('use_sasl') ?? false) {
             return $this->connection->saslBind(
@@ -139,7 +141,7 @@ class Guard
     /**
      * Set the event dispatcher instance.
      */
-    public function setDispatcher(DispatcherInterface $dispatcher = null): void
+    public function setDispatcher(?DispatcherInterface $dispatcher = null): void
     {
         $this->events = $dispatcher;
     }
@@ -147,12 +149,12 @@ class Guard
     /**
      * Fire an authentication event.
      */
-    protected function fireAuthEvent(string $name, string $username = null, string $password = null): void
+    protected function fireAuthEvent(string $name, ?string $username = null, ?string $password = null, ...$args): void
     {
         if (isset($this->events)) {
             $event = implode('\\', [Events::class, ucfirst($name)]);
 
-            $this->events->fire(new $event($this->connection, $username, $password));
+            $this->events->fire(new $event($this->connection, $username, $password, ...$args));
         }
     }
 }
