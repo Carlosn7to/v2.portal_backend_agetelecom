@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
             ->everySecond();
 
         $schedule->command('aniel:mirror')
-            ->everyMinute();
+            ->everySecond();
     }
 
     /**
