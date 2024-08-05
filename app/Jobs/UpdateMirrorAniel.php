@@ -58,7 +58,7 @@ class UpdateMirrorAniel implements ShouldQueue
                 $order['status'] = $anielOrder->Status_Descritivo;
                 $statusDetails = StatusOrder::where('titulo', $order['status'])->first();
             } else {
-                $statusDetails = StatusOrder::where('id', $order['status'])->first();
+                $statusDetails = StatusOrder::where('id', $order['status_id'])->first();
             }
 
             if ($statusDetails) {
