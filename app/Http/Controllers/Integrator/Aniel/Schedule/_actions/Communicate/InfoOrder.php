@@ -199,21 +199,29 @@ class InfoOrder
     {
         $this->storeOrdersAniel();
 //        $this->buildConfirmOs();
-        $this->buildAlterOs();
+//        $this->buildAlterOs();
     }
 
     private function storeOrdersAniel()
     {
-        $ordersAnielToday = (new CapacityAniel(Carbon::now()->format('Y-m-d')))->getCapacityAniel()->toArray();
-        $ordersAnielTomorrow = (new CapacityAniel(Carbon::tomorrow()->format('Y-m-d')))->getCapacityAniel()->toArray();
-        $ordersAniel = array_merge($ordersAnielToday, $ordersAnielTomorrow);
+        $dateRange = [];
 
+        for ($i = -5; $i <= 1; $i++) {
+            $date = Carbon::now()->addDays($i)->format('Y-m-d');
+            $dateRange[] = $date;
+        }
 
+        foreach ($dateRange as $date) {
+            $ordersForDate = (new CapacityAniel($date))->getCapacityAniel()->toArray();
+            $orders[$date] = $ordersForDate;
+        }
+
+        $mergedOrders = array_merge(...array_values($orders));
 
         $subServices = SubService::where('servico_id', '!=', 1)->get();
         $communicateMirror = new CommunicateMirror();
 
-        foreach($ordersAniel as $order) {
+        foreach($mergedOrders as $order) {
 
             foreach($subServices as $service) {
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
 use App\Jobs\UpdateMirrorAniel;
+use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\Mirror;
 use Carbon\Carbon;
 use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
+use PHPUnit\Event\Telemetry\Info;
 
 class OrderActionsController extends Controller
 {
@@ -55,17 +57,21 @@ class OrderActionsController extends Controller
         }
 
 
+        return (new InfoOrder())->__invoke();
+
+
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)
-            ->whereEnvioConfirmacao(false)
-            ->whereEnvioDeslocamento(false)
             ->first();
-
-        dd($communicateMirror);
-
 
 
         if($communicateMirror) {
+
+            if($communicateMirror->envio_confirmacao || $communicateMirror->envio_deslocamento) {
+                return response()->json('Comunicação já enviada', 400);
+            }
+
+
             $communicate = new InfoOrder();
             $dataClient = ImportOrder::whereProtocolo($communicateMirror->protocolo)->first();
             $dataClientAniel = Mirror::whereProtocolo($communicateMirror->protocolo)->first();
