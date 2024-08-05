@@ -119,7 +119,7 @@ class UpdateMirrorAniel implements ShouldQueue
                     'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i:s', $order['data_agendamento'])->format('Y-m-d H:i:s'),
                     'localidade' => $order['localidade'],
                     'status' => $order['status'] ?? $order['status_descricao'],
-                    'cor_indicativa' => $order['cor_indicativa'],
+                    'cor_indicativa' => $order['cor_indicativa'] ?? '#ccc',
                     'confirmacao_cliente' => $order['confirmacao_cliente'],
                     'confirmacao_deslocamento' => $order['confirmacao_deslocamento'],
                     'solicitante' => $order['solicitante'] ?? '',
