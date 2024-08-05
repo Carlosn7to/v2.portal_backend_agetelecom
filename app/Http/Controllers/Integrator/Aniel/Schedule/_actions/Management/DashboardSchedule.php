@@ -444,11 +444,18 @@ class DashboardSchedule
                 $order->solicitante = $this->getFormattedName($brokenOrder->solicitante_id);
             }
 
-            $communication = Communicate::where('protocolo', $order->protocolo)
+            $communicationFirstConfirm = Communicate::where('protocolo', $order->protocolo)->whereTemplate('confirmacao_agendamento_portal')
                 ->first();
 
-            $order->comunicacao = $communication
-                ? mb_convert_case($communication->status_resposta, MB_CASE_TITLE, 'UTF-8')
+            $communicationSecondConfirm = Communicate::where('protocolo', $order->protocolo)->whereTemplate('')
+                ->first();
+
+            $order->confirmacao_cliente = $communicationFirstConfirm
+                ? mb_convert_case($communicationFirstConfirm->status_resposta, MB_CASE_TITLE, 'UTF-8')
+                : null;
+
+            $order->confirmacao_deslocamento = $communicationSecondConfirm
+                ? mb_convert_case($communicationSecondConfirm->status_resposta, MB_CASE_TITLE, 'UTF-8')
                 : null;
 
             $order->servico = ' ';
@@ -487,7 +494,8 @@ class DashboardSchedule
                     'localidade' => $order->localidade,
                     'status' => $order->status ?? $order->status_descricao,
                     'cor_indicativa' => $order->cor_indicativa,
-                    'confirmacao_cliente' => $order->comunicacao,
+                    'confirmacao_cliente' => $order->confirmacao_cliente,
+                    'confirmacao_deslocamento' => $order->confirmacao_deslocamento,
                     'solicitante' => $order->solicitante ?? '',
                     'aprovador' => $order->aprovador ?? ''
                 ]

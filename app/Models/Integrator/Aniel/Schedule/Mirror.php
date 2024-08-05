@@ -18,6 +18,7 @@ class Mirror extends Model
         'sub_servico',
         'data_agendamento',
         'confirmacao_cliente',
+        'confirmacao_deslocamento',
         'localidade',
         'solicitante',
         'aprovador',
