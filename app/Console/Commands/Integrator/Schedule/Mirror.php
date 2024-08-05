@@ -53,13 +53,13 @@ class Mirror extends Command
         // Despacha os jobs em um batch
         \Bus::batch($jobs)->then(function (Batch $batch) {
             // Todos os jobs foram processados com sucesso
-            $this->info('Todos os jobs foram processados com sucesso.');
+            \Log::info('Todos os jobs foram processados com sucesso.');
         })->catch(function (Batch $batch, \Throwable $e) {
             // Algum job falhou
-            $this->error('Algum job falhou.');
+            \Log::info('Algum job falhou.');
         })->finally(function (Batch $batch) {
             // Todos os jobs foram concluídos
-            $this->info('Todos os jobs foram concluídos.');
+            \Log::info('Todos os jobs foram concluídos.');
         })->dispatch();
 
         return 0;
