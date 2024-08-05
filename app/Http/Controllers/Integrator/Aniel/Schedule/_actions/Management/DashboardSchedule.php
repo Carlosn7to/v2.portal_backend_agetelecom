@@ -27,8 +27,8 @@ class DashboardSchedule
     {
         set_time_limit(2000000);
 
-//        $this->mountDashboard();
-        $this->mountDashboardOperational();
+        $this->mountDashboard();
+//        $this->mountDashboardOperational();
     }
 
     public function getDashboard(Request $request)
