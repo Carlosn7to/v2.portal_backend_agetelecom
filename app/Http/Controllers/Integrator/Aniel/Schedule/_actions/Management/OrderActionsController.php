@@ -22,7 +22,7 @@ class OrderActionsController extends Controller
 
 
         $dataAniel = Mirror::where('protocolo', $request->protocol)
-                    ->first(['protocolo', 'status', 'cor_indicativa', 'data_agendamento', 'servico', 'sub_servico', 'confirmacao_cliente', 'localidade'
+                    ->first(['protocolo', 'status', 'cor_indicativa', 'data_agendamento', 'servico', 'sub_servico', 'confirmacao_cliente', 'confirmacao_deslocamento', 'localidade'
                         ]);
 
 
