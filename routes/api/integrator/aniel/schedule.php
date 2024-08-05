@@ -28,3 +28,9 @@ Route::prefix('communicate-order')->controller(\App\Http\Controllers\Integrator\
     Route::post('/status', 'updateStatusSending');
     Route::post('/send/confirm', 'sendUniqueConfirm');
 });
+
+Route::prefix('management-order')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\OrderActionsController::class)->group(function () {
+    Route::get('/data', 'getDataOrder');
+    Route::post('/send/confirm', 'sendConfirm');
+});
+

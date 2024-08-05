@@ -390,7 +390,7 @@ class DashboardSchedule
     private function mountDashboardOperational($period = null)
     {
 
-        $startDate = Carbon::now()->subDays(5)->startOfDay();
+        $startDate = Carbon::now()->subDays(10)->startOfDay();
         $uniqueDates = Mirror::where('data_agendamento', '>=', $startDate)
             ->get(['data_agendamento'])
             ->map(function ($item) {
@@ -398,6 +398,7 @@ class DashboardSchedule
             })
             ->unique()
             ->values();
+
 
         if($period) {
             $ordersVoalle = ImportOrder::whereDate('data_agendamento', $period)
