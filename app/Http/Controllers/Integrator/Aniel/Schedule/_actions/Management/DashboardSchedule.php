@@ -565,7 +565,7 @@ class DashboardSchedule
 
     }
 
-    private function getFormattedName($userId) {
+    public function getFormattedName($userId) {
         if ($userId) {
             $user = User::find($userId, ['nome']);
             if ($user) {

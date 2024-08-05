@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
+use App\Jobs\UpdateMirrorAniel;
 use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\Mirror;
 use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
 
 class OrderActionsController extends Controller
@@ -15,7 +17,6 @@ class OrderActionsController extends Controller
 
     public function getDataOrder(Request $request)
     {
-
 
         $dataImport = ImportOrder::where('protocolo', $request->protocol)
                     ->first(['cliente_nome', 'protocolo', 'celular_1', 'email',

@@ -45,7 +45,6 @@ class Mirror extends Command
 
             $ordersVoalle = ImportOrder::whereDate('data_agendamento', $date)
                 ->get(['protocolo', 'tipo_servico', 'data_agendamento', 'node as localidade', 'status_id', 'cliente_id'])->toArray();
-
             // Adicionar a job ao array de jobs
             $jobs[] = new UpdateMirrorAniel($ordersVoalle);
         }
