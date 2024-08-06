@@ -124,7 +124,7 @@ class UpdateMirrorAniel implements ShouldQueue
             \Log::info('Updating or creating record with protocolo: ' . $order['protocolo']);
 
 
-            $mirror->updateOrCreate(
+            $result = $mirror->updateOrCreate(
                 ['protocolo' => $order['protocolo']],
                 [
                     'cliente_id' => $order['cliente_id'],
