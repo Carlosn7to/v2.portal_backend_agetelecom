@@ -57,7 +57,7 @@ class OrderActionsController extends Controller
         }
 
 
-        return (new InfoOrder())->__invoke();
+//        return (new InfoOrder())->__invoke();
 
 
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
