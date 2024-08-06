@@ -9,6 +9,9 @@ use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\Mirror;
+use App\Models\Integrator\Aniel\Schedule\OrderBroken;
+use App\Models\Integrator\Aniel\Schedule\Service;
+use App\Models\Integrator\Aniel\Schedule\StatusOrder;
 use Carbon\Carbon;
 use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
@@ -56,12 +59,9 @@ class OrderActionsController extends Controller
             ], 400);
         }
 
-
-
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)
             ->first();
-
 
         if($communicateMirror) {
 
