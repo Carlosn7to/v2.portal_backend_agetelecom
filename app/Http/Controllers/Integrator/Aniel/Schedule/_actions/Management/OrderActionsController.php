@@ -57,8 +57,20 @@ class OrderActionsController extends Controller
         }
 
 
-//        return (new InfoOrder())->__invoke();
+        $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
+            ->whereStatusAniel(0)
+            ->first();
 
+        if($communicateMirror) {
+            $communicateMirror->envio_deslocamento = 0;
+            $communicateMirror->save();
+        }
+
+
+
+        dd($communicateMirror);
+
+        dd('breakdo');
 
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)

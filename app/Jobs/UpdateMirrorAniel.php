@@ -77,10 +77,12 @@ class UpdateMirrorAniel implements ShouldQueue
                 $order['solicitante'] = $dashboardFunctions->getFormattedName($brokenOrder->solicitante_id);
             }
 
-            $communicationFirstConfirm = Communicate::where('protocolo', $order['protocolo'])->whereTemplate('confirmacao_agendamento_portal')
+            $communicationFirstConfirm = Communicate::whereDate('data_envio', '>=', Carbon::parse($order['data_agendamento'])->subDay()->format('Y-m-d'))
+                ->where('protocolo', $order['protocolo'])->whereTemplate('confirmacao_agendamento_portal')
                 ->first();
 
-            $communicationSecondConfirm = Communicate::where('protocolo', $order['protocolo'])->whereTemplate('informar_deslocamento_os_portal')
+            $communicationSecondConfirm = Communicate::whereDate('data_envio', '=', Carbon::parse($order['data_agendamento'])->format('Y-m-d'))
+                ->where('protocolo', $order['protocolo'])->whereTemplate('informar_deslocamento_os_portal')
                 ->first();
 
             $order['confirmacao_cliente'] = $communicationFirstConfirm
