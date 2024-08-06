@@ -47,6 +47,10 @@ class UpdateMirrorAniel implements ShouldQueue
 
         foreach($data as &$order) {
 
+            if($order['protocolo'] == '1186968') {
+                \Log::info('Data inicial ' . json_encode($order));
+            }
+
             $anielOrder = $dashboardFunctions->getDataUniqueOrder($order['protocolo']);
             $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
 
@@ -123,8 +127,7 @@ class UpdateMirrorAniel implements ShouldQueue
         foreach($data as $order) {
 
             if($order['protocolo'] == '1186968') {
-                \Log::info('Updating or creating record with protocolo: ' . $order['protocolo']);
-
+                \Log::info('Data final: ' . $order);
             }
 
             $result = $mirror->updateOrCreate(
@@ -146,9 +149,6 @@ class UpdateMirrorAniel implements ShouldQueue
             );
 
 
-            if($order['protocolo'] == '1186968') {
-                \Log::info('Result: ' . json_encode($result));
-            }
 
         }
     }
