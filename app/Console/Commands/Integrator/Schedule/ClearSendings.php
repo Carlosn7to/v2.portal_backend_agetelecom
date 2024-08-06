@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Integrator\Schedule;
 
+use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
 use Illuminate\Console\Command;
 
 class ClearSendings extends Command
@@ -25,6 +26,16 @@ class ClearSendings extends Command
      */
     public function handle()
     {
+        $communicateMirror = CommunicateMirror::whereStatusAniel(0)
+            ->get();
 
+        if($communicateMirror) {
+
+            foreach($communicateMirror as $communicate) {
+                $communicate->envio_deslocamento = 0;
+                $communicate->save();
+            }
+
+        }
     }
 }

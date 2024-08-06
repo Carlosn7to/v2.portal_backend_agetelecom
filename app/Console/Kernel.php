@@ -29,6 +29,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('aniel:mirror')
             ->everySecond();
+
+        $schedule->command('aniel:clear-sendings')
+            ->everyMinute();
     }
 
     /**
