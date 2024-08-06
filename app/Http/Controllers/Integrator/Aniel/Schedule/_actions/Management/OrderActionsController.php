@@ -59,9 +59,11 @@ class OrderActionsController extends Controller
             ], 400);
         }
 
+
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)
             ->first();
+
 
         if($communicateMirror) {
 

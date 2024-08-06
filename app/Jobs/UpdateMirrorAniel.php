@@ -87,11 +87,11 @@ class UpdateMirrorAniel implements ShouldQueue
 
             $order['confirmacao_cliente'] = $communicationFirstConfirm
                 ? mb_convert_case($communicationFirstConfirm->status_resposta, MB_CASE_TITLE, 'UTF-8')
-                : null;
+                : '';
 
             $order['confirmacao_deslocamento'] = $communicationSecondConfirm
                 ? mb_convert_case($communicationSecondConfirm->status_resposta, MB_CASE_TITLE, 'UTF-8')
-                : null;
+                : '';
 
             $order['servico'] = ' ';
 
