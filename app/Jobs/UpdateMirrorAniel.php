@@ -127,7 +127,7 @@ class UpdateMirrorAniel implements ShouldQueue
         foreach($data as $order) {
 
             if($order['protocolo'] == '1186968') {
-                \Log::info('Data final: ' . $order);
+                \Log::info('Data final: ' . json_encode($order));
             }
 
             $result = $mirror->updateOrCreate(
