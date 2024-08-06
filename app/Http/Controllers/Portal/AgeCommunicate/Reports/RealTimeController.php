@@ -35,16 +35,16 @@ class RealTimeController extends Controller
 
         foreach ($reports as $report) {
             // Verifica se há diferença entre os dados atuais e os novos dados
-            if ($report->status !== $result[0]['status']['id'] ||
-                $report->status_descricao !== $result[0]['status']['id']) {
-                $changes = true;
+            if ($result[0]['status']['id']) {
+
+                if($report->status != $result[0]['status']['id']) {
+                    $report->update([
+                        'status' => $result[0]['status']['id'],
+                        'status_descricao' => $result[0]['status']['id']
+                    ]);
+                }
 
 
-                // Atualiza o registro já que os dados são diferentes
-                $report->update([
-                    'status' => $result[0]['status']['id'],
-                    'status_descricao' => $result[0]['status']['id']
-                ]);
 
 
             }
