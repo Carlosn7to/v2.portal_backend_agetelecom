@@ -30,6 +30,11 @@ class Mirror extends Command
      */
     public function handle()
     {
+
+        $info = new InfoOrder();
+
+        $info->__invoke();
+
         $startDate = Carbon::now()->subDays(10)->startOfDay();
         $uniqueDates = \App\Models\Integrator\Aniel\Schedule\Mirror::where('data_agendamento', '>=', $startDate)
             ->get(['data_agendamento'])
