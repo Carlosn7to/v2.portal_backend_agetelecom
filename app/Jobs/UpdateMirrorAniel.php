@@ -43,7 +43,6 @@ class UpdateMirrorAniel implements ShouldQueue
         $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
             ->get();
 
-        $mirror = new Mirror();
         $dashboardFunctions = new DashboardSchedule();
 
         foreach($data as &$order) {
@@ -119,8 +118,12 @@ class UpdateMirrorAniel implements ShouldQueue
             }
         }
 
+        $mirror = new Mirror();
 
         foreach($data as $order) {
+            \Log::info('Updating or creating record with protocolo: ' . $order['protocolo']);
+
+
             $mirror->updateOrCreate(
                 ['protocolo' => $order['protocolo']],
                 [
@@ -138,6 +141,9 @@ class UpdateMirrorAniel implements ShouldQueue
                     'aprovador' => $order['aprovador'] ?? ''
                 ]
             );
+
+            \Log::info('Result: ' . json_encode($result));
+
         }
     }
 }
