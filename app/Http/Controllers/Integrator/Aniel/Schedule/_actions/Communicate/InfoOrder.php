@@ -199,7 +199,7 @@ class InfoOrder
     {
         $this->storeOrdersAniel();
 //        $this->buildConfirmOs();
-//        $this->buildAlterOs();
+        $this->buildAlterOs();
     }
 
     private function storeOrdersAniel()
@@ -226,8 +226,10 @@ class InfoOrder
             foreach($subServices as $service) {
 
 
-                $serviceAniel = mb_convert_case($order->TIPO_SERVICO_ANIEL, MB_CASE_LOWER, 'UTF-8');
-                $serviceVoalle = mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8');
+                $serviceAniel = trim(mb_convert_case($order->TIPO_SERVICO_ANIEL, MB_CASE_LOWER, 'UTF-8'));
+                $serviceVoalle = trim(mb_convert_case($service->titulo, MB_CASE_LOWER, 'UTF-8'));
+
+
 
                 if($serviceAniel == $serviceVoalle) {
 
