@@ -121,8 +121,11 @@ class UpdateMirrorAniel implements ShouldQueue
         $mirror = new Mirror();
 
         foreach($data as $order) {
-            \Log::info('Updating or creating record with protocolo: ' . $order['protocolo']);
 
+            if($order['protocolo'] == '1186968') {
+                \Log::info('Updating or creating record with protocolo: ' . $order['protocolo']);
+
+            }
 
             $result = $mirror->updateOrCreate(
                 ['protocolo' => $order['protocolo']],
@@ -142,7 +145,10 @@ class UpdateMirrorAniel implements ShouldQueue
                 ]
             );
 
-            \Log::info('Result: ' . json_encode($result));
+
+            if($order['protocolo'] == '1186968') {
+                \Log::info('Result: ' . json_encode($result));
+            }
 
         }
     }
