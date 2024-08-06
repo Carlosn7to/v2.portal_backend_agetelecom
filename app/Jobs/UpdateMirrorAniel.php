@@ -22,19 +22,18 @@ class UpdateMirrorAniel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
 
-    private $data;
     /**
      * Create a new job instance.
      */
     public function __construct($data)
     {
-        $this->data = $data;
+        $this->handle($data);
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle($data): void
     {
 
 
@@ -44,7 +43,7 @@ class UpdateMirrorAniel implements ShouldQueue
         $mirror = new Mirror();
         $dashboardFunctions = new DashboardSchedule();
 
-        foreach($this->data as &$order) {
+        foreach($data as &$order) {
 
             $anielOrder = $dashboardFunctions->getDataUniqueOrder($order['protocolo']);
             $anielOrder = count($anielOrder) > 0 ? $anielOrder[0] : null;
@@ -118,7 +117,7 @@ class UpdateMirrorAniel implements ShouldQueue
         }
 
 
-        foreach($this->data as $order) {
+        foreach($data as $order) {
             $mirror->updateOrCreate(
                 ['protocolo' => $order['protocolo']],
                 [
