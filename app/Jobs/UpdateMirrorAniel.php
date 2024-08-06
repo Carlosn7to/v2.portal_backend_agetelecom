@@ -22,19 +22,22 @@ class UpdateMirrorAniel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Batchable;
 
+    private $data;
     /**
      * Create a new job instance.
      */
     public function __construct($data)
     {
-        $this->handle($data);
+        $this->data = $data;
     }
 
     /**
      * Execute the job.
      */
-    public function handle($data): void
+    public function handle(): void
     {
+
+        $data = $this->data;
 
 
         $services = Service::where('titulo', '<>', 'Sem vinculo')->with(['subServices', 'capacityWeekly'])
