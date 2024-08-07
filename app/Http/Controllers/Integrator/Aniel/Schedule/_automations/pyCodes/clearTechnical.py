@@ -51,8 +51,6 @@ try:
     # Clicar no botão de salvar flutuante
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.float-save'))).click()
 
-    # Pausar por 1 segundo
-    WebDriverWait(driver, 1).until(EC.alert_is_present())
 
 finally:
     # Fechar o navegador
