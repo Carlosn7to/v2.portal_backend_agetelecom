@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_automations\ClearTechnical;
 use App\Jobs\UpdateMirrorAniel;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
 use PHPUnit\Event\Telemetry\Info;
+use Tests\Browser\Integrator\Aniel\AlterSchedule;
 
 class OrderActionsController extends Controller
 {
@@ -58,8 +60,6 @@ class OrderActionsController extends Controller
                 'errors' => $validator->errors()
             ], 400);
         }
-
-
 
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)
@@ -104,6 +104,18 @@ class OrderActionsController extends Controller
             return response()->json(true);
 
         }
+    }
+
+    public function clearTechnical()
+    {
+
+        $pythonFilePath = base_path('app'.DIRECTORY_SEPARATOR.'Http'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'Integrator'.DIRECTORY_SEPARATOR.'Aniel'.DIRECTORY_SEPARATOR.'Schedule'.DIRECTORY_SEPARATOR.'_automations'.DIRECTORY_SEPARATOR.'pyCodes'.DIRECTORY_SEPARATOR.'clearTechnical.py');
+
+        $command = "py \"$pythonFilePath\"";
+
+        $output = shell_exec($command);
+
+        return $output;
     }
 
     private function formatNumber($number)

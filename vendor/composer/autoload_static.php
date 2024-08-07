@@ -241,8 +241,8 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'ZipStream\\' => 
         array (
@@ -464,8 +464,8 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -774,6 +774,7 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'AWS\\CRT\\Options' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
         'App\\Console\\Commands\\Integrator\\Schedule\\Aniel' => __DIR__ . '/../..' . '/app/Console/Commands/Integrator/Schedule/Aniel.php',
         'App\\Console\\Commands\\Integrator\\Schedule\\Capacity' => __DIR__ . '/../..' . '/app/Console/Commands/Integrator/Schedule/Capacity.php',
+        'App\\Console\\Commands\\Integrator\\Schedule\\ClearSendings' => __DIR__ . '/../..' . '/app/Console/Commands/Integrator/Schedule/ClearSendings.php',
         'App\\Console\\Commands\\Integrator\\Schedule\\ExportOrder' => __DIR__ . '/../..' . '/app/Console/Commands/Integrator/Schedule/ExportOrder.php',
         'App\\Console\\Commands\\Integrator\\Schedule\\Mirror' => __DIR__ . '/../..' . '/app/Console/Commands/Integrator/Schedule/Mirror.php',
         'App\\Console\\Commands\\Portal\\AgeCommunicate\\Rule\\Billing\\Sendings' => __DIR__ . '/../..' . '/app/Console/Commands/Portal/AgeCommunicate/Rule/Billing/Sendings.php',
@@ -10704,6 +10705,7 @@ class ComposerStaticInit1bfadea254e87872f27c3820dbe83fd7
         'Termwind\\ValueObjects\\Style' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Style.php',
         'Termwind\\ValueObjects\\Styles' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Styles.php',
         'Tests\\Browser\\ExampleTest' => __DIR__ . '/../..' . '/tests/Browser/ExampleTest.php',
+        'Tests\\Browser\\Integrator\\Aniel\\AlterSchedule' => __DIR__ . '/../..' . '/tests/Browser/Integrator/Aniel/AlterSchedule.php',
         'Tests\\Browser\\LoginTest' => __DIR__ . '/../..' . '/tests/Browser/LoginTest.php',
         'Tests\\Browser\\Pages\\HomePage' => __DIR__ . '/../..' . '/tests/Browser/Pages/HomePage.php',
         'Tests\\Browser\\Pages\\Page' => __DIR__ . '/../..' . '/tests/Browser/Pages/Page.php',

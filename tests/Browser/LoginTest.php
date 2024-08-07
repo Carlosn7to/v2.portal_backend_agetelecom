@@ -14,19 +14,19 @@ class LoginTest extends DuskTestCase
     public function testExample(): void
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit('https://ageportal.agetelecom.com.br/')
-                ->type('#username', 'carlos.neto')
-                ->type('#password', env('PASSWORD_TRACKING'))
-                ->clickAtXPath('//*[@id="card-login"]/form/button/span')
-                ->waitFor('.welcome-text')
-                ->visit('https://ageportal.agetelecom.com.br/ageTools/home')
-                ->waitFor('.card')
-                ->clickAtXPath('//*[@id="content-page"]/div/div/div[1]/a')
-                ->waitFor('.not-data')
-                ->type('#name', 'Lucas Pereira Bispo')
-                ->keys('#name', '{enter}')
-                ->waitFor('.table');
 
+            $browser->visit('https://cliente01.sinapseinformatica.com.br:4383/AGE/Web/Aniel.Connect/?IdAcesso=18560#')
+                ->type('#UserName', '28811')
+                ->type('#Password', 'Jonas2023')
+                ->waitFor('.table')
+                ->clickAtXPath('/html/body/form/div/div/div[2]/div[4]/div/div/button');
+//                ->waitFor('.welcome-text')
+//                ->visit('https://ageportal.agetelecom.com.br/ageTools/home')
+//                ->waitFor('.card')
+//                ->clickAtXPath('//*[@id="content-page"]/div/div/div[1]/a')
+//                ->waitFor('.not-data')
+//                ->type('#name', 'Lucas Pereira Bispo')
+//                ->keys('#name', '{enter}')
 
             // Captura do HTML da tabela
             $tabelaHTML = $browser->driver->executeScript('return document.querySelector(".table").outerHTML');
@@ -40,6 +40,10 @@ class LoginTest extends DuskTestCase
             }
 
             dump($items);
+
+            $browser->pause(30000);
+
         });
     }
+
 }
