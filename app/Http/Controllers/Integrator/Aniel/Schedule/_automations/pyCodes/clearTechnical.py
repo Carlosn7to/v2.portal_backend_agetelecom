@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-
+import time
 # Configurações do Chrome
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # Remova este comentário se não precisar do modo headless
@@ -52,8 +52,7 @@ try:
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.float-save'))).click()
 
     # Pausar por 1 segundo
-    WebDriverWait(driver, 5).until(EC.alert_is_present())
-
+    time.sleep(5)
 finally:
     # Fechar o navegador
     driver.quit()
