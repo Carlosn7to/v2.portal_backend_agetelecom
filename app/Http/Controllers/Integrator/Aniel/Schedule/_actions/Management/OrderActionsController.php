@@ -111,7 +111,7 @@ class OrderActionsController extends Controller
 
         $pythonFilePath = base_path('app'.DIRECTORY_SEPARATOR.'Http'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'Integrator'.DIRECTORY_SEPARATOR.'Aniel'.DIRECTORY_SEPARATOR.'Schedule'.DIRECTORY_SEPARATOR.'_automations'.DIRECTORY_SEPARATOR.'pyCodes'.DIRECTORY_SEPARATOR.'clearTechnical.py');
 
-        $command = "py \"$pythonFilePath\"";
+        $command = "python3 \"$pythonFilePath\"";
 
         $output = shell_exec($command);
 
