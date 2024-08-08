@@ -42,37 +42,41 @@ class OrderSync
         $import = new ImportOrder();
 
         foreach($this->data as $key => $value) {
-            $import->firstOrCreate(
-                ['protocolo' => $value->protocol],
-                [
-                'atendimento_id' => $value->assignment_id,
-                'protocolo' => $value->protocol,
-                'contrato_id' => $value->contract_id,
-                'cliente_id' => $value->client_id,
-                'cliente_documento' => $value->doc,
-                'cliente_nome' => $value->client_name,
-                'email' => $value->email,
-                'celular_1' => $value->cell_phone,
-                'celular_2' => $value->cell_phone_2,
-                'endereco' => $value->address,
-                'numero' => $value->number,
-                'complemento' => $value->complement,
-                'cidade' => $value->city,
-                'bairro' => $value->neighborhood,
-                'cep' => $value->cep,
-                'latitude' => $value->latitude,
-                'longitude' => $value->longitude,
-                'tipo_imovel' => $value->type_immobile,
-                'tipo_servico' => $value->type_service,
-                'node' => $value->node,
-                'area_despacho' => $value->dispatch_area,
-                'observacao' => $value->observation,
-                'grupo' => $value->group,
-                'data_agendamento' => $value->schedule_date?? null,
-                'status_id' => 1,
-                'criado_por' => mb_convert_case($value->created_by, MB_CASE_TITLE, 'UTF-8'),
-                'setor' => $value->team
-            ]);
+            try {
+                $import->firstOrCreate(
+                    ['protocolo' => $value->protocol],
+                    [
+                        'atendimento_id' => $value->assignment_id,
+                        'protocolo' => $value->protocol,
+                        'contrato_id' => $value->contract_id,
+                        'cliente_id' => $value->client_id,
+                        'cliente_documento' => $value->doc,
+                        'cliente_nome' => $value->client_name,
+                        'email' => $value->email,
+                        'celular_1' => $value->cell_phone,
+                        'celular_2' => $value->cell_phone_2,
+                        'endereco' => $value->address,
+                        'numero' => $value->number,
+                        'complemento' => $value->complement,
+                        'cidade' => $value->city,
+                        'bairro' => $value->neighborhood,
+                        'cep' => $value->cep,
+                        'latitude' => $value->latitude,
+                        'longitude' => $value->longitude,
+                        'tipo_imovel' => $value->type_immobile,
+                        'tipo_servico' => $value->type_service,
+                        'node' => $value->node,
+                        'area_despacho' => $value->dispatch_area,
+                        'observacao' => $value->observation,
+                        'grupo' => $value->group,
+                        'data_agendamento' => $value->schedule_date?? null,
+                        'status_id' => 1,
+                        'criado_por' => mb_convert_case($value->created_by, MB_CASE_TITLE, 'UTF-8'),
+                        'setor' => $value->team
+                    ]);
+            } catch (\Exception $e) {
+                continue;
+            }
         }
 
 

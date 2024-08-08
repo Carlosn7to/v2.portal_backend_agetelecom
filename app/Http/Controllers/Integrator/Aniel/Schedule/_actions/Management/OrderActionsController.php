@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_automations\ClearTechnical;
 use App\Jobs\UpdateMirrorAniel;
 use App\Mail\AgeCommunicate\Base\RA\SendRa;
@@ -111,7 +112,8 @@ class OrderActionsController extends Controller
 
     public function rescheduleOrder(Request $request)
     {
-        set_time_limit(120);
+        set_time_limit(2000000);
+
 
         $protocol = $request->protocol;
         $date = $request->date;
