@@ -73,7 +73,23 @@ class OrderActionsController extends Controller
         if($communicateMirror) {
 
             if($communicateMirror->envio_confirmacao || $communicateMirror->envio_deslocamento) {
-                return response()->json('Comunicação já enviada', 400);
+
+                $communicateExpired = Communicate::whereProtocolo($communicateMirror->protocolo)
+                    ->whereTemplate('confirmacao_agendamento_portal')
+                    ->orderBy('data_envio', 'desc')
+                    ->first();
+
+                $data = json_decode($communicateExpired->dados, true);
+
+
+                $dateSchedule = $data['data_agendamento'] . ' ' . $data['hora_inicio'];
+
+                $dateScheduleFormated = Carbon::createFromFormat('d/m/Y H:i', $dateSchedule)->format('Y-m-d H:i:s');
+
+                if($dateScheduleFormated > Carbon::now()->format('Y-m-d H:i:s')) {
+                    return response()->json('comunicação já enviada');
+                }
+
             }
 
 
@@ -114,6 +130,8 @@ class OrderActionsController extends Controller
     {
         set_time_limit(2000000);
 
+        $info = new InfoOrder();
+        return $info->__invoke();
 
         $protocol = $request->protocol;
         $date = $request->date;
@@ -137,8 +155,8 @@ class OrderActionsController extends Controller
 
         $output = shell_exec($command);
 
-        if($output == 'true') {
-            return response()->json('sucess', 200);
+        if($output == 'true\n') {
+            return response()->json('Ordem de serviço reagendada com sucesso!', 200);
         }
 
         return response()->json([
