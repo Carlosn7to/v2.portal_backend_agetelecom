@@ -131,7 +131,7 @@ class OrderActionsController extends Controller
         $param3 = $period;
         $param4 = 'Reagendamento realizado via Portal pelo(a) operador(a) '.$name;
 
-        $command = "py \"$pythonFilePath\" \"$param1\" \"$param2\" \"$param3\" \"$param4\"";
+        $command = "python3 \"$pythonFilePath\" \"$param1\" \"$param2\" \"$param3\" \"$param4\"";
 
         $output = shell_exec($command);
 
