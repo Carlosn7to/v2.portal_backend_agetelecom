@@ -22,3 +22,8 @@ Route::get('/order/edit/{id}', [\App\Http\Controllers\Integrator\Aniel\Services\
 
 Route::get('bi/voalle/financial/b2b/good-payer', [\App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController::class, 'builderForBI']);
 Route::get('bi/voalle/financial/b2b/receipt-titles', [\App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\ReceipTitlesController::class, 'builderForBI']);
+
+
+Route::get('teste-email', function () {
+    return view('portal.mail.collaborators');
+});

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\InfoOrder;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_automations\ClearTechnical;
 use App\Jobs\UpdateMirrorAniel;
+use App\Mail\AgeCommunicate\Base\RA\SendRa;
+use App\Mail\Portal\Helpers\SendQuality;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\CommunicateMirror;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
@@ -61,6 +63,7 @@ class OrderActionsController extends Controller
             ], 400);
         }
 
+
         $communicateMirror = CommunicateMirror::whereProtocolo($request->protocol)
             ->whereStatusAniel(0)
             ->first();
@@ -106,16 +109,39 @@ class OrderActionsController extends Controller
         }
     }
 
-    public function clearTechnical()
+    public function rescheduleOrder(Request $request)
     {
+        set_time_limit(120);
+
+        $protocol = $request->protocol;
+        $date = $request->date;
+        $period = $request->period;
+
 
         $pythonFilePath = base_path('app'.DIRECTORY_SEPARATOR.'Http'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'Integrator'.DIRECTORY_SEPARATOR.'Aniel'.DIRECTORY_SEPARATOR.'Schedule'.DIRECTORY_SEPARATOR.'_automations'.DIRECTORY_SEPARATOR.'pyCodes'.DIRECTORY_SEPARATOR.'clearTechnical.py');
 
-        $command = "python3 \"$pythonFilePath\"";
+        $login = auth('portal')->user()->login;
+        $parts = explode('.', $login);
+        $capitalizedParts = array_map('ucfirst', $parts);
+        $name = implode('.', $capitalizedParts);
+
+
+        $param1 = $protocol;
+        $param2 = Carbon::parse($date)->format('d/m/Y');
+        $param3 = $period;
+        $param4 = 'Reagendamento realizado via Portal pelo(a) operador(a) '.$name;
+
+        $command = "py \"$pythonFilePath\" \"$param1\" \"$param2\" \"$param3\" \"$param4\"";
 
         $output = shell_exec($command);
 
-        return $output;
+        if($output == 'true') {
+            return response()->json('sucess', 200);
+        }
+
+        return response()->json([
+            'output' => $output
+        ], 400);
     }
 
     private function formatNumber($number)
