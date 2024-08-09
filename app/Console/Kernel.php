@@ -19,13 +19,13 @@ class Kernel extends ConsoleKernel
             ->dailyAt('09:00');
 
         $schedule->command('tracking:services')
-            ->everySecond();
+            ->everyMinute();
 
         $schedule->command('aniel:capacity')
             ->everyMinute();
 
         $schedule->command('aniel:export')
-            ->everySecond();
+            ->everyMinute();
 
         $schedule->command('aniel:mirror')
             ->everyMinute();
