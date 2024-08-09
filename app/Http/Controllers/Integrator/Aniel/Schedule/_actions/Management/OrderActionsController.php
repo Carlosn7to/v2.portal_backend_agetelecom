@@ -153,6 +153,14 @@ class OrderActionsController extends Controller
         $output = shell_exec($command);
 
         if($output == str_contains($output, 'true')) {
+
+            $mirrorOrder = Mirror::whereProtocolo($protocol)->first();
+
+            $hour = $period == 'manhã' ? '08:00' : '13:00';
+
+            $mirrorOrder->data_agendamento = Carbon::createFromFormat('d/m/Y H:i', "$date $hour")->format('Y-m-d H:i:s');
+            $mirrorOrder->save();
+
             return response()->json('Ordem de serviço reagendada com sucesso!', 200);
         }
 
