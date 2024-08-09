@@ -82,9 +82,9 @@ try:
     driver.switch_to.default_content()
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.float-save.floatButton'))).click()
     driver.execute_script("window.scrollTo(0, 0);")
-    time.sleep(3)
+    time.sleep(2)
     WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, 'iframe#iDadosGeraisFrame')))
-    time.sleep(3)
+    time.sleep(2)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#select2-iMotivo_ReagendamentoM-container'))).click()
     time.sleep(1)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[type=search].select2-search__field'))).click()
@@ -102,16 +102,16 @@ try:
     driver.switch_to.default_content()
     # Clicar no botão de salvar flutuante
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a.float-save.floatButton'))).click()
-    time.sleep(3)
+    time.sleep(2)
 
 
     # Clicar na aba do técnico
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#tecnico-tab'))).click()
-    time.sleep(3)
+    time.sleep(2)
 
     # Esperar pelo iframe
     WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, 'iframe#iTecnicoFrame')))
-    time.sleep(3)
+    time.sleep(2)
 
     # Esperar pelos elementos dentro do iframe e interagir
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.card')))
@@ -119,7 +119,7 @@ try:
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.card-body')))
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#AlterarCampo'))).click()
-    time.sleep(3)
+    time.sleep(2)
 
     # Voltar do iframe
     driver.switch_to.default_content()
@@ -127,7 +127,7 @@ try:
 
     # Clicar no botão de salvar flutuante
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a.float-save.floatButton'))).click()
-    time.sleep(5)
+    time.sleep(2)
     print('true')
 
 finally:
