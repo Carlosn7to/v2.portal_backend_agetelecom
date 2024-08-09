@@ -152,7 +152,7 @@ class OrderActionsController extends Controller
 
         $output = shell_exec($command);
 
-        if($output == 'true\n') {
+        if($output == str_contains($output, 'true')) {
             return response()->json('Ordem de serviço reagendada com sucesso!', 200);
         }
 
