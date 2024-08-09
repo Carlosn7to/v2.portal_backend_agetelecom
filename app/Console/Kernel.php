@@ -21,17 +21,17 @@ class Kernel extends ConsoleKernel
         $schedule->command('tracking:services')
             ->everySecond();
 
-//        $schedule->command('aniel:capacity')
-//            ->everyMinute();
-//
-//        $schedule->command('aniel:export')
-//            ->everySecond();
-//
-//        $schedule->command('aniel:mirror')
-//            ->everyMinute();
-//
-//        $schedule->command('aniel:clear-sendings')
-//            ->everyMinute();
+        $schedule->command('aniel:capacity')
+            ->everyMinute();
+
+        $schedule->command('aniel:export')
+            ->everySecond();
+
+        $schedule->command('aniel:mirror')
+            ->everyMinute();
+
+        $schedule->command('aniel:clear-sendings')
+            ->everyMinute();
     }
 
     /**
