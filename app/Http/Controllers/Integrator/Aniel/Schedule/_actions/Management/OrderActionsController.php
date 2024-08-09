@@ -141,8 +141,7 @@ class OrderActionsController extends Controller
         $login = auth('portal')->user()->login;
         $parts = explode('.', $login);
         $capitalizedParts = array_map('ucfirst', $parts);
-        $name = implode('.', $capitalizedParts);
-
+        $name = implode(' ', $capitalizedParts);
 
         $param1 = $protocol;
         $param2 = Carbon::parse($date)->format('d/m/Y');
@@ -158,7 +157,7 @@ class OrderActionsController extends Controller
         }
 
         return response()->json([
-            'output' => $output
+            'response' => $output
         ], 400);
     }
 
