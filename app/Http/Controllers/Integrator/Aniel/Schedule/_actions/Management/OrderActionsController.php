@@ -136,6 +136,10 @@ class OrderActionsController extends Controller
         $period = $request->period == 'manha' ? 'manhã' : 'tarde';
 
 
+        $importOrder = ImportOrder::whereProtocolo($protocol)->first();
+
+
+
         $pythonFilePath = base_path('app'.DIRECTORY_SEPARATOR.'Http'.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'Integrator'.DIRECTORY_SEPARATOR.'Aniel'.DIRECTORY_SEPARATOR.'Schedule'.DIRECTORY_SEPARATOR.'_automations'.DIRECTORY_SEPARATOR.'pyCodes'.DIRECTORY_SEPARATOR.'clearTechnical.py');
 
         $login = auth('portal')->user()->login;
@@ -147,6 +151,17 @@ class OrderActionsController extends Controller
         $param2 = Carbon::parse($date)->format('d/m/Y');
         $param3 = $period;
         $param4 = 'Reagendamento realizado via Portal pelo(a) operador(a) '.$name;
+        $hour = $period == 'manhã' ? '08:00' : '13:00';
+
+        if (in_array($importOrder->status_id, [12, 13, 14])) {
+            $importOrder->update([
+                'status_id' => 1,
+                'data_agendamento' => Carbon::createFromFormat('d/m/Y H:i', "$param2 $hour")->format('Y-m-d H:i:s')
+            ]);
+
+            return response()->json('Ordem de serviço reagendada com sucesso!', 200);
+        }
+
 
         $command = "python3 \"$pythonFilePath\" \"$param1\" \"$param2\" \"$param3\" \"$param4\"";
 
@@ -156,7 +171,6 @@ class OrderActionsController extends Controller
 
             $mirrorOrder = Mirror::whereProtocolo($protocol)->first();
 
-            $hour = $period == 'manhã' ? '08:00' : '13:00';
 
             $mirrorOrder->data_agendamento = Carbon::createFromFormat('d/m/Y H:i', "$param2 $hour")->format('Y-m-d H:i:s');
             $mirrorOrder->save();
