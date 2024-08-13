@@ -2,6 +2,7 @@
 
 namespace App\Models\Integrator\Aniel\Schedule;
 
+use App\Models\Portal\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,5 +28,9 @@ class Capacity extends Model
     ];
     protected $connection = 'portal';
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'atualizado_por', 'id')->select('id', 'nome');
+    }
 
 }
