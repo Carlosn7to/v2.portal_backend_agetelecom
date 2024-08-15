@@ -13,6 +13,9 @@ class SendEmailMessage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $data;
+
+
     /**
      * Create a new job instance.
      */

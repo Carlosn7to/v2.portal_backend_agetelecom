@@ -34,18 +34,20 @@ class BuilderBillingRuleController extends Controller
 
     public function debug()
     {
+        $this->buildingData();
+        $this->sendingCommunication();
 
     }
 
     private function sendingCommunication()
     {
-        $timer = 60*3;
+//        $timer = 60*3;
 
         $whatsappAction = new BuilderWhatsapp($this->data);
         $smsAction = new BuilderSms($this->data);
         $emailAction = new BuilderEmail($this->data);
-        $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
-        sleep($timer);
+//        $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
+//        sleep($timer);
         SendWhatsappMessage::dispatch($this->data);
         SendSmsMessage::dispatch($this->data);
         SendEmailMessage::dispatch($this->data);
@@ -60,9 +62,9 @@ class BuilderBillingRuleController extends Controller
 
         $destinations = [
             '5561984700440',
-            '5561981069695',
-            '5561998003186',
-            '5561992587560'
+//            '5561981069695',
+//            '5561998003186',
+//            '5561992587560'
         ];
 
 
