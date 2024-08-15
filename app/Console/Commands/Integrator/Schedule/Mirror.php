@@ -152,7 +152,7 @@ class Mirror extends Command
                         'confirmacao_deslocamento' => $order['confirmacao_deslocamento'],
                         'solicitante' => $order['solicitante'] ?? '',
                         'aprovador' => $order['aprovador'] ?? '',
-                        'responsavel' => $order['responsavel'] ?? ''
+                        'responsavel' => $order['responsavel'] ?? 'Sem Técnico Atribuido'
                     ]
                 );
             }
