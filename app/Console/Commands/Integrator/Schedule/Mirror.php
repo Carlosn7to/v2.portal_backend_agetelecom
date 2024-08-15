@@ -74,7 +74,7 @@ class Mirror extends Command
                     $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
                     $order['status'] = $anielOrder->Status_Descritivo;
                     $statusDetails = StatusOrder::where('titulo', $order['status'])->first();
-                    $statusDetails['responsavel'] = $anielOrder->Nome_Tecnico;
+                    $order['responsavel'] = mb_convert_case($anielOrder->Nome_Tecnico, MB_CASE_TITLE, 'UTF-8');
                 } else {
                     $statusDetails = StatusOrder::where('id', $order['status_id'])->first();
                 }
