@@ -29,6 +29,10 @@ Route::prefix('management-schedule/schedule')->controller(\App\Http\Controllers\
     Route::post('/alter-status', 'alterStatus');
 });
 
+Route::prefix('management-schedule/voalle')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync::class)->group(function () {
+    Route::get('/debug', 'debug');
+});
+
 Route::prefix('communicate-order')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Communicate\SendingController::class)->group(function () {
     Route::post('/status', 'updateStatusSending');
     Route::post('/send/confirm', 'sendUniqueConfirm');

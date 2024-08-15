@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle;
 
+use App\Http\Controllers\Controller;
 use App\Models\Integrator\Aniel\Schedule\Capacity;
 use App\Models\Integrator\Aniel\Schedule\CapacityWeekly;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
@@ -12,12 +13,23 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Nette\Utils\Random;
 
-class OrderSync
+class OrderSync extends Controller
 {
     private $data; // Dados da consulta no voalle
     private $idServices; // Dados dos serviços que serão consultados na tabela aniel_agenda_subservicos
     private $lastProtocol;  // Dados do último protocolo inserido na tabela aniel_agenda_importacao_ordens
 
+    public function debug()
+    {
+        if(auth('portal')->user()->login != 'carlos.neto') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $this->getData();
+
+        dd(count($this->data));
+
+    }
     public function __invoke()
     {
         return $this->response();
@@ -753,7 +765,7 @@ class OrderSync
       left join erp.teams t on t.id = vu.team_id
       where incident_types.active = '1' and assignments.deleted = '0' and incident_types.deleted = '0'
       and TO_CHAR( s.start_date, '%Y-%m-%d' ) <> '0000-00-00' and people.deleted = '0'
-      and TO_CHAR( assignment_incidents.responsible_final_date, '%Y-%m-%d' ) <> '0000-00-00' and people.deleted = '0'
+      and people.deleted = '0'
       and incident_status.id <> '8'
       and contract_service_tags.contract_id = contratos.id
       and

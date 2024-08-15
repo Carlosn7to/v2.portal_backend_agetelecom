@@ -47,14 +47,7 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
-
-        $result = \DB::connection('aniel')->select($this->getQueryAniel());
-
-        return $result;
-
-
-        return 10;
-
+//
 //        $b2bSeller = new BuilderController();
 //
 //        return $b2bSeller->response();

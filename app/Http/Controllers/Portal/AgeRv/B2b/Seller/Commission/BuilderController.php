@@ -53,8 +53,6 @@ class BuilderController extends Controller
 
     public function response()
     {
-        return $this->response;
-
 
         $dedicated = $result->filter(function ($item) {
             return str_contains($item->title, 'Link Dedicado');

@@ -17,6 +17,7 @@ class Provisory2BuilderController extends Controller
         $this->data = (new ProvisoryBuilderController())->builder($request->period);
 
 
+
        $this->levelCommission();
        $this->getCommission();
        return $this->data;
