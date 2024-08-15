@@ -35,7 +35,7 @@ class BuilderBillingRuleController extends Controller
     public function debug()
     {
         $this->buildingData();
-        $this->sendingCommunication();
+        dd($this->data);
 
     }
 
@@ -48,9 +48,12 @@ class BuilderBillingRuleController extends Controller
         $emailAction = new BuilderEmail($this->data);
         $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
         sleep($timer);
-        SendWhatsappMessage::dispatch($this->data);
-        SendSmsMessage::dispatch($this->data);
-        SendEmailMessage::dispatch($this->data);
+//        SendWhatsappMessage::dispatch($this->data);
+//        SendSmsMessage::dispatch($this->data);
+//        SendEmailMessage::dispatch($this->data);
+        $whatsappAction->builder();
+        $smsAction->builder();
+        $emailAction->builder();
         return true;
 
     }
@@ -125,7 +128,6 @@ class BuilderBillingRuleController extends Controller
     private function buildingData()
     {
         $this->getData();
-
 
         $dataSendedsToday = Report::where('created_at', '>=', Carbon::now()->startOfDay()->format('Y-m-d H:i:s'))->get();
 
