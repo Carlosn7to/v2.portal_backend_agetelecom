@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\mail\BuilderEmail;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\BuilderSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\whatsapp\BuilderWhatsapp;
+use App\Jobs\SendEmailMessage;
+use App\Jobs\SendSmsMessage;
+use App\Jobs\SendWhatsappMessage;
 use App\Models\Portal\AgeCommunicate\BillingRule\DataVoalle;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
 use Carbon\Carbon;
@@ -29,19 +32,23 @@ class BuilderBillingRuleController extends Controller
         return $this->sendingCommunication();
     }
 
+    public function debug()
+    {
+
+    }
 
     private function sendingCommunication()
     {
-        $timer = 60*60;
+        $timer = 60*15;
 
         $whatsappAction = new BuilderWhatsapp($this->data);
         $smsAction = new BuilderSms($this->data);
         $emailAction = new BuilderEmail($this->data);
         $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
         sleep($timer);
-        $whatsappAction->builder();
-        $smsAction->builder();
-        $emailAction->builder();
+        SendWhatsappMessage::dispatch($this->data);
+        SendSmsMessage::dispatch($this->data);
+        SendEmailMessage::dispatch($this->data);
         return true;
 
     }

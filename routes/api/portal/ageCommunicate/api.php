@@ -15,3 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+Route::prefix('billing-rule')->controller(\App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController::class)->group(function () {
+    Route::get('/debug', 'debug');
+});

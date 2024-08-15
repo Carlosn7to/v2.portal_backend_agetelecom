@@ -63,11 +63,7 @@ class BuilderEmail
                     $this->authenticateVoalle();
                     $this->chooseIntegrator($value);
                 }
-                // Registra o erro para depuração
-                \Log::error('Erro ao escolher integrador', [
-                    'error' => $e->getMessage(),
-                    'value' => $value
-                ]);
+
             }
         }
 
@@ -93,29 +89,44 @@ class BuilderEmail
 
     private function aws($clientData)
     {
-        $client = new Client();
 
-        $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/'.$clientData['frt_id'],[
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->access->access_token
-            ]
-        ]);
+
+        try {
+            $client = new Client();
+
+            $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/'.$clientData['frt_id'], [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$this->access->access_token
+                ]
+            ]);
+
+            // Verifique o código de status da resposta, se necessário
+            if ($responseBillet->getStatusCode() === 200) {
+                // Obtenha o conteúdo do PDF
+                $pdfContent = $responseBillet->getBody()->getContents();
+
+                // Especifique o caminho onde você deseja salvar o arquivo no seu computador
+                $billetPath = storage_path('app/portal/agecommunicate/billingrule/billets/boleto.pdf');
+
+                // Salve o arquivo no caminho especificado
+                file_put_contents($billetPath, $pdfContent);
+            }
+
+        } catch (\Exception $e) {
+
+            if ($e->getCode() == 401) {
+                try {
+                    $this->authenticateVoalle();
+
+                    $this->chooseIntegrator($clientData);
+                } catch (\Exception $authException) {
+                }
+            }
+        }
 
         $billetPath = [];
 
-        // Verifique se a requisição foi bem-sucedida (código de status 200)
-        if ($responseBillet->getStatusCode() == 200) {
-            // Obtenha o conteúdo do PDF
-            $pdfContent = $responseBillet->getBody()->getContents();
 
-            // Especifique o caminho onde você deseja salvar o arquivo no seu computador
-            $billetPath = storage_path('app/portal/agecommunicate/billingrule/billets/boleto.pdf');
-
-            // Salve o arquivo no caminho especificado
-            file_put_contents($billetPath, $pdfContent);
-
-
-        }
 
         if($clientData['pix_qrcode'] != null){
             $result = Builder::create()
@@ -146,12 +157,10 @@ class BuilderEmail
             } else {
                 // Caso o e-mail seja inválido, registre um erro
                 $clientData['error'] = json_encode(['error' => 'E-mail inválido para disparo']);
-                \Log::error('E-mail inválido', ['clientData' => $clientData]);
             }
         } catch (\Exception $e) {
             // Capture qualquer exceção e registre o erro
             $clientData['error'] = json_encode(['error' => $e->getMessage()]);
-            \Log::error('Erro ao enviar e-mail', ['error' => $e->getMessage(), 'clientData' => $clientData]);
         }
 
         $this->buildingReport($clientData);
@@ -162,7 +171,7 @@ class BuilderEmail
     {
         $report = new Report();
 
-        $reportStatus = $report->create([
+        $report->create([
             'bulk_id' => '',
             'mensagem_id' => uniqid() . "_" . $clientData['contract_id'],
             'canal' => 'Email',
