@@ -591,7 +591,7 @@ class DashboardSchedule
             'barbara.siqueira',
             'camila.pereira',
             'mauro.diogo',
-            'abdre.guilherme',
+            'andre.rocha',
             'michelly.pinheiro',
             'carlos.neto'
         ];

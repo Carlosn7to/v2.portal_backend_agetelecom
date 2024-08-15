@@ -27,6 +27,7 @@ Route::prefix('management-schedule')->controller(\App\Http\Controllers\Integrato
 Route::prefix('management-schedule/schedule')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\Management\ScheduleStatusController::class)->group(function () {
     Route::get('/', 'getSchedules');
     Route::post('/alter-status', 'alterStatus');
+    Route::post('/alter-capacity', 'alterCapacity');
 });
 
 Route::prefix('management-schedule/voalle')->controller(\App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync::class)->group(function () {

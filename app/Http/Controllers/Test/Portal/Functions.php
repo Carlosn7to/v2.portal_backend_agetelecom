@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Test\Portal;
 
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
 use App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
@@ -47,6 +48,10 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+
+
+        $syncServices = new SubServicesSync();
+        return $syncServices->sync();
 //
 //        $b2bSeller = new BuilderController();
 //

@@ -27,7 +27,7 @@ class ScheduleStatusController extends Controller
     {
         $permittedUsers = [
             'mauro.diogo',
-            'andre.guilherme',
+            'andre.rocha',
             'michelly.pinheiro',
             'carlos.neto'
         ];
@@ -79,6 +79,34 @@ class ScheduleStatusController extends Controller
 
 
 
+
+    }
+
+    public function alterCapacity(Request $request)
+    {
+        $permittedUsers = [
+            'mauro.diogo',
+            'andre.rocha',
+            'michelly.pinheiro',
+            'carlos.neto'
+        ];
+
+        if (!in_array(auth('portal')->user()->login, $permittedUsers)) {
+            return response()->json([
+                'message' => 'Usuário não autorizado'
+            ], 403);
+        }
+
+        $schedule = $request->schedule;
+
+        foreach($schedule as $key => $value) {
+            $schedule = Capacity::find($value['id']);
+            $schedule->capacidade = $value['nova_capacidade'];
+            $schedule->atualizado_por = auth('portal')->user()->id;
+            $schedule->save();
+        }
+
+        return response()->json(['message' => 'Capacidade alterada com sucesso!'], 200);
 
     }
 }
