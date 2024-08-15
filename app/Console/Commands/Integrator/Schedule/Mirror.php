@@ -74,6 +74,7 @@ class Mirror extends Command
                     $dateScheduleAniel = Carbon::parse($anielOrder->Data_do_Agendamento . ' ' . $anielOrder->Hora_do_Agendamento)->format('d/m/Y H:i:s');
                     $order['status'] = $anielOrder->Status_Descritivo;
                     $statusDetails = StatusOrder::where('titulo', $order['status'])->first();
+                    $statusDetails['responsavel'] = $anielOrder->Nome_Tecnico;
                 } else {
                     $statusDetails = StatusOrder::where('id', $order['status_id'])->first();
                 }
@@ -150,7 +151,7 @@ class Mirror extends Command
                         'confirmacao_deslocamento' => $order['confirmacao_deslocamento'],
                         'solicitante' => $order['solicitante'] ?? '',
                         'aprovador' => $order['aprovador'] ?? '',
-                        'responsavel' => $order['Nome_Tecnico'] ?? ''
+                        'responsavel' => $order['responsavel'] ?? ''
                     ]
                 );
             }
