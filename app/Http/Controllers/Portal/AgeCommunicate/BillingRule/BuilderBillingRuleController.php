@@ -39,7 +39,7 @@ class BuilderBillingRuleController extends Controller
 
     private function sendingCommunication()
     {
-        $timer = 60*15;
+        $timer = 60*3;
 
         $whatsappAction = new BuilderWhatsapp($this->data);
         $smsAction = new BuilderSms($this->data);
