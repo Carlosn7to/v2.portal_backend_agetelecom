@@ -23,6 +23,7 @@ class Mirror extends Model
         'solicitante',
         'aprovador',
         'status',
-        'cor_indicativa'
+        'cor_indicativa',
+        'responsavel'
     ];
 }

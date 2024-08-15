@@ -508,7 +508,7 @@ class DashboardSchedule
                 LOWER(tse.descricao) AS "TIPO_SERVICO_ANIEL",
                 c.RAZAO_SOCIAL AS "Nome Cliente",
                 CASE WHEN e.NOME IS NULL THEN 'SEM TÉCNICO ATRIBUIDO'
-                     ELSE e.NOME END AS "Nome Tecnico",
+                     ELSE e.NOME END AS "Nome_Tecnico",
                 dp.DIA AS "Criacao",
                 ts.DESCRICAO AS "Turno",
                 dp.DATA_MAXIMA AS "Data_do_Agendamento",

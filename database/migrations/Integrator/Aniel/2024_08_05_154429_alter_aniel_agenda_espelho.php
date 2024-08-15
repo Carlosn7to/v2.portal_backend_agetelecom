@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::connection('portal')->table('aniel_agenda_espelho', function (Blueprint $table) {
             $table->string('responsavel')->nullable()->after('data_agendamento');
-        });    }
+        });
+    }
 
     /**
      * Reverse the migrations.

@@ -17,8 +17,8 @@ class ScheduleStatusController extends Controller
             ->orderBy('data')
             ->orderBy('periodo')
             ->orderBy('servico')
-            ->get(['id', 'data', 'dia_semana', 'servico', 'periodo', 'capacidade', 'utilizado', 'status', 'atualizado_por', 'motivo_fechamento', 'data_fechamento', 'hora_fechamento'])
-            ->groupBy('data');
+            ->get(['id', 'data', 'dia_semana', 'servico', 'periodo', 'capacidade', 'utilizado', 'contingente', 'contingente_servicos', 'status', 'atualizado_por', 'motivo_fechamento', 'data_fechamento', 'hora_fechamento'])
+            ->groupBy('data')->toArray();
 
         return response()->json($schedules, 200);
 
@@ -102,6 +102,8 @@ class ScheduleStatusController extends Controller
         foreach($schedule as $key => $value) {
             $schedule = Capacity::find($value['id']);
             $schedule->capacidade = $value['nova_capacidade'];
+            $schedule->contingente = $value['novo_contingente'];
+            $schedule->contingente_servicos = $value['novo_contingente_servicos'];
             $schedule->atualizado_por = auth('portal')->user()->id;
             $schedule->save();
         }

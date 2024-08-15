@@ -20,6 +20,8 @@ class Capacity extends Model
         'hora_fim',
         'capacidade',
         'utilizado',
+        'contingente',
+        'contingente_servicos',
         'status',
         'data_fechamento',
         'hora_fechamento',
