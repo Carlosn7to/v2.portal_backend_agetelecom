@@ -47,7 +47,7 @@ class BuilderBillingRuleController extends Controller
         $smsAction = new BuilderSms($this->data);
         $emailAction = new BuilderEmail($this->data);
         $this->sendAlert(($timer / 60), $whatsappAction->infoSending(), $smsAction->infoSending(), $emailAction->infoSending());
-//        sleep($timer);
+        sleep($timer);
         SendWhatsappMessage::dispatch($this->data);
         SendSmsMessage::dispatch($this->data);
         SendEmailMessage::dispatch($this->data);
