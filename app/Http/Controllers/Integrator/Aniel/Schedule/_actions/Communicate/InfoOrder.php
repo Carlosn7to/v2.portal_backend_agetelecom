@@ -198,7 +198,7 @@ class InfoOrder
     private function watchStatusOrders()
     {
         $this->storeOrdersAniel();
-//        $this->buildConfirmOs();
+        $this->buildConfirmOs();
         $this->buildAlterOs();
     }
 
@@ -296,12 +296,24 @@ class InfoOrder
     {
         $getOrders = CommunicateMirror::where('status_aniel', 0)
             ->where('envio_deslocamento', false)
-            ->where('envio_confirmacao', false)
-            ->where('data_agendamento', '=', '2024-08-09 08:00:00')
-            ->get();
+            ->where('envio_confirmacao', false);
+
+        $currentTime = Carbon::now()->format('H:i');
+
+        if ($currentTime >= '15:00' && $currentTime <= '18:00') {
+            // Se for entre 15h e 17h, enviar para todos os clientes de amanhã às 8h
+            $day = Carbon::now()->addDay()->format('Y-m-d');
+            $getOrders = $getOrders->where('data_agendamento', '=', "$day 08:00:00");
+        } elseif ($currentTime >= '07:00' && $currentTime <= '12:00') {
+            // Se for entre 7h e 12h, enviar para todos do dia às 13h
+            $day = Carbon::now()->format('Y-m-d');
+            $getOrders = $getOrders->where('data_agendamento', '=', "$day 13:00:00");
+        }
+
+        $orders = $getOrders->get();
 
 
-        foreach($getOrders as $order) {
+        foreach($orders as $order) {
 
             $detailsOrder = ImportOrder::whereId($order->os_id)->first();
 
@@ -328,7 +340,7 @@ class InfoOrder
             $order->save();
         }
 
-        return $getOrders;
+        return $orders;
 
     }
 
