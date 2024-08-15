@@ -77,6 +77,7 @@ class Mirror extends Command
                     $order['responsavel'] = mb_convert_case($anielOrder->Nome_Tecnico, MB_CASE_TITLE, 'UTF-8');
                 } else {
                     $statusDetails = StatusOrder::where('id', $order['status_id'])->first();
+                    $order['responsavel'] = '';
                 }
 
                 if ($statusDetails) {
