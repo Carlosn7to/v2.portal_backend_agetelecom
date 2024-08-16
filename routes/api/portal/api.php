@@ -19,4 +19,12 @@ Route::prefix('test')->controller(\App\Http\Controllers\Test\Portal\Functions::c
     Route::get('/', 'index');
 });
 
+Route::post('test/event', function (Request $request) {
+    $channelName = $request->post('channelName');
+    $message = $request->post('message');
+
+
+    broadcast(new \App\Events\PublicMessageEvent( $channelName, $message ));
+});
+
 Route::post('infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);

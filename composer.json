@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ably/ably-php": "^1.1",
+        "ably/laravel-broadcaster": "^1.0",
         "aws/aws-sdk-php": "^3.304",
         "directorytree/ldaprecord-laravel": "^3.1",
         "endroid/qr-code": "^5.0",
@@ -20,6 +22,7 @@
         "league/flysystem-aws-s3-v3": "^3.27",
         "maatwebsite/excel": "^3.1",
         "php-webdriver/webdriver": "^1.15",
+        "pusher/pusher-php-server": "^7.2",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {

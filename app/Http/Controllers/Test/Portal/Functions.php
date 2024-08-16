@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Test\Portal;
 
+use App\Events\PublicMessageEvent;
+use App\Events\TestEvent;
 use App\Helpers\Portal\Mail\Notification\Builder;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
@@ -55,7 +57,9 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        return $this->debugMirrorCapacity();
+
+        broadcast(new PublicMessageEvent('test-channel', 'Hello World'))->toOthers();
+        return response()->json(['status' => 'Event sent!']);
 
 //
 //        $b2bSeller = new BuilderController();
