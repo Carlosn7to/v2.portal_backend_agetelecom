@@ -33,22 +33,23 @@ class ResourceServer
      */
     private function getCpuStats() {
         // Coletar dados da CPU para todos os núcleos
-        $cpuStats = shell_exec("mpstat -P ALL 1 1 | awk '/Average:/ && $2 ~ /[0-9]+/ {print $3}'");
+        $cpuStats = shell_exec("mpstat -P ALL 1 1 | awk '/^ *[0-9]+/ {print $12}'");
 
         // Converter string em array
-        $cpuStatsArray = array_map('floatval', explode("\n", trim($cpuStats)));
+        $cpuIdleArray = array_map('floatval', explode("\n", trim($cpuStats)));
 
-        // Calcular média de uso de todos os núcleos
-        $cpuUsed = 100 - array_sum($cpuStatsArray) / count($cpuStatsArray); // Percentual de CPU utilizada
+        // Calcular a média do percentual de CPU ociosa
+        $cpuIdle = array_sum($cpuIdleArray) / count($cpuIdleArray); // Percentual de CPU ociosa
+        $cpuUsed = 100 - $cpuIdle; // Percentual de CPU utilizada
 
         // Total de CPUs
-        $totalCpus = count($cpuStatsArray);
+        $totalCpus = count($cpuIdleArray);
 
         return [
             'total_cpus' => $totalCpus,
             'cpu' => [
                 'used' => $this->formatPercentage($cpuUsed),
-                'idle' => $this->formatPercentage(100 - $cpuUsed),
+                'idle' => $this->formatPercentage($cpuIdle),
             ],
         ];
     }
