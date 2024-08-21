@@ -87,7 +87,7 @@ class TestController extends Controller
     private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats) {
         $appResources = new AppResource();
 
-        $appResources->created([
+        $appResources->create([
             'aplicacao_id' => 1,
             'cpu_total' => $cpuStats['total_cpus'],
             'cpu_uso' => $cpuStats['cpu']['used'],
