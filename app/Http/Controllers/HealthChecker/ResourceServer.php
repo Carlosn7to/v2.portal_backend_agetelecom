@@ -32,9 +32,15 @@ class ResourceServer
      * Coleta e retorna estatísticas de CPU.
      */
     private function getCpuStats() {
-        // Coletar dados da CPU usando mpstat
+        /// Coletar dados da CPU usando mpstat
         $cpuStats = shell_exec('mpstat 1 1 | grep "Average" | awk \'{print 100 - $12}\'');
         $cpuUsed = trim($cpuStats);
+
+        // Verificar se o valor retornado é numérico
+        if (!is_numeric($cpuUsed)) {
+            \Log::error('Valor inválido para uso de CPU: ' . $cpuUsed);
+            $cpuUsed = 0; // Ou outro valor padrão
+        }
 
         // Total de CPUs
         $totalCpus = shell_exec('nproc');
