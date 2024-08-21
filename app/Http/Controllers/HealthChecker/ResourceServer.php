@@ -6,6 +6,12 @@ use App\Models\HealthChecker\AppResource;
 
 class ResourceServer
 {
+
+    public function __invoke()
+    {
+        $this->response();
+    }
+
     /**
      * Formata bytes em uma unidade legível.
      */

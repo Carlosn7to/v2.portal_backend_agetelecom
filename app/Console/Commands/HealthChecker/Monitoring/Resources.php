@@ -28,6 +28,6 @@ class Resources extends Command
     {
         $resourceWatcher = new ResourceServer();
 
-        $resourceWatcher->response();
+        $resourceWatcher->__invoke();
     }
 }
