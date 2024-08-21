@@ -22,13 +22,13 @@ class Kernel extends ConsoleKernel
             ->everyMinute()->withoutOverlapping();
 
         $schedule->command('aniel:capacity')
-            ->everyMinute()->withoutOverlapping();
+            ->everyFiveMinutes()->withoutOverlapping();
 
         $schedule->command('aniel:export')
-            ->everyMinute()->withoutOverlapping();
+            ->everyFiveMinutes()->withoutOverlapping();
 
         $schedule->command('aniel:mirror')
-            ->everyMinute()->withoutOverlapping();
+            ->everyFiveMinutes()->withoutOverlapping();
 
         $schedule->command('aniel:clear-sendings')
             ->everyMinute()->withoutOverlapping();
