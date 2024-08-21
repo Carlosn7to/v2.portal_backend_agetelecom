@@ -11,7 +11,7 @@ class TestController extends Controller
 
     public function index()
     {
-        return (new ResourceServer())->response();
+        return (new ResourceServer())->__invoke();
     }
 
 }
