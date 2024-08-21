@@ -79,7 +79,7 @@ class TestController extends Controller
      */
     public function index() {
         return response()->json([
-            'cpuu' => $this->getCpuStats(),
+            'cpu' => $this->getCpuStats(),
             'ram' => $this->getRamStats(),
             'disk' => $this->getDiskStats(),
         ]);
