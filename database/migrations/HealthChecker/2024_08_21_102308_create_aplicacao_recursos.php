@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::connection('healthChecker')->create('aplicacao_recursos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aplicacao_id')->constrained('aplicacoes');
-            $table->float('cpu_total');
+            $table->float('cpu_nucleos_totais');
             $table->float('cpu_uso');
-            $table->integer('ram_total');
-            $table->integer('ram_uso');
+            $table->float('cpu_disponivel');
+            $table->bigInteger('ram_total');
+            $table->bigInteger('ram_uso');
             $table->bigInteger('disco_total');
             $table->bigInteger('disco_uso');
             $table->timestamps();

@@ -13,8 +13,9 @@ class AppResource extends Model
     protected $table = 'aplicacao_recursos';
     protected $fillable = [
         'aplicacao_id',
-        'cpu_total',
+        'cpu_nucleos_totais',
         'cpu_uso',
+        'cpu_disponivel',
         'ram_total',
         'ram_uso',
         'disco_total',

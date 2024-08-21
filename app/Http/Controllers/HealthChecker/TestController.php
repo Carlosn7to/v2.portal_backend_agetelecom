@@ -89,8 +89,9 @@ class TestController extends Controller
 
         $appResources->create([
             'aplicacao_id' => 1,
-            'cpu_total' => $cpuStats['total_cpus'],
+            'cpu_nucleos_total' => $cpuStats['total_cpus'],
             'cpu_uso' => $cpuStats['cpu']['used'],
+            'cpu_disponível' => $cpuStats['cpu']['used'],
             'ram_total' => $ramStats['total'],
             'ram_uso' => $ramStats['used'],
             'disco_total' => $diskStats['total'],
