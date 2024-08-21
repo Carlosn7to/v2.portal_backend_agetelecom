@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
             ->everyMinute()->withoutOverlapping();
 
         $schedule->command('server:resources')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
     }
 
     /**
