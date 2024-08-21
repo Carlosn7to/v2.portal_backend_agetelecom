@@ -101,6 +101,8 @@ class ResourceServer
             'disco_total' => $diskStats['total'],
             'disco_uso' => $diskStats['used'],
         ]);
+
+        dd($appResources);
     }
 
     /**
