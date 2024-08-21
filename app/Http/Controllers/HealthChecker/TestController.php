@@ -17,6 +17,13 @@ class TestController extends Controller
     }
 
     /**
+     * Formata valores percentuais.
+     */
+    private function formatPercentage($value, $decimals = 1) {
+        return number_format($value, $decimals);
+    }
+
+    /**
      * Coleta e retorna estatísticas de CPU.
      */
     private function getCpuStats() {
@@ -31,8 +38,8 @@ class TestController extends Controller
         return [
             'total_cpus' => intval($totalCpus),
             'cpu' => [
-                'used' => $cpuUsed,
-                'idle' => $cpuIdle,
+                'used' => $this->formatPercentage($cpuUsed),
+                'idle' => $this->formatPercentage($cpuIdle),
             ],
         ];
     }
@@ -45,8 +52,7 @@ class TestController extends Controller
         $freeOutput = shell_exec('free -b');
         preg_match_all('/\d+/', $freeOutput, $matches);
         $totalRam = $matches[0][1]; // Total de RAM em bytes
-        $freeRam = $matches[0][2];  // RAM livre em bytes
-        $usedRam = $totalRam - $freeRam; // RAM utilizada em bytes
+        $usedRam = $matches[0][1] - $matches[0][2]; // RAM utilizada em bytes
 
         return [
             'total' => $this->formatBytes($totalRam),
@@ -73,7 +79,7 @@ class TestController extends Controller
      */
     public function index() {
         return response()->json([
-            'cpu' => $this->getCpuStats(),
+            'cpuu' => $this->getCpuStats(),
             'ram' => $this->getRamStats(),
             'disk' => $this->getDiskStats(),
         ]);
