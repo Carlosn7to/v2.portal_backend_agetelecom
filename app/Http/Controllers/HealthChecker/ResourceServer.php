@@ -40,7 +40,7 @@ class ResourceServer
         $cpuIdleArray = array_filter($cpuIdleArray, fn($value) => is_numeric($value) && $value >= 0 && $value <= 100);
 
         // Total de CPUs (contar o número de valores válidos)
-        $totalCpus = count($cpuIdleArray);
+        $totalCpus = count($cpuIdleArray) - 2;
 
         // Calcular a média do percentual de CPU ociosa
         $cpuIdle = $totalCpus > 0 ? array_sum($cpuIdleArray) / $totalCpus : 0; // Percentual de CPU ociosa
