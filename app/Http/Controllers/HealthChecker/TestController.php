@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HealthChecker\AppResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TestController extends Controller
 {
@@ -15,9 +16,11 @@ class TestController extends Controller
 
         $resourceWatcher = new ResourceServer();
 
-        $resourceWatcher->__invoke();
+        $resourceWatcher->response();
 
-        return 10;
+        Log::debug('Monitoramento de recursos do servidor finalizado.');
+
+        return 12;
 
 
         $performance = new AppResource();
