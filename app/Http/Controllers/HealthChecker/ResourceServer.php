@@ -100,7 +100,7 @@ class ResourceServer
     /**
      * Coleta, formata e insere todas as estatísticas do sistema.
      */
-    public function response()  : \Illuminate\Http\JsonResponse
+    public function response()  : void
     {
         $cpuStats = $this->getCpuStats();
         $ramStats = $this->getRamStats();
