@@ -21,6 +21,7 @@ return new class extends Migration
             $table->bigInteger('ram_uso');
             $table->bigInteger('disco_total');
             $table->bigInteger('disco_uso');
+            $table->time('hora_minuto');
             $table->timestamps();
         });
     }

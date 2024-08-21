@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HealthChecker;
 
 use App\Models\HealthChecker\AppResource;
+use Carbon\Carbon;
 
 class ResourceServer
 {
@@ -94,7 +95,7 @@ class ResourceServer
     /**
      * Insere os dados no banco de dados.
      */
-    private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats) {
+    private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute) {
         $appResources = new AppResource();
 
         $appResources->create([
@@ -106,6 +107,7 @@ class ResourceServer
             'ram_uso' => $ramStats['used'],
             'disco_total' => $diskStats['total'],
             'disco_uso' => $diskStats['used'],
+            'hora_minuto' => $hour_minute,
         ]);
 
     }
@@ -115,11 +117,13 @@ class ResourceServer
      */
     public function response()  : void
     {
+        $hour_minute = Carbon::now()->format('H:i');
+
         $cpuStats = $this->getCpuStats();
         $ramStats = $this->getRamStats();
         $diskStats = $this->getDiskStats();
 
-        $this->insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats);
+        $this->insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute);
 
 //        return response()->json([
 //            'cpu' => $cpuStats,

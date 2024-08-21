@@ -20,5 +20,6 @@ class AppResource extends Model
         'ram_uso',
         'disco_total',
         'disco_uso',
+        'hora_minuto'
     ];
 }
