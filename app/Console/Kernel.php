@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('aniel:clear-sendings')
             ->everyMinute();
 
+        $schedule->command('server:resources')
+            ->everyMinute();
     }
 
     /**
