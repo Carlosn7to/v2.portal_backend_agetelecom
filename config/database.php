@@ -84,6 +84,26 @@ return [
             ]) : [],
         ],
 
+        'healthChecker' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL_HEALTH_CHECKER'),
+            'host' => env('DB_HOST_HEALTH_CHECKER', '127.0.0.1'),
+            'port' => env('DB_PORT_HEALTH_CHECKER', '3306'),
+            'database' => env('DB_DATABASE_HEALTH_CHECKER', 'forge'),
+            'username' => env('DB_USERNAME_HEALTH_CHECKER', 'forge'),
+            'password' => env('DB_PASSWORD_HEALTH_CHECKER', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'voalle' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL_VOALLE'),

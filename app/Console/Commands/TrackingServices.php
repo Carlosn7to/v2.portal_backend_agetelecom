@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Nette\Utils\Random;
 
-class trackingServices extends Command
+class TrackingServices extends Command
 {
     /**
      * The name and signature of the console command.

@@ -15,7 +15,7 @@ class AdminAccessMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth('portal')->user()->privilegio_id !== 2) {
+        if(auth('portal')->user()->privilegio_id !== 36) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 

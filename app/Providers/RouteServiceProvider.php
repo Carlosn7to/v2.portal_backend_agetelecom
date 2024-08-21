@@ -37,6 +37,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api/appClient/api.php'));
 
 
+            // Rotas para o login AppClient
+            Route::middleware('portal.admin')
+                ->prefix('health-checker/')
+                ->group(base_path('routes/api/healthChecker/api.php'));
+
             // Rotas para o login Portal
             Route::prefix('portal/auth')
                 ->group(base_path('routes/api/portal/auth.php'));
