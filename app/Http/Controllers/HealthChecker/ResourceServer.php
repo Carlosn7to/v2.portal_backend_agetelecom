@@ -33,10 +33,13 @@ class ResourceServer
      */
     private function getCpuStats() {
         // Coletar dados da CPU para todos os núcleos
-        $cpuStats = shell_exec("mpstat -P ALL 1 1 | awk '/^ *[0-9]+/ {print $12}'");
+        $cpuStats = shell_exec("mpstat -P ALL 1 1 | awk '/^[0-9]/ {print $12}'");
 
         // Converter string em array
         $cpuIdleArray = array_map('floatval', explode("\n", trim($cpuStats)));
+
+        // Filtrar valores válidos (não vazios)
+        $cpuIdleArray = array_filter($cpuIdleArray, fn($value) => $value !== '');
 
         // Calcular a média do percentual de CPU ociosa
         $cpuIdle = array_sum($cpuIdleArray) / count($cpuIdleArray); // Percentual de CPU ociosa
