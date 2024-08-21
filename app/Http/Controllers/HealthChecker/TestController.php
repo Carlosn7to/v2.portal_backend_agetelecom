@@ -49,14 +49,19 @@ class TestController extends Controller
      */
     private function getRamStats() {
         // Coletar dados da RAM
-        $freeOutput = shell_exec('free -b');
-        preg_match_all('/\d+/', $freeOutput, $matches);
-        $totalRam = $matches[0][1]; // Total de RAM em bytes
-        $usedRam = $matches[0][1] - $matches[0][2]; // RAM utilizada em bytes
+        $freeOutput = shell_exec('free -h');
+        $lines = explode("\n", trim($freeOutput));
+
+        // Encontra a linha com os dados da memória
+        $memLine = $lines[1];
+        preg_match_all('/[\d.]+/', $memLine, $matches);
+
+        $totalRam = $matches[0][0]; // Total de RAM
+        $usedRam = $matches[0][1];  // RAM usada
 
         return [
-            'total' => $this->formatBytes($totalRam),
-            'used' => $this->formatBytes($usedRam),
+            'total' => $totalRam . ' ' . $matches[1][0], // Unidade da memória
+            'used' => $usedRam . ' ' . $matches[1][1],  // Unidade da memória
         ];
     }
 
