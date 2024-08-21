@@ -35,19 +35,16 @@ class ResourceServer
         // Coletar dados da CPU para todos os núcleos
         $cpuStats = shell_exec("mpstat -P ALL 1 1 | awk '/^[0-9]/ {print $12}'");
 
-        // Converter string em array e filtrar valores não numéricos e a linha de cabeçalho
+        // Converter string em array, ignorar linhas vazias e a linha de cabeçalho
         $cpuIdleArray = array_map('floatval', explode("\n", trim($cpuStats)));
-        $cpuIdleArray = array_filter($cpuIdleArray, fn($value) => is_numeric($value) && $value !== '');
+        $cpuIdleArray = array_filter($cpuIdleArray, fn($value) => is_numeric($value) && $value >= 0 && $value <= 100);
 
-        // Considerar apenas os núcleos de 0 a 7
-        $cpuIdleArray = array_slice($cpuIdleArray, 0, 8);
+        // Total de CPUs (contar o número de valores válidos)
+        $totalCpus = count($cpuIdleArray);
 
         // Calcular a média do percentual de CPU ociosa
-        $cpuIdle = array_sum($cpuIdleArray) / count($cpuIdleArray); // Percentual de CPU ociosa
+        $cpuIdle = $totalCpus > 0 ? array_sum($cpuIdleArray) / $totalCpus : 0; // Percentual de CPU ociosa
         $cpuUsed = 100 - $cpuIdle; // Percentual de CPU utilizada
-
-        // Total de CPUs
-        $totalCpus = count($cpuIdleArray);
 
         return [
             'total_cpus' => $totalCpus,
