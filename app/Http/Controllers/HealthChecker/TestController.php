@@ -53,15 +53,17 @@ class TestController extends Controller
         $lines = explode("\n", trim($freeOutput));
 
         // Encontra a linha com os dados da memória
-        $memLine = $lines[1];
-        preg_match_all('/[\d.]+/', $memLine, $matches);
+        $memLine = isset($lines[1]) ? $lines[1] : '';
+        preg_match_all('/([\d.]+)([A-Za-z]+)/', $memLine, $matches);
 
-        $totalRam = $matches[0][0]; // Total de RAM
-        $usedRam = $matches[0][1];  // RAM usada
+        $totalRam = $matches[1][0] ?? '0'; // Total de RAM
+        $totalUnit = $matches[2][0] ?? 'B'; // Unidade da memória
+        $usedRam = $matches[1][1] ?? '0';   // RAM usada
+        $usedUnit = $matches[2][1] ?? 'B';  // Unidade da memória
 
         return [
-            'total' => $totalRam . ' ' . $matches[1][0], // Unidade da memória
-            'used' => $usedRam . ' ' . $matches[1][1],  // Unidade da memória
+            'total' => $totalRam . ' ' . $totalUnit, // Unidade da memória
+            'used' => $usedRam . ' ' . $usedUnit,   // Unidade da memória
         ];
     }
 
