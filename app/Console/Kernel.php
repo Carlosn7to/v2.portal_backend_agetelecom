@@ -19,22 +19,22 @@ class Kernel extends ConsoleKernel
             ->dailyAt('08:35');
 
         $schedule->command('tracking:services')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('aniel:capacity')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('aniel:export')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('aniel:mirror')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('aniel:clear-sendings')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('server:resources')
-            ->everyMinute();
+            ->everyMinute()->withoutOverlapping();
     }
 
     /**
