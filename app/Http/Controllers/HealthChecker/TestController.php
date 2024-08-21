@@ -21,9 +21,8 @@ class TestController extends Controller
      */
     private function getCpuStats() {
         // Coletar dados da CPU
-        $cpuStats = shell_exec('mpstat 1 1 | grep "Average:" | awk \'{print $3, $5}\'');
-        preg_match_all('/\d+/', $cpuStats, $matches);
-        $cpuIdle = $matches[0][0]; // Percentual de CPU ociosa
+        $cpuStats = shell_exec('top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/"');
+        $cpuIdle = trim($cpuStats);
         $cpuUsed = 100 - $cpuIdle; // Percentual de CPU utilizada
 
         // Total de CPUs
@@ -46,7 +45,8 @@ class TestController extends Controller
         $freeOutput = shell_exec('free -b');
         preg_match_all('/\d+/', $freeOutput, $matches);
         $totalRam = $matches[0][1]; // Total de RAM em bytes
-        $usedRam = $totalRam - $matches[0][2]; // RAM utilizada em bytes
+        $freeRam = $matches[0][2];  // RAM livre em bytes
+        $usedRam = $totalRam - $freeRam; // RAM utilizada em bytes
 
         return [
             'total' => $this->formatBytes($totalRam),
