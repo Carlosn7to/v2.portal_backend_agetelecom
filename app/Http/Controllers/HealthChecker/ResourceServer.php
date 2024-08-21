@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HealthChecker;
 
 use App\Models\HealthChecker\AppResource;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ResourceServer
 {
@@ -120,7 +121,7 @@ class ResourceServer
 
         $hour_minute = Carbon::now()->format('H:i');
 
-        \Log::info('Monitoramento de recursos do servidor iniciado.'.$hour_minute);
+        Log::info('Monitoramento de recursos do servidor iniciado.'.$hour_minute);
 
         $cpuStats = $this->getCpuStats();
         $ramStats = $this->getRamStats();
@@ -128,7 +129,7 @@ class ResourceServer
 
         $this->insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute);
 
-        \Log::info('Monitoramento de recursos do servidor finalizado.'.Carbon::now()->format('H:i:s'));
+        Log::info('Monitoramento de recursos do servidor finalizado.'.Carbon::now()->format('H:i:s'));
 
 //        return response()->json([
 //            'cpu' => $cpuStats,
