@@ -12,6 +12,14 @@ class TestController extends Controller
 
     public function index()
     {
+
+        $resourceWatcher = new ResourceServer();
+
+        $resourceWatcher->__invoke();
+
+        return 10;
+
+
         $performance = new AppResource();
 
         $startTime = Carbon::now()->subMinutes(60);
