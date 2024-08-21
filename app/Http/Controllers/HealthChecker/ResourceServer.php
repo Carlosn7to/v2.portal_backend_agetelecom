@@ -108,10 +108,10 @@ class ResourceServer
 
         $this->insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats);
 
-        return response()->json([
-            'cpu' => $cpuStats,
-            'ram' => $ramStats,
-            'disk' => $diskStats,
-        ]);
+//        return response()->json([
+//            'cpu' => $cpuStats,
+//            'ram' => $ramStats,
+//            'disk' => $diskStats,
+//        ]);
     }
 }
