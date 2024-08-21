@@ -20,7 +20,7 @@ class TestController extends Controller
 
         Log::debug('Monitoramento de recursos do servidor finalizado.');
 
-        return 12;
+        retursadsadn 12;
 
 
         $performance = new AppResource();
