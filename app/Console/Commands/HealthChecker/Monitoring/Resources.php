@@ -26,8 +26,6 @@ class Resources extends Command
      */
     public function handle()
     {
-        $resourceWatcher = new ResourceServer();
-
-        $resourceWatcher->__invoke();
+        return (new ResourceServer())->__invoke();
     }
 }
