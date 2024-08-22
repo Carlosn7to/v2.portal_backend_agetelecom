@@ -51,4 +51,11 @@ class BuilderController extends Controller
         return response()->json(['message' => 'Statistics stored successfully'], 200);
 
     }
+
+    public function getStatus()
+    {
+        $events = (new ApplicationEvents())->getEventsForStatus();
+
+        return $events;
+    }
 }
