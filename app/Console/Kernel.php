@@ -15,6 +15,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // $schedule->command('portal:users:create')->dailyAt('07:00');
+        $schedule->command('server:resources')
+            ->everyMinute()->withoutOverlapping();
+
         $schedule->command('rule:billing:sending')
             ->dailyAt('08:35')->runInBackground();
 
@@ -33,8 +36,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('aniel:clear-sendings')
             ->everyMinute()->withoutOverlapping();
 
-        $schedule->command('server:resources')
-            ->everyMinute()->withoutOverlapping();
+
     }
 
     /**
