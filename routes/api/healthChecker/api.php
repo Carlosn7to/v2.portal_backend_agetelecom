@@ -16,5 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('test')->controller(\App\Http\Controllers\HealthChecker\TestController::class)->group(function () {
-    Route::get('/', 'index');
+    Route::post('/', 'index');
+});
+
+Route::prefix('resources')->controller(\App\Http\Controllers\HealthChecker\ResourceServer::class)->group(function () {
+    Route::get('/analytic', 'getAnalyticResourcesLastHour');
 });

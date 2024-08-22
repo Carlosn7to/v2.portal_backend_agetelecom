@@ -11,12 +11,8 @@ use Illuminate\Support\Facades\Log;
 class TestController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-
-        $resourceWatcher = new ResourceServer();
-
-        $resourceWatcher->response();
 
 
         $performance = new AppResource();

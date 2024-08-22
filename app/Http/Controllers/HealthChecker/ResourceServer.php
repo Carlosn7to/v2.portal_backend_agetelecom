@@ -113,6 +113,7 @@ class ResourceServer
             'hora_minuto' => $hour_minute,
         ]);
 
+
     }
 
     /**
@@ -138,5 +139,17 @@ class ResourceServer
 //            'ram' => $ramStats,
 //            'disk' => $diskStats,
 //        ]);
+    }
+
+    public function getAnalyticResourcesLastHour()
+    {
+
+        $lastUsage = AppResource::whereDate('created_at', Carbon::now()->format('Y-m-d'))
+            ->where('hora_minuto', '>=', Carbon::now()->subHour()->format('H:i'))
+            ->orderBy('hora_minuto', 'asc')
+            ->get();
+
+        return response()->json($lastUsage, 200);
+
     }
 }
