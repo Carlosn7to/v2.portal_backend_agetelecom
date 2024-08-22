@@ -99,7 +99,9 @@ class ResourceServer
     private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute) {
         $appResources = new AppResource();
 
-        $appResources->create([
+        $appResources->firstOrCreate(
+            ['hora_minuto' => $hour_minute],
+            [
             'aplicacao_id' => 1,
             'cpu_nucleos_totais' => $cpuStats['total_cpus'],
             'cpu_uso' => $cpuStats['cpu']['used'],
