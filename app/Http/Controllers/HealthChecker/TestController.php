@@ -18,10 +18,6 @@ class TestController extends Controller
 
         $resourceWatcher->response();
 
-        Log::error('Monitoramento de recursos do servidor finalizado.');
-
-        return 12;
-
 
         $performance = new AppResource();
 

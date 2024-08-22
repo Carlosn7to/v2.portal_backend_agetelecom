@@ -26,10 +26,7 @@ class Resources extends Command
      */
     public function handle()
     {
-        \Log::info('Monitoramento de recursos do servidor iniciado.');
         $resourceWatcher = new ResourceServer();
-
         $resourceWatcher->__invoke();
-        \Log::info('Monitoramento de recursos do servidor finalizado.');
     }
 }
