@@ -100,19 +100,24 @@ class ResourceServer
     private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute) {
         $appResources = new AppResource();
 
-        $appResources->firstOrCreate(
-            ['hora_minuto' => $hour_minute],
-            [
-            'aplicacao_id' => 1,
-            'cpu_nucleos_totais' => $cpuStats['total_cpus'],
-            'cpu_uso' => $cpuStats['cpu']['used'],
-            'cpu_disponivel' => $cpuStats['cpu']['idle'],
-            'ram_total' => $ramStats['total'],
-            'ram_uso' => $ramStats['used'],
-            'disco_total' => $diskStats['total'],
-            'disco_uso' => $diskStats['used'],
-            'hora_minuto' => $hour_minute,
-        ]);
+        $appResources = $appResources->whereDate('created_at', Carbon::now()->format('Y-m-d'))
+            ->where('hora_minuto', $hour_minute)
+            ->firstOrCreate(
+                [
+                    'hora_minuto' => $hour_minute,
+                ],
+                [
+                    'aplicacao_id' => 1,
+                    'cpu_nucleos_totais' => $cpuStats['total_cpus'],
+                    'cpu_uso' => $cpuStats['cpu']['used'],
+                    'cpu_disponivel' => $cpuStats['cpu']['idle'],
+                    'ram_total' => $ramStats['total'],
+                    'ram_uso' => $ramStats['used'],
+                    'disco_total' => $diskStats['total'],
+                    'disco_uso' => $diskStats['used'],
+                ]
+            );
+
 
 
     }
