@@ -4,8 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\BlockTelescopeInProduction;
 use App\Http\Middleware\Portal\Bi\RestrictAcessIpMiddleware;
-use App\Http\Middleware\Portal\Magement\AdminAccessMiddleware;
-use App\Http\Middleware\Portal\Magement\MasterAccessMiddleware;
+use App\Http\Middleware\Portal\Management\AdminAccessMiddleware;
+use App\Http\Middleware\Portal\Management\MasterAccessMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

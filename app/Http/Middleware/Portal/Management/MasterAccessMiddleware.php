@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Middleware\Portal\Magement;
+namespace App\Http\Middleware\Portal\Management;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminAccessMiddleware
+class MasterAccessMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,8 @@ class AdminAccessMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth('portal')->user()->privilegio_id !== 36) {
+
+        if(auth('portal')->user()->privilegio_id !== 1) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
