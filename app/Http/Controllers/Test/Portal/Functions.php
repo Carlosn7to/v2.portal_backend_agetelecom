@@ -2,20 +2,10 @@
 
 namespace App\Http\Controllers\Test\Portal;
 
-use App\Events\AlertMessageAlterStatusEvent;
-use App\Events\PublicMessageEvent;
-use App\Events\TestEvent;
-use App\Helpers\Portal\Mail\Notification\Builder;
+use App\Events\SendDataEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
-use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
-use App\Http\Controllers\Integrator\Aniel\Services\Orders\OrderController;
-use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\actions\sms\TemplatesSms;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
-use App\Http\Controllers\Portal\AgeRv\B2b\Seller\Commission\BuilderController;
-use App\Http\Controllers\Portal\BI\Voalle\Financial\B2B\GoodPayerController;
-use App\Http\Controllers\Portal\Management\User\UserController;
-use App\Http\Controllers\Test\Portal\Aniel\API;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
@@ -25,23 +15,10 @@ use App\Models\Integrator\Aniel\Schedule\StatusOrder;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\Report;
 use App\Models\Portal\AgeCommunicate\BillingRule\Reports\ReportLog;
 use App\Models\Portal\AgeCommunicate\BillingRule\Templates\Template;
-use App\Models\Portal\User\User;
-use App\Routines\Portal\Tracking\AgeAtende\TrackingAgeAtende;
-use App\Routines\Portal\Users\UserSync;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Infobip\Api\SmsApi;
-use Infobip\Api\WhatsAppApi;
-use Infobip\Configuration;
-use Infobip\ApiException;
-use Infobip\Model\SmsAdvancedTextualRequest;
-use Infobip\Model\SmsDestination;
-use Infobip\Model\SmsTextualMessage;
-use Infobip\Model\WhatsAppBulkMessage;
 use Illuminate\Http\Request;
+use Infobip\Configuration;
 use Nette\Utils\Random;
 
 class Functions extends Controller
@@ -58,7 +35,8 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-        broadcast(new AlertMessageAlterStatusEvent());
+//        broadcast(new AlertMessageAlterStatusEvent());
+        broadcast(new SendDataEvent());
         return response()->json(['status' => 'Event sent!']);
 
 //

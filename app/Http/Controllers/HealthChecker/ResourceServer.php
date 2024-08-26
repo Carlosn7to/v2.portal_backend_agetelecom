@@ -147,17 +147,6 @@ class ResourceServer
 //        ]);
     }
 
-    public function getAnalyticResourcesLastHour()
-    {
-
-        $lastUsage = AppResource::whereDate('created_at', Carbon::now()->format('Y-m-d'))
-            ->where('hora_minuto', '>=', Carbon::now()->subHour()->format('H:i'))
-            ->orderBy('hora_minuto', 'asc')
-            ->get();
-
-        return response()->json($lastUsage, 200);
-
-    }
 
     public function getSpaceDiskAvailable()
     {

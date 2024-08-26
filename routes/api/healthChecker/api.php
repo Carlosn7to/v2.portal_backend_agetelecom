@@ -20,12 +20,12 @@ Route::prefix('test')->controller(\App\Http\Controllers\HealthChecker\TestContro
 });
 
 Route::prefix('resources')->controller(\App\Http\Controllers\HealthChecker\ResourceServer::class)->group(function () {
-    Route::get('/analytic', 'getAnalyticResourcesLastHour');
     Route::get('/disk/space-available', 'getSpaceDiskAvailable');
 });
 
 Route::prefix('statistics')->controller(\App\Http\Controllers\HealthChecker\BuilderController::class)->group(function () {
     Route::post('/', 'storeStatistics');
+    Route::get('/analytic', 'getAnalyticStatistics');
     Route::get('/status', 'getStatus');
     Route::get('/events', 'getLastEvents');
 });

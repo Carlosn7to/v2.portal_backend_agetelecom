@@ -22,4 +22,10 @@ class AppResource extends Model
         'disco_uso',
         'hora_minuto'
     ];
+
+
+    public function application()
+    {
+        return $this->belongsTo(App::class, 'aplicacao_id');
+    }
 }

@@ -66,4 +66,34 @@ class BuilderController extends Controller
         return $events;
 
     }
+
+    public function getAnalyticStatistics() : array
+    {
+        $lastUsage = AppResource::whereDate('created_at', Carbon::now()->format('Y-m-d'))
+            ->where('hora_minuto', '>=', Carbon::now()->subHour()->format('H:i'))
+            ->with('application')
+            ->orderBy('hora_minuto', 'asc')
+            ->get();
+
+        $groupedByName = collect();
+
+        foreach ($lastUsage as $resource) {
+            $nome = $resource->application->nome;
+
+            if (!$groupedByName->has($nome)) {
+                $groupedByName->put($nome, collect());
+            }
+
+            $groupedByName[$nome]->push($resource);
+        }
+
+        foreach ($groupedByName as $nome => $resources) {
+            foreach ($resources as $resource) {
+                unset($resource->application);
+            }
+        }
+
+        return $groupedByName->toArray();
+
+    }
 }
