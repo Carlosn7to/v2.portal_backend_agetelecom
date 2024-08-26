@@ -39,12 +39,14 @@ class ApplicationEvents
 
         $ultimoStatus = null;
         $ultimoTimestamp = null;
+        $description = '';
 
         foreach ($eventos as $evento) {
             if ($ultimoStatus === null || $evento->status !== $ultimoStatus) {
                 // Atualizar o último status e timestamp
                 $ultimoStatus = $evento->status;
                 $ultimoTimestamp = $evento->created_at;
+                $description = $evento->descricao;
             }
         }
 
@@ -52,7 +54,18 @@ class ApplicationEvents
         return [
             'status' => $ultimoStatus,
             'created_at' => Carbon::parse($ultimoTimestamp)->format('Y-m-d H:i:s'),
+            'description' => $description
         ];
+    }
+
+    public function getEvents()
+    {
+        $events = AppEvent::with('application')->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+
+        return response()->json($events, 200);
     }
 
 }

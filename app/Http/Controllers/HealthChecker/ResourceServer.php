@@ -125,12 +125,14 @@ class ResourceServer
 
         $hour_minute = Carbon::now()->format('H:i');
 
+        \Log::error('Hora minuto do início ' . $hour_minute);
 
         $cpuStats = $this->getCpuStats();
         $ramStats = $this->getRamStats();
         $diskStats = $this->getDiskStats();
 
         $this->insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute);
+        \Log::error('Hora minuto do fim ' . $hour_minute);
 
 
 //        return response()->json([

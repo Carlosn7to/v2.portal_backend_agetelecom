@@ -58,4 +58,12 @@ class BuilderController extends Controller
 
         return $events;
     }
+
+    public function getLastEvents()
+    {
+        $events = (new ApplicationEvents())->getEvents();
+
+        return $events;
+
+    }
 }

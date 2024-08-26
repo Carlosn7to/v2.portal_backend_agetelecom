@@ -19,4 +19,10 @@ class AppEvent extends Model
         'descricao',
         'dados'
     ];
+
+
+    public function application()
+    {
+        return $this->belongsTo(App::class, 'aplicacao_id');
+    }
 }

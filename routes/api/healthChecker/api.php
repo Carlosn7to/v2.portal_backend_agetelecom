@@ -27,4 +27,5 @@ Route::prefix('resources')->controller(\App\Http\Controllers\HealthChecker\Resou
 Route::prefix('statistics')->controller(\App\Http\Controllers\HealthChecker\BuilderController::class)->group(function () {
     Route::post('/', 'storeStatistics');
     Route::get('/status', 'getStatus');
+    Route::get('/events', 'getLastEvents');
 });
