@@ -100,10 +100,9 @@ class ResourceServer
     private function insertStatsIntoDatabase($cpuStats, $ramStats, $diskStats, $hour_minute) {
         $appResources = new AppResource();
 
-        $appResources = $appResources->whereDate('created_at', Carbon::now()->format('Y-m-d'))
-            ->where('hora_minuto', $hour_minute)
-            ->firstOrCreate(
+        $appResources->firstOrCreate(
                 [
+                    'aplicacao_id' => 1,
                     'hora_minuto' => $hour_minute,
                 ],
                 [
