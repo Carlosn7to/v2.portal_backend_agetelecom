@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Test\Portal;
 
+use App\Events\AlertMessageAlterStatusEvent;
 use App\Events\SendDataEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
@@ -35,7 +37,8 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
-//        broadcast(new AlertMessageAlterStatusEvent());
+
+//        broadcast(new AlertMessageAlterStatusEvent('Olá mundo'));
         broadcast(new SendDataEvent());
         return response()->json(['status' => 'Event sent!']);
 

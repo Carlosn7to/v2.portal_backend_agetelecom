@@ -12,40 +12,23 @@ use Illuminate\Queue\SerializesModels;
 
 class PublicMessageEvent implements ShouldBroadcast
 {
-    public $channelName;
-    public $message;
-
     use Dispatchable, InteractsWithSockets;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct($channelName, $message)
+    public $message;
+
+    public function __construct($message)
     {
-        $this->channelName = $channelName;
         $this->message = $message;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     * https://laravel.com/docs/broadcasting#model-broadcasting-channel-conventions
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn() : array
+
+    public function broadcastOn()
     {
-
-        \Log::info('public');
-
-        return ['public'];
+        return ['my-channel'];
     }
 
-    public function broadcastAs() : string
+    public function broadcastAs()
     {
-        \Log::info('public-message');
-
-        return 'public-message';
+        return 'my-event';
     }
 }

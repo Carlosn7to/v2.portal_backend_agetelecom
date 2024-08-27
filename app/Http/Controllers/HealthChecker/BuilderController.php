@@ -38,7 +38,7 @@ class BuilderController extends Controller
             [
                 'aplicacao_id' => $request->aplicacao_id,
                 'cpu_nucleos_totais' => $request->cpu_nucleos_totais,
-                'cpu_uso' => $request->cpu_uso,
+                'cpu_uso' => $request->cpu_uso < 1 ? 1 : $request->cpu_uso,
                 'cpu_disponivel' => 100 - $request->cpu_uso,
                 'ram_total' => $request->ram_total,
                 'ram_uso' => $request->ram_uso,
@@ -91,6 +91,39 @@ class BuilderController extends Controller
             foreach ($resources as $resource) {
                 unset($resource->application);
             }
+        }
+
+        $now = Carbon::now();
+        $minutes = collect();
+        for ($i = 0; $i <= 60; $i++) {
+            $minutes->push($now->copy()->subMinutes($i)->format('H:i'));
+        }
+
+        foreach($minutes as $minute) {
+            foreach ($groupedByName as $nome => $resources) {
+                $found = false;
+                foreach ($resources as $resource) {
+                    if ($resource['hora_minuto'] === $minute.':00') {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $groupedByName[$nome]->push([
+                        'hora_minuto' => $minute,
+                        'cpu_uso' => 0,
+                        'cpu_disponivel' => 100,
+                        'ram_uso' => 0,
+                        'disco_uso' => 0
+                    ]);
+                }
+            }
+        }
+
+        // Ordenando pela hora_minuto
+        foreach ($groupedByName as $nome => $resources) {
+            $groupedByName[$nome] = $resources->sortBy('hora_minuto')->values();
         }
 
         return $groupedByName->toArray();
