@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\HealthChecker\Monitoring;
 
+use App\Http\Controllers\HealthChecker\ApplicationEvents;
 use App\Http\Controllers\HealthChecker\ResourceServer;
 use Illuminate\Console\Command;
 
@@ -28,5 +29,7 @@ class Resources extends Command
     {
         $resourceWatcher = new ResourceServer();
         $resourceWatcher->__invoke();
+        $eventsWatcher = new ApplicationEvents();
+        $eventsWatcher->__invoke();
     }
 }
