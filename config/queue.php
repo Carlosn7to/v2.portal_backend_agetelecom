@@ -42,6 +42,13 @@ return [
             'after_commit' => false,
         ],
 
+        // Adicionando a nova fila
+        'emails' => [
+            'driver' => 'database',
+            'queue' => 'emails',
+            'retry_after' => 90,
+        ],
+
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
@@ -104,7 +111,8 @@ return [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
         'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
-        'log' => true
+        'log' => true,
+        'retry_after' => 30,
     ],
 
 ];

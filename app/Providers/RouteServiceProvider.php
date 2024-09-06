@@ -67,6 +67,16 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api/portal/agerv/b2b/api.php'));
 
 
+            // Rotas para o AgeRv Retenção
+            Route::middleware('portal')
+                ->prefix('portal/agerv/retention/')
+                ->group(base_path('routes/api/portal/agerv/retention/api.php'));
+
+            // Rotas para o Age Report
+            Route::middleware('portal')
+                ->prefix('portal/agereport/')
+                ->group(base_path('routes/api/portal/agereport/api.php'));
+
             // Rotas para a integração de boletos Digitro x Voalle
             Route::middleware('portal')
                 ->prefix('integrator/voalle/')

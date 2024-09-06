@@ -8,7 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
+use App\Jobs\SendEmailGeneric;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
+use App\Mail\Portal\Helpers\SendQuality;
+use App\Mail\SendMaintenanceScheduled;
 use App\Models\Integrator\Aniel\Schedule\Communicate;
 use App\Models\Integrator\Aniel\Schedule\ImportOrder;
 use App\Models\Integrator\Aniel\Schedule\OrderBroken;
@@ -36,6 +39,35 @@ class Functions extends Controller
     public function index(Request $request)
     {
         set_time_limit(20000000000);
+        $array = \Maatwebsite\Excel\Facades\Excel::toArray(new \stdClass(), $request->file('excel'));
+
+        $array = array_chunk($array[0], 500);
+
+        foreach($array as $emails) {
+
+
+            foreach($emails as $key => $email) {
+
+
+                $emailValidated = filter_var($email[0], FILTER_VALIDATE_EMAIL);
+
+                if($emailValidated) {
+
+                    $mail = (new SendMaintenanceScheduled())->onConnection('database')->onQueue('emails');
+
+                    \Mail::mailer('portal')->to($email[0])
+                        ->queue($mail);
+                }
+            }
+        }
+
+
+        return true;
+
+//        $result = \DB::connection('voalle')->select('select * from people p limit 1');
+//
+//        return $result;
+
 
 
 //        broadcast(new AlertMessageAlterStatusEvent('Olá mundo'));

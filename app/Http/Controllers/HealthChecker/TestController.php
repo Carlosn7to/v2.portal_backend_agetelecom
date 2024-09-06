@@ -13,9 +13,10 @@ class TestController extends Controller
 
     public function index(Request $request)
     {
-        $events = new ApplicationEvents();
+        $latency = new BuilderController();
 
-        return $events->watchEvents();
+        return $latency->getLatency();
+
 
     }
 

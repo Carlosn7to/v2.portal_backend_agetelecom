@@ -28,4 +28,6 @@ Route::prefix('statistics')->controller(\App\Http\Controllers\HealthChecker\Buil
     Route::get('/analytic', 'getAnalyticStatistics');
     Route::get('/status', 'getStatus');
     Route::get('/events', 'getLastEvents');
+    Route::get('/latency', 'getLatency');
+    Route::get('/queues', 'getQueues');
 });

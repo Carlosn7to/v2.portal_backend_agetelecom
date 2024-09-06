@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\HealthChecker;
 
 use App\Http\Controllers\Controller;
+use App\Models\HealthChecker\AppQueue;
 use App\Models\HealthChecker\AppResource;
+use App\Models\HealthChecker\AppStatisticResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -20,7 +22,10 @@ class BuilderController extends Controller
             'ram_total' => 'required|integer',
             'ram_uso' => 'required|integer',
             'disco_total' => 'required|integer',
-            'disco_uso' => 'required|integer'
+            'disco_uso' => 'required|integer',
+            'filas.processadas' => 'required|integer',
+            'filas.erros' => 'required|integer',
+            'filas.pendentes' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -45,6 +50,26 @@ class BuilderController extends Controller
                 'disco_total' => $request->disco_total,
                 'disco_uso' => $request->disco_uso,
                 'hora_minuto' => $hour_minute
+            ]
+        );
+
+        $appQueue = new AppQueue();
+
+        $startOfMinute = Carbon::now()->startOfMinute();
+        $endOfMinute = Carbon::now()->endOfMinute();
+
+        $appQueue->firstOrCreate(
+            [
+                'aplicacao_id' => $request->aplicacao_id,
+                'created_at' => [
+                    ['>=', $startOfMinute],
+                    ['<=', $endOfMinute]
+                ],            ],
+            [
+                'aplicacao_id' => $request->aplicacao_id,
+                'processadas' => $request->filas['processadas'],
+                'erros' => $request->filas['erros'],
+                'pendentes' => $request->filas['pendentes']
             ]
         );
 
@@ -127,6 +152,82 @@ class BuilderController extends Controller
         }
 
         return $groupedByName->toArray();
+
+    }
+
+    public function getLatency()
+    {
+        $latency = new AppStatisticResponse();
+
+        $applications = $latency->where('created_at','>=', Carbon::now()->subMinutes(10)->format('Y-m-d H:i:s'))
+            ->with('application')
+            ->get()
+            ->groupBy('aplicacao_id');
+
+        // Prepare um array para armazenar os resultados
+        $results = [];
+
+        foreach ($applications as $aplicacaoId => $records) {
+            // Calcule a média do tempo_resposta
+            $totalResponseTime = $records->sum('tempo_resposta');
+            $recordCount = $records->count();
+            $averageResponseTime = $recordCount ? $totalResponseTime / $recordCount : 0;
+            $applicationName = $records->first()->application->nome;
+
+            // Encontre o registro com o menor tempo_resposta
+            $minRecord = $records->sortBy('tempo_resposta')->first();
+
+            // Encontre o registro com o maior tempo_resposta
+            $maxRecord = $records->sortByDesc('tempo_resposta')->first();
+
+            // Encontre o registro mais próximo da média
+            $closestToAverage = $records->reduce(function ($closest, $current) use ($averageResponseTime) {
+                return !$closest || abs($current->tempo_resposta - $averageResponseTime) < abs($closest->tempo_resposta - $averageResponseTime)
+                    ? $current
+                    : $closest;
+            });
+
+
+            // Armazene os registros selecionados
+            $results[$applicationName] = [
+                'lowest' => $minRecord['tempo_resposta'],
+                'average' => $averageResponseTime,
+                'highest' => $maxRecord['tempo_resposta'],
+            ];
+        }
+        $sortedResults = collect($results)->sortBy('average')->toArray();
+
+        return $sortedResults;
+
+    }
+
+    public function getQueues()
+    {
+
+        // Primeiro, buscamos as filas ordenadas por 'created_at' e 'processadas'
+        $queues = AppQueue::with('application')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('processadas', 'desc')
+            ->get();
+
+        // Agrupa as filas pelo 'aplicacao_id' e seleciona o registro mais recente para cada grupo
+        $distinctQueues = $queues->groupBy('aplicacao_id')->map(function ($group) {
+            return $group->first(); // Pega o registro mais recente dentro do grupo
+        });
+
+        // Ordena os registros finais por 'processadas' em ordem decrescente
+        $sortedQueues = $distinctQueues->sortByDesc('processadas')->values();
+
+        $filteredQueues = $sortedQueues->map(function ($queue) {
+            return [
+                'nome_aplicacao' => $queue->application->nome ?? null, // Ajuste o nome do campo se necessário
+                'processadas' => $queue->processadas,
+                'pendentes' => $queue->pendentes,
+                'erros' => $queue->erros,
+            ];
+        });
+
+        return $filteredQueues->toArray();
 
     }
 }

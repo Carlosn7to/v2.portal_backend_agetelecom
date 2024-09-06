@@ -113,7 +113,7 @@ return [
             'username' => env('DB_USERNAME_VOALLE', 'forge'),
             'password' => env('DB_PASSWORD_VOALLE', ''),
             'charset' => 'utf8',
-            'prefix' => '',
+            'prefix' => 'erp.',
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',

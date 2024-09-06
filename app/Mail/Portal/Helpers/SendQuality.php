@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendQuality extends Mailable
+class SendQuality extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -31,7 +31,7 @@ class SendQuality extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Novo plano de saúde - Unity Saúde',
+            subject: '[Comunicado Importante] - Manutenção programada na Rede',
         );
     }
 
@@ -52,35 +52,8 @@ class SendQuality extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build() : array
     {
-        $files = [
-            [
-                'path' => storage_path('app\portal\Manual_Acesso_Rapido_Telemedicina_Unity_Saude.pdf'),
-                'as' => 'Manual_Acesso_Rapido_Telemedicina.pdf',
-                'mime' => 'application/pdf',
-            ],
-            [
-                'path' => storage_path('app\portal\Manual_do_beneficiário_UNITY_SAÚDE.pdf'),
-                'as' => 'Manual_do_beneficiário_UNITY_SAÚDE.pdf',
-                'mime' => 'application/pdf',
-            ],
-            [
-                'path' => storage_path('app\portal\Resumo_de_Rede.pdf'),
-                'as' => 'Resumo_de_Rede.pdf',
-                'mime' => 'application/pdf',
-            ],
-        ];
-
-        $email = $this->view('portal.mail.collaborators');
-
-        foreach ($files as $file) {
-            $email->attach($file['path'], [
-                'as' => $file['as'],
-                'mime' => $file['mime'],
-            ]);
-        }
-
-        return $email;
+        return [];
     }
 }

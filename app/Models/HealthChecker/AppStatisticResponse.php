@@ -16,4 +16,9 @@ class AppStatisticResponse extends Model
       'status_codigo',
     ];
     protected $connection = 'healthChecker';
+
+    public function application()
+    {
+        return $this->belongsTo(App::class, 'aplicacao_id');
+    }
 }
