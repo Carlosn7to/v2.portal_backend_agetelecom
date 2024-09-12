@@ -236,7 +236,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('portal')->user());
+        return response()->json(auth('portal')->user()->login);
     }
 
     /**
