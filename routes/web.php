@@ -27,3 +27,10 @@ Route::get('bi/voalle/financial/b2b/receipt-titles', [\App\Http\Controllers\Port
 Route::get('teste-email', function () {
     return view('portal.mail.collaborators');
 });
+
+
+Route::prefix('services')->group(function () {
+    Route::prefix('blocked-screen')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Portal\Services\BlockedScreen\BuilderController::class, 'builder']);
+    });
+});

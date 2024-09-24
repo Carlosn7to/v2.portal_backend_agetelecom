@@ -79,7 +79,7 @@ class Functions extends Controller
         return response()->json(['status' => 'Event sent!']);
 
 //
-//        $b2bSeller = new BuilderController();
+//        $b2bSeller = new IdentifyClient();
 //
 //        return $b2bSeller->response();
 
