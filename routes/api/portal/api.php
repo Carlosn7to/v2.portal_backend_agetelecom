@@ -28,3 +28,9 @@ Route::post('test/event', function (Request $request) {
 });
 
 Route::post('infobip/report/sms', [\App\Http\Controllers\Portal\AgeCommunicate\Reports\RealTimeController::class, 'handle']);
+
+Route::prefix('services')->group(function () {
+    Route::prefix('blocked-screen')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Portal\Services\BlockedScreen\BuilderController::class, 'builder']);
+    });
+});

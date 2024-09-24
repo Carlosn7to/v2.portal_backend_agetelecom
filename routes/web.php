@@ -29,8 +29,4 @@ Route::get('teste-email', function () {
 });
 
 
-Route::prefix('services')->group(function () {
-    Route::prefix('blocked-screen')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Portal\Services\BlockedScreen\BuilderController::class, 'builder']);
-    });
-});
+
