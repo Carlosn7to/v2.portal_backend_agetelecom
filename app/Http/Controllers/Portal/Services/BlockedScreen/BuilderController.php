@@ -51,7 +51,8 @@ class BuilderController extends Controller
             return response()->json(['message' => 'Nenhum cliente encontrado na base com os dados fornecidos'], 404);
         }
         return response()->json(['message' => 'Cliente encontrado na base.', 'data' => [
-            'id' => $this->client['id']
+            'id' => $this->client['id'],
+            'cellphone' => $this->client['cellphone'],
         ]], 200);
     }
 
