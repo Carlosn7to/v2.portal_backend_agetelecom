@@ -122,7 +122,7 @@ class BuilderController extends Controller
             'celular' => $clientData['cellphone'],
         ]);
 
-        return response()->json(['message' => 'SMS enviado com sucesso.'], 200);
+        return response()->json(['message' => 'SMS enviado com sucesso.', 'token' => $token], 200);
 
     }
 
