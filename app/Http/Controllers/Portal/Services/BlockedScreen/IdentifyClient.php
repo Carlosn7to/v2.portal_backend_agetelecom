@@ -21,12 +21,13 @@ class IdentifyClient
 
     private function getDataFromVoalle()
     {
-        $query = "select p.tx_id, p.cell_phone_1 as cellphone from erp.people p where p.tx_id = :tx_id";
+        $query = "select p.id, p.tx_id, p.cell_phone_1 as cellphone from erp.people p where p.tx_id = :tx_id";
         $result = \DB::connection('voalle')->select($query, ['tx_id' => $this->identify]);
 
 
         if(count($result) > 0) {
             return [
+                'id' => $result[0]->id,
                 'tx_id' => $result[0]->tx_id,
                 'cellphone' => $this->removeCharacters($result[0]->cellphone),
             ];

@@ -50,7 +50,9 @@ class BuilderController extends Controller
         if(!$this->client) {
             return response()->json(['message' => 'Nenhum cliente encontrado na base com os dados fornecidos'], 404);
         }
-        return response()->json(['message' => 'Cliente encontrado na base.'], 200);
+        return response()->json(['message' => 'Cliente encontrado na base.', 'data' => [
+            'id' => $this->client['id']
+        ]], 200);
     }
 
     private function confirmToken($token)
@@ -70,11 +72,16 @@ class BuilderController extends Controller
 
     }
 
-    private function sendSmsConfirmation()
+    private function sendSmsConfirmation($idClient)
     {
 
         $integrator = json_decode(Integrator::whereId(1)->first('configuracao'), true)['configuracao']['configuration'];
 
+        $clientData = $this->getDataClient($idClient);
+
+        if(!$clientData) {
+            return response()->json(['message' => 'Cliente não encontrado na base'], 404);
+        }
 
         // Configurar o cliente Guzzle
         $client = new Client([
@@ -111,11 +118,34 @@ class BuilderController extends Controller
 
         $result = $registerToken->create([
             'token' => $token,
-            'celular' => $this->client['cellphone'],
+            'celular' => $clientData['cellphone'],
         ]);
 
         return response()->json(['message' => 'SMS enviado com sucesso.'], 200);
 
     }
+
+    private function getDataClient($idClient)
+    {
+        $query = "select p.id, p.tx_id, p.cell_phone_1 as cellphone from erp.people p where p.id = :id";
+        $result = \DB::connection('voalle')->select($query, ['id' => $idClient]);
+
+
+        if(count($result) > 0) {
+            return [
+                'id' => $result[0]->id,
+                'tx_id' => $result[0]->tx_id,
+                'cellphone' => $this->removeCharacters($result[0]->cellphone),
+            ];
+        }
+
+        return false;
+    }
+
+    private function removeCharacters($identify)
+    {
+        return preg_replace('/[^0-9]/', '', $identify);
+    }
+
 
 }
