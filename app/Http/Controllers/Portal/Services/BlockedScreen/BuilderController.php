@@ -38,7 +38,7 @@ class BuilderController extends Controller
                 return $this->confirmToken($request->data);
                 break;
             default:
-                return response()->json(['message' => 'Comando inválido'], 404);
+                return response()->json(['message' => 'Comando inválido'], 400);
         }
 
 
@@ -48,7 +48,7 @@ class BuilderController extends Controller
     {
         $this->client = (new IdentifyClient($identify))->response();
         if(!$this->client) {
-            return response()->json(['message' => 'Nenhum cliente encontrado na base com os dados fornecidos'], 404);
+            return response()->json(['message' => 'Nenhum cliente encontrado na base com os dados fornecidos'], 400);
         }
         return response()->json(['message' => 'Cliente encontrado na base.', 'data' => [
             'id' => $this->client['id'],
@@ -61,7 +61,7 @@ class BuilderController extends Controller
         $token = Token::where('token', $token)->whereStatus('pendente')->first();
 
         if(!$token) {
-            return response()->json(['message' => 'Token inválido e/ou expirado'], 404);
+            return response()->json(['message' => 'Token inválido e/ou expirado'], 400);
         }
 
         $token->update([
@@ -81,7 +81,7 @@ class BuilderController extends Controller
         $clientData = $this->getDataClient($idClient);
 
         if(!$clientData) {
-            return response()->json(['message' => 'Cliente não encontrado na base'], 404);
+            return response()->json(['message' => 'Cliente não encontrado na base'], 400);
         }
 
         // Configurar o cliente Guzzle
