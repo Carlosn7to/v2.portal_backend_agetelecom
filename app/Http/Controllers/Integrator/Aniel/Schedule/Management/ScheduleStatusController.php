@@ -26,7 +26,7 @@ class ScheduleStatusController extends Controller
     public function alterStatus(Request $request)
     {
         $permittedUsers = [
-            'mauro.diogo',
+            'mauro.correa',
             'andre.rocha',
             'michelly.pinheiro',
             'carlos.neto'

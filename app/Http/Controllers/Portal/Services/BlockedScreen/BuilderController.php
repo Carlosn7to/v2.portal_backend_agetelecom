@@ -37,6 +37,9 @@ class BuilderController extends Controller
             case 'confirmToken':
                 return $this->confirmToken($request->data);
                 break;
+            case 'getBillets':
+                return $this->getDataBillets($request->data);
+                break;
             default:
                 return response()->json(['message' => 'Comando inválido'], 400);
         }
@@ -146,6 +149,17 @@ class BuilderController extends Controller
     private function removeCharacters($identify)
     {
         return preg_replace('/[^0-9]/', '', $identify);
+    }
+
+    private function getDataBillets($idClient)
+    {
+        $query = "select c.id, c.v_stage, c.v_status  from erp.contracts c
+                    where  c.v_stage = 'Aprovado' and c.v_status = 'Bloqueio Financeiro' and c.client_id = :client_id";
+
+        $result = \DB::connection('voalle')->select($query, ['client_id' => $idClient]);
+
+        return $result;
+
     }
 
 
