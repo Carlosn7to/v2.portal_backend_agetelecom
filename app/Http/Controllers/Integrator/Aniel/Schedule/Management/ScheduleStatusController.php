@@ -85,7 +85,7 @@ class ScheduleStatusController extends Controller
     public function alterCapacity(Request $request)
     {
         $permittedUsers = [
-            'mauro.diogo',
+            'mauro.correa',
             'andre.rocha',
             'michelly.pinheiro',
             'carlos.neto'
