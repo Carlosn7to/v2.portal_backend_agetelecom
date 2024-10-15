@@ -64,7 +64,7 @@ return [
             'throw' => false,
         ],
 
-        'public_agereport_reports' => [
+        'publicReport' => [
             'driver' => 'local',
             'root' => storage_path('app/public/agereport/reports'),
             'url' => env('APP_URL').'/storage',

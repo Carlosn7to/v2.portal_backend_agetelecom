@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal\AgeReport\Reports;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Portal\AgeReport\BuildReportRequest;
 use App\Jobs\BuildingReportJob;
+use App\Models\Portal\AgeReport\Assignment\Assignment;
 use App\Models\Portal\AgeReport\Management\Report;
 
 class ReportsController extends Controller
@@ -23,12 +24,38 @@ class ReportsController extends Controller
     {
         $fields = $request->all();
 
-        BuildingReportJob::dispatch($fields);
+        BuildingReportJob::dispatch($fields, auth('portal')->user()->id);
 
         return response()->json(['message' => 'Solicitação realizada com sucesso, o relatório está sendo criado.'], 200);
 
 
     }
+
+    public function downloadReport($assignmentId)
+    {
+
+        $assignment = Assignment::find($assignmentId);
+        $report = Report::find($assignment->relatorio_id);
+        if(!$assignment) {
+            return response()->json(['message' => 'Solicitação não encontrada'], 404);
+        }
+
+        if($assignment->usuario_id != auth('portal')->user()->id) {
+            return response()->json(['message' => 'Você não tem permissão para baixar este arquivo'], 403);
+        }
+
+        $filePath = $assignment->caminho_arquivo; // Substitua pelo caminho do seu arquivo
+        $fileName = $report->nome.'.xlsx'; // Nome com o qual o arquivo será baixado
+
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath, $fileName)->setStatusCode(200);
+        }
+
+
+        return response()->json(['message' => 'Download realizado com sucesso'], 200);
+    }
+
 
     /**
      * Display the specified resource.

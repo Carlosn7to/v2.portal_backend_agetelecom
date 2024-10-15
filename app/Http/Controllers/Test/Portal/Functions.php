@@ -48,7 +48,11 @@ class Functions extends Controller
             'type' => 'notification',
             'command' => 'report-download',
             'title' => 'Seu relatório está pronto!',
-            'message' => 'Clique abaixo para realizar o download'
+            'message' => 'Clique abaixo para realizar o download',
+            'report' => [
+                'assignment_id' => 1,
+                'name' => 'Relatório de qualidade.xlsx'
+            ]
         ];
 
         broadcast(new SendNotificationsForUser(112, $content));
