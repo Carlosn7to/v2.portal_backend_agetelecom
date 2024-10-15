@@ -22,6 +22,7 @@ class RealTimeController extends Controller
 
         $result = $request->json('results');
 
+        return true;
 
         // Inicializa a query básica usando messageId, que sempre existe
         $query = Report::where('mensagem_id', $result[0]['messageId']);
