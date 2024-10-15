@@ -17,7 +17,6 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-
         if(auth('portal')->check()){
             return $next($request);
         }

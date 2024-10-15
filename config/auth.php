@@ -38,7 +38,7 @@ return [
     'guards' => [
         'api' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'portalUsers',
         ],
         'portal' => [
             'driver' => 'jwt',

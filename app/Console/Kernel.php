@@ -15,11 +15,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         // $schedule->command('portal:users:create')->dailyAt('07:00');
-        $schedule->command('server:resources')
-            ->everyMinute()->withoutOverlapping();
+//        $schedule->command('server:resources')
+//            ->everyMinute()->withoutOverlapping();
 
         $schedule->command('rule:billing:sending')
-            ->dailyAt('08:35')->runInBackground();
+            ->dailyAt('09:35')->runInBackground();
 
         $schedule->command('tracking:services')
             ->everyMinute()->withoutOverlapping()->runInBackground();

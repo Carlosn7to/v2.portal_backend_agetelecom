@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Test\Portal;
 
 use App\Events\AlertMessageAlterStatusEvent;
 use App\Events\SendDataEvent;
+use App\Events\SendNotificationsForUser;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Management\DashboardSchedule;
 use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\SubServicesSync;
+use App\Http\Controllers\Integrator\Aniel\Schedule\_actions\Voalle\OrderSync;
+use App\Http\Controllers\Integrator\Voalle\Billets\BilletController;
 use App\Http\Controllers\Portal\AgeCommunicate\BillingRule\BuilderBillingRuleController;
 use App\Jobs\SendEmailGeneric;
+use App\Mail\Portal\AgeAll\SendCommunicate;
 use App\Mail\Portal\AgeCommunicate\Rule\Billing\SendBilling;
 use App\Mail\Portal\Helpers\SendQuality;
 use App\Mail\SendMaintenanceScheduled;
@@ -40,7 +44,22 @@ class Functions extends Controller
     {
         set_time_limit(20000000000);
 
+        $content = [
+            'type' => 'notification',
+            'command' => 'report-download',
+            'title' => 'Seu relatório está pronto!',
+            'message' => 'Clique abaixo para realizar o download'
+        ];
 
+        broadcast(new SendNotificationsForUser(112, $content));
+
+
+        return true;
+
+//        \Mail::mailer('portal')->to('age@agetelecom.com.br')
+//                ->send(new SendCommunicate());
+
+        return 10;
 
 
 //        $array = \Maatwebsite\Excel\Facades\Excel::toArray(new \stdClass(), $request->file('excel'));

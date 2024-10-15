@@ -27,6 +27,7 @@ Route::prefix('management')->group(function () {
 
 Route::prefix('reports')->controller(\App\Http\Controllers\Portal\AgeReport\Reports\ReportsController::class)->group(function () {
     Route::get('/', 'index');
+    Route::post('/building', 'buildingReport');
     Route::get('/{id}', 'show');
     Route::get('/{id}/columns', 'getColumns');
 });

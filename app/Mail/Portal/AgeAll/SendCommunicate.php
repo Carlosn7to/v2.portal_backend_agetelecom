@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\Portal\Helpers;
+namespace App\Mail\Portal\AgeAll;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendQuality extends Mailable implements ShouldQueue
+class SendCommunicate extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,7 +31,7 @@ class SendQuality extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            subject: 'Teste',
+            subject: 'Espaço de convivência ',
         );
     }
 
