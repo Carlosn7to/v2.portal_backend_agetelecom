@@ -3,6 +3,7 @@
 namespace App\Models\Portal\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Portal\AgeReport\Management\UserRole;
 use App\Models\Portal\Sector\Sector;
 use App\Models\Portal\Structure\Privilege;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -106,6 +107,13 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email,
             'privilege' => $this->privilege
         ];
+    }
+
+    public function ageReportRoles()
+    {
+        return $this->hasOne(UserRole::class, 'usuario_id', 'id')
+            ->select(['id as permissao_id', 'usuario_id', 'nivel', 'relatorios_liberados', 'liberado_por'])
+            ->with('releasedByUser');
     }
 
 }

@@ -23,6 +23,17 @@ Route::prefix('management')->group(function () {
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
     });
+
+    Route::prefix('users')->controller(\App\Http\Controllers\Portal\AgeReport\Management\Users\UsersController::class)->group(function () {
+        Route::get('/', 'getAllUsers');
+        Route::get('/byName/{name}', 'getUserByName');
+
+        Route::prefix('roles')->controller(\App\Http\Controllers\Portal\AgeReport\Management\Users\UsersRolesController::class)->group(function () {
+            Route::post('/', 'defineUserRoles');
+            Route::get('/reports', 'getReports');
+        });
+
+    });
 });
 
 Route::prefix('reports')->controller(\App\Http\Controllers\Portal\AgeReport\Reports\ReportsController::class)->group(function () {
