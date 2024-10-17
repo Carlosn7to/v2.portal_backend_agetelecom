@@ -73,7 +73,7 @@
             <img src="https://comunica23.s3.amazonaws.com/A1.png" style="width: 500px; height: 400px; border-radius: 10px;" alt="">
         </div>
         <div class="content">
-            <p>Gostaríamos de informá-los que <span class="highlight">no dia <br> 13/09/2024 de 03h00 às 05h00 </span> realizaremos <br> <b>uma manutenção programada em nossa rede</b> <br> para melhorar a qualidade de nossos serviços.</p>
+            <p>Gostaríamos de informá-los que <span class="highlight">no dia <br> 18/10/2024 de 02:30 às 06:30 </span> realizaremos <br> <b>uma manutenção programada em nossa rede</b> <br> para melhorar a qualidade de nossos serviços.</p>
             <p>Durante o período de manutenção, podem <br> ocorrer interrupções temporárias no serviço.<br> <b>Pedimos desculpas por qualquer <br> inconveniente</b> e agradecemos sua <br> compreensão.</p>
             <p><b>Time Age Fibra</b></p>
         </div>

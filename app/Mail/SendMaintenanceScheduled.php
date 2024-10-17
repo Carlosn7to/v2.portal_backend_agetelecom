@@ -38,7 +38,7 @@ class SendMaintenanceScheduled extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'portal.mail.collaborators',
+            view: 'portal.mail.sendMaintenance',
         );
     }
 

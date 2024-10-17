@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('test')->controller(\App\Http\Controllers\Test\Portal\Functions::class)->group(function () {
-    Route::get('/', 'index');
+    Route::post('/', 'index');
 });
 
 Route::post('test/event', function (Request $request) {
