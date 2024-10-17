@@ -36,7 +36,6 @@ class UsersRolesController extends Controller
         }
 
         $role->fill([
-            'nivel' => $level,
             'relatorios_liberados' => json_encode($newReports),
             'liberado_por' => auth('portal')->id(),
         ])->save();
@@ -60,7 +59,6 @@ class UsersRolesController extends Controller
         $remainingReports = array_diff($oldReports, $report);
 
         $role->update([
-            'nivel' => $level,
             'relatorios_liberados' => json_encode($remainingReports),
         ]);
 
