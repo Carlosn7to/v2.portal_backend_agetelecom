@@ -49,6 +49,7 @@ class Functions extends Controller
 
         $array = array_chunk($array[0], 500);
 
+
         foreach($array as $emails) {
 
 
@@ -61,7 +62,7 @@ class Functions extends Controller
 
                     $mail = (new SendMaintenanceScheduled())->onConnection('database')->onQueue('emails');
 
-                    \Mail::mailer('portal')->to($email[0])
+                    \Mail::mailer('contact')->to($email[0])
                         ->queue($mail);
                 }
             }
