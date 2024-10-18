@@ -72,26 +72,6 @@ class BuildingReportJob implements ShouldQueue
 
 
 
-                if($this->data['options']['columns'][0] != 'all') {
-
-                    foreach($keys as $key) {
-                        if(!in_array($key, $this->data['options']['columns'])) {
-                            $index = array_search($key, $keys);
-                            unset($keys[$index]);
-                        }
-                    }
-
-
-                    foreach($result as $key => $value) {
-                        foreach($value as $k => $v) {
-                            if(!in_array($k, $this->data['options']['columns'])) {
-                                unset($result[$key]->$k);
-                            }
-                        }
-                    }
-
-                }
-
                 $headers = $keys;
 
 
