@@ -7,6 +7,7 @@ use App\Http\Requests\Portal\AgeReport\BuildReportRequest;
 use App\Jobs\BuildingReportJob;
 use App\Models\Portal\AgeReport\Assignment\Assignment;
 use App\Models\Portal\AgeReport\Management\Report;
+use App\Models\Portal\AgeReport\Management\UserRole;
 
 class ReportsController extends Controller
 {
@@ -15,7 +16,20 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        $result = Report::all();
+        $roles = UserRole::whereUsuarioId(auth('portal')->user()->id)->get();
+
+        if($roles->count() == 0) {
+            return response()->json(['message' => 'Você não tem permissão para acessar relatórios'], 403);
+        }
+
+        $roleIds = $roles->pluck('relatorios_liberados')
+            ->map(function ($item) {
+                return json_decode($item);
+            })
+            ->flatten()
+            ->filter()
+            ->toArray();
+        $result = Report::whereIn('id', $roleIds)->get(['id', 'nome', 'descricao', 'tipo']);
 
         return response()->json($result, 200);
     }
