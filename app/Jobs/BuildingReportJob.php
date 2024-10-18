@@ -73,19 +73,20 @@ class BuildingReportJob implements ShouldQueue
                 $headers = $keys;
 
                 if ($this->data['options']['columns'][0] != 'all') {
-                    foreach ($this->data['options']['columns'] as $column) {
-                        // Remove o header indesejado
-                        $headers = array_filter($headers, function ($header) use ($column) {
-                            return $header != $column;
-                        });
+                    $columnsToKeep = $this->data['options']['columns'];
 
-                        // Remove a coluna correspondente de cada linha em $result
-                        foreach ($result as &$row) {
-                            if (isset($row->$column)) {
-                                unset($row->$column);
-                            }
-                        }
-                    }
+                    // Filtra os headers para manter apenas as colunas especificadas
+                    $headers = array_filter($headers, function ($header) use ($columnsToKeep) {
+                        return in_array($header, $columnsToKeep);
+                    });
+
+                    // Itera sobre cada item da collection e mantém apenas as colunas desejadas
+                    $result = collect($result)->map(function ($item) use ($columnsToKeep) {
+                        // Converte o item para array, mantém apenas as colunas necessárias e retorna
+                        return collect($item)
+                            ->only($columnsToKeep)
+                            ->toArray();
+                    });
                 }
 
 
