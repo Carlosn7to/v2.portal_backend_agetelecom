@@ -70,29 +70,13 @@ class BuildingReportJob implements ShouldQueue
                     return mb_convert_case($key, MB_CASE_TITLE, 'UTF-8');
                 }, $keys);
 
-                $headers = $keys;
+                if($this->data['options']['columns'][0] != 'all') {
+                    $headers = array_intersect($keys, $this->data['options']['columns']);
 
-                if ($this->data['options']['columns'][0] != 'all') {
+                    $result = array_intersect_key($result, array_flip($this->data['options']['columns']));
 
-                    foreach($headers as $key => $header) {
-                        if(!in_array($header, $this->data['options']['columns'])) {
-                            unset($headers[$key]);
-                        }
-                    }
-
-
-                    foreach($this->data['options']['columns'] as $column) {
-
-                        foreach($result as $key => $value) {
-                            if($key != $column) {
-                                unset($result[$key]);
-                            }
-                        }
-
-                    }
-
-
-
+                } else {
+                    $headers = $keys;
                 }
 
 
