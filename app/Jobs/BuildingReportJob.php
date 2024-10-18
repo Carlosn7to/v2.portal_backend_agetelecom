@@ -70,13 +70,22 @@ class BuildingReportJob implements ShouldQueue
                     return mb_convert_case($key, MB_CASE_TITLE, 'UTF-8');
                 }, $keys);
 
+                $headers = $keys;
+
+
                 if($this->data['options']['columns'][0] != 'all') {
-                    $headers = array_intersect($keys, $this->data['options']['columns']);
+                    // Filtra os headers para manter apenas os que estão na lista de colunas permitidas
+                    $headers = array_filter($headers, function ($header) {
+                        return in_array($header, $this->data['options']['columns']);
+                    });
 
-                    $result = array_intersect_key($result, array_flip($this->data['options']['columns']));
+                    // Filtra o result para manter apenas os dados com as colunas permitidas
+                    foreach ($result as $key => $value) {
+                        if (!in_array($key, $this->data['options']['columns'])) {
+                            unset($result[$key]);
+                        }
+                    }
 
-                } else {
-                    $headers = $keys;
                 }
 
 
