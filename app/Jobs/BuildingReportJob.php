@@ -81,8 +81,8 @@ class BuildingReportJob implements ShouldQueue
 
                         // Remove a coluna correspondente de cada linha em $result
                         foreach ($result as &$row) {
-                            if (isset($row[$column])) {
-                                unset($row[$column]);
+                            if (isset($row->$column)) {
+                                unset($row->$column);
                             }
                         }
                     }
