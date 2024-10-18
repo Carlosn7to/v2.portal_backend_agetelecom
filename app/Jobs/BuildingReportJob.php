@@ -70,23 +70,29 @@ class BuildingReportJob implements ShouldQueue
                     return mb_convert_case($key, MB_CASE_TITLE, 'UTF-8');
                 }, $keys);
 
-                $headers = $keys;
 
 
                 if($this->data['options']['columns'][0] != 'all') {
-                    // Filtra os headers para manter apenas os que estão na lista de colunas permitidas
-                    $headers = array_filter($headers, function ($header) {
-                        return in_array($header, $this->data['options']['columns']);
-                    });
 
-                    // Filtra o result para manter apenas os dados com as colunas permitidas
-                    foreach ($result as $key => $value) {
-                        if (!in_array($key, $this->data['options']['columns'])) {
-                            unset($result[$key]);
+                    foreach($keys as $key) {
+                        if(!in_array($key, $this->data['options']['columns'])) {
+                            $index = array_search($key, $keys);
+                            unset($keys[$index]);
+                        }
+                    }
+
+
+                    foreach($result as $key => $value) {
+                        foreach($value as $k => $v) {
+                            if(!in_array($k, $this->data['options']['columns'])) {
+                                unset($result[$key]->$k);
+                            }
                         }
                     }
 
                 }
+
+                $headers = $keys;
 
 
                 $archiveName = str_replace(' ', '_', $report->nome) . '_' . Carbon::now()->format('d_m_Y__H-i-s') . '.'. $this->data['options']['typeArchive'];
