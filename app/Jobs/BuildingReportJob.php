@@ -74,6 +74,12 @@ class BuildingReportJob implements ShouldQueue
 
                 $headers = $keys;
 
+                if($this->data['options']['columns'][0] != 'all') {
+                    $headers = array_intersect($keys, $this->data['options']['columns']);
+                }
+
+
+
 
                 $archiveName = str_replace(' ', '_', $report->nome) . '_' . Carbon::now()->format('d_m_Y__H-i-s') . '.'. $this->data['options']['typeArchive'];
 
