@@ -86,11 +86,9 @@ class ReportsController extends Controller
                     foreach ($valueArray as $k => $v) {
                         $k = str_replace(' ', '_', mb_convert_case($k, MB_CASE_LOWER, 'UTF-8'));
 
-                        return [$k, $keys[0]];
 
                         // Verifica se a chave não está nos cabeçalhos válidos
                         if (!in_array($k, $keys)) {
-                            echo $k;
                             unset($valueArray[$k]); // Remove a chave não permitida
                         }
                     }
@@ -101,13 +99,13 @@ class ReportsController extends Controller
 
 
 
-                return $result;
-
 
                 $archiveName = str_replace(' ', '_', $report->nome) . '_' . Carbon::now()->format('d_m_Y__H-i-s') . '.'. $this->data['options']['typeArchive'];
 
+
+
                 if($this->data['options']['typeArchive'] == 'xlsx') {
-                    \Maatwebsite\Excel\Facades\Excel::store(new ReportDefaultExport($result, $headers), $archiveName, 'publicReport');
+                    \Maatwebsite\Excel\Facades\Excel::store(new ReportDefaultExport($result, $keys), $archiveName, 'publicReport');
                     $path = storage_path("app/public/agereport/reports/{$archiveName}");
 
                     $assigmentReport->update([
