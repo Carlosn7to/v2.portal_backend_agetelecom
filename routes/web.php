@@ -35,3 +35,12 @@ Route::prefix('services')->group(function () {
     });
 });
 
+
+Route::get('rpa/contract/{contractId}', function ($contractId) {
+    if(Request::get('token') != '0af09f37219dbf5fdaea13627ec5acee01669f6e99b202b2deee1f34a90ba6b6') {
+        return response()->json(['Unauthorized'], 403);
+    }
+    $contractStatus = DB::connection('voalle')->select('select c.v_status as status from erp.contracts c where c.id = :contractId', ['contractId' => $contractId]);
+    return response()->json($contractStatus);
+});
+
