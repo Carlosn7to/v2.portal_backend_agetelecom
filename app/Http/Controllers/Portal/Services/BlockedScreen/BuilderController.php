@@ -27,6 +27,7 @@ class BuilderController extends Controller
 
         $command = $request->command;
 
+
         switch ($command) {
             case 'identify':
                 return $this->identifyClient($request->data);
@@ -55,6 +56,7 @@ class BuilderController extends Controller
         }
         return response()->json(['message' => 'Cliente encontrado na base.', 'data' => [
             'id' => $this->client['id'],
+            'name' => mb_convert_case($this->client['name'], MB_CASE_TITLE, 'UTF-8'),
             'cellphone' => $this->client['cellphone'],
         ]], 200);
     }
