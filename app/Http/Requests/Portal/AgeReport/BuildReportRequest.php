@@ -36,7 +36,6 @@ class BuildReportRequest extends FormRequest
 
     public function messages()
     {
-
         return [
             'command.required' => 'O campo command é obrigatório',
             'command.string' => 'O campo command deve ser uma string',

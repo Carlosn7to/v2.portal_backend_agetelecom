@@ -19,11 +19,11 @@ class BuilderController extends Controller
 
     public function builder(Request $request)
     {
-        $ip = $_SERVER['REMOTE_ADDR'];
-
-        if($ip != '206.204.248.71' && $ip != '206.204.248.51' && $ip != '127.0.0.1') {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+//        $ip = $_SERVER['REMOTE_ADDR'];
+//
+//        if($ip != '206.204.248.71' && $ip != '206.204.248.51' && $ip != '127.0.0.1' && $ip != '10.25.3.80') {
+//            return response()->json(['message' => 'Unauthorized'], 401);
+//        }
 
         $command = $request->command;
 
