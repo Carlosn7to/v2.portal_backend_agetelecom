@@ -153,14 +153,29 @@ class BuilderController extends Controller
         return preg_replace('/[^0-9]/', '', $identify);
     }
 
-    private function getDataBillets($idClient)
+    private function getDataBillets($documentId)
     {
-        $query = "select c.id, c.v_stage, c.v_status  from erp.contracts c
-                    where  c.v_stage = 'Aprovado' and c.v_status = 'Bloqueio Financeiro' and c.client_id = :client_id";
+        $query = "select
+                    c.id as contractId,
+                    frt.title,
+                    frt.original_expiration_date as expirationDate,
+                    frt.typeful_line as billet,
+                    frt.pix_qr_code as pix
+                    from erp.contracts c
+                left join erp.people p on p.id = c.client_id
+                left join erp.financial_receivable_titles frt on frt.contract_id = c.id
+                where c.v_stage = 'Aprovado' and c.v_status = 'Bloqueio Financeiro'
+                and p.tx_id = :document_id
+                and frt.title like '%FAT%'
+                AND frt.deleted IS FALSE
+                AND frt.finished IS FALSE
+                AND frt.p_is_receivable IS TRUE
+                AND frt.typeful_line IS NOT NULL
+                and frt.financer_nature_id = 59";
 
-        $result = \DB::connection('voalle')->select($query, ['client_id' => $idClient]);
+        $result = \DB::connection('voalle')->select($query, ['document_id' => $documentId]);
 
-        return $result;
+        return response()->json($result, 200);
 
     }
 
