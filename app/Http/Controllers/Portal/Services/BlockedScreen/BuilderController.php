@@ -173,7 +173,7 @@ class BuilderController extends Controller
                 AND frt.typeful_line IS NOT NULL
                 and frt.financer_nature_id = 59";
 
-        $result = \DB::connection('voalle')->select($query, ['document_id' => $documentId]);
+        $result = \DB::connection('voalle')->select($query, ['document_id' => $this->removeCharacters($documentId)]);
 
         return response()->json($result, 200);
 
