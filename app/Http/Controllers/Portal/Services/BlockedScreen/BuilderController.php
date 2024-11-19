@@ -100,6 +100,7 @@ class BuilderController extends Controller
 
         $token = Random::generate(6, '0-9');
 
+
         $response = $client->post('sms/2/text/advanced', [
             'headers' => [
                 'Authorization' => $integrator['apiKey'],
@@ -109,7 +110,7 @@ class BuilderController extends Controller
             'json' => [
                 'messages' => [
                     [
-                        'destinations' => ['to'=> '55'.'61984700440'],//$this->client['cellphone']],
+                        'destinations' => ['to'=> '55'.$clientData['cellphone']],//$this->client['cellphone']],
                         'from' => 'Age Telecom',
                         'text' => 'Seu código Age Fibra é: '.$token,
                         'entityId' => 'portal_agetelecom_colaborador',
@@ -130,7 +131,7 @@ class BuilderController extends Controller
             'celular' => $clientData['cellphone'],
         ]);
 
-        return response()->json(['message' => 'SMS enviado com sucesso.', 'token' => $token], 200);
+        return response()->json(['message' => 'SMS enviado com sucesso.'], 200);
 
     }
 
@@ -138,7 +139,6 @@ class BuilderController extends Controller
     {
         $query = "select p.id, p.tx_id, p.cell_phone_1 as cellphone from erp.people p where p.id = :id";
         $result = \DB::connection('voalle')->select($query, ['id' => $idClient]);
-
 
         if(count($result) > 0) {
             return [
