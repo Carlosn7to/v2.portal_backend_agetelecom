@@ -41,6 +41,9 @@ class BuilderController extends Controller
             case 'getBillets':
                 return $this->getDataBillets($request->data);
                 break;
+            case 'downloadBillet':
+                return $this->downloadBillet($request->data);
+                break;
             default:
                 return response()->json(['message' => 'Comando inválido'], 400);
         }
@@ -179,5 +182,52 @@ class BuilderController extends Controller
 
     }
 
+    private function downloadBillet($typefulLine)
+    {
+        $query = 'select
+            frt.id,
+            frt.title,
+            frt.typeful_line
+        from erp.financial_receivable_titles frt
+        where frt.typeful_line = :typeful_line';
+
+        $result = \DB::connection('voalle')->select($query, ['typeful_line' => $typefulLine]);
+
+        $client = new Client();
+
+        $dataForm = [
+            "grant_type" => "client_credentials",
+            "scope" => "syngw",
+            "client_id" => config('services.voalle.client_id'),
+            "client_secret" => config('services.voalle.client_secret'),
+            "syndata" => config('services.voalle.syndata')
+        ];
+
+        $response = $client->post('https://erp.agetelecom.com.br:45700/connect/token', [
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'form_params' => $dataForm
+        ]);
+
+        $token = json_decode($response->getBody()->getContents());
+
+        $client = new Client();
+
+        $fatId = $result[0]->id;
+
+        $responseBillet = $client->get('https://erp.agetelecom.com.br:45715/external/integrations/thirdparty/GetBillet/'.$fatId, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token->access_token
+            ]
+        ]);
+
+
+        return response($responseBillet->getBody()->getContents(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="billet.pdf"',
+        ]);
+
+    }
 
 }
