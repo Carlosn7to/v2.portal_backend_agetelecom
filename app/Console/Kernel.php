@@ -18,8 +18,8 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('server:resources')
 //            ->everyMinute()->withoutOverlapping();
 
-//        $schedule->command('rule:billing:sending')
-//            ->dailyAt('08:45')->runInBackground();
+        $schedule->command('rule:billing:sending')
+            ->dailyAt('08:45')->runInBackground();
 
         $schedule->command('tracking:services')
             ->everyMinute()->withoutOverlapping()->runInBackground();
