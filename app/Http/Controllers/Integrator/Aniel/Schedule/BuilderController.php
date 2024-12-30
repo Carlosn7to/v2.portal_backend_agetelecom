@@ -247,14 +247,16 @@ class BuilderController extends Controller
 
     }
 
-    public function getCalendar()
+    public function getCalendar($year)
     {
 
-        $today = Carbon::today();
-        $endOfYear = Carbon::createFromDate($today->year, 12, 31);
+        $yearSelected = $year ?? Carbon::today()->year;
+
+        $startOfYear = Carbon::createFromDate($yearSelected, 1, 1); // 1º de janeiro do ano selecionado
+        $endOfYear = Carbon::createFromDate($yearSelected, 12, 31);
 
         $dateArray = [];
-        $currentDate = $today;
+        $currentDate = $startOfYear; // Começa no início do ano
 
         while ($currentDate->lte($endOfYear)) {
             $month = mb_convert_case($currentDate->locale('pt_BR')->isoFormat('MMMM'), MB_CASE_TITLE, 'utf8');
@@ -267,6 +269,7 @@ class BuilderController extends Controller
         }
 
         return $dateArray;
+
 
     }
 
