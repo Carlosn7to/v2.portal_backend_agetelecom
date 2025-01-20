@@ -21,20 +21,20 @@ class Kernel extends ConsoleKernel
         $schedule->command('rule:billing:sending')
             ->dailyAt('08:45')->runInBackground();
 
-        $schedule->command('tracking:services')
-            ->everyMinute()->withoutOverlapping()->runInBackground();
-
-        $schedule->command('aniel:capacity')
-            ->everyFiveMinutes()->withoutOverlapping();
-
-        $schedule->command('aniel:export')
-            ->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-
-        $schedule->command('aniel:mirror')
-            ->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-
-        $schedule->command('aniel:clear-sendings')
-            ->everyMinute()->withoutOverlapping();
+//        $schedule->command('tracking:services')
+//            ->everyMinute()->withoutOverlapping()->runInBackground();
+//
+//        $schedule->command('aniel:capacity')
+//            ->everyFiveMinutes()->withoutOverlapping();
+//
+//        $schedule->command('aniel:export')
+//            ->everyFiveMinutes()->withoutOverlapping()->runInBackground();
+//
+//        $schedule->command('aniel:mirror')
+//            ->everyFiveMinutes()->withoutOverlapping()->runInBackground();
+//
+//        $schedule->command('aniel:clear-sendings')
+//            ->everyMinute()->withoutOverlapping();
 
 
     }

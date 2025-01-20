@@ -21,18 +21,22 @@ class ReportsController extends Controller
     {
         $roles = UserRole::whereUsuarioId(auth('portal')->user()->id)->get();
 
+
         if($roles->count() == 0) {
             return response()->json(['message' => 'Você não tem permissão para acessar relatórios'], 403);
         }
 
         $roleIds = $roles->pluck('relatorios_liberados')
             ->map(function ($item) {
-                return json_decode($item);
+                return json_decode($item, true);
             })
             ->flatten()
             ->filter()
             ->toArray();
+
+
         $result = Report::whereIn('id', $roleIds)->get(['id', 'nome', 'descricao', 'tipo']);
+
 
         return response()->json($result, 200);
     }
@@ -185,21 +189,28 @@ class ReportsController extends Controller
     {
         $report = Report::find($reportId);
 
-        if(!str_contains($report->consulta, 'WITH')) {
-            $queryWithoutWhere = preg_replace('/where.*/is', '', $report->consulta);
+        // Recuperar consulta original
+        $query = trim($report->consulta);
 
-            $queryWithLimit = trim($queryWithoutWhere) . ' limit 1';
+        // Verificar se é uma consulta com WITH
+        if (str_contains(strtoupper($query), 'WITH')) {
+            // Adicionar LIMIT 1 somente no SELECT final
+            $queryWithLimit = preg_replace('/(select\s.*)$/is', '$1 LIMIT 1', $query);
         } else {
-            $queryWithLimit = trim($report->consulta) . ' limit 1';
+            // Remover WHERE para consultas simples
+            $queryWithoutWhere = preg_replace('/where.*/is', '', $query);
+            $queryWithLimit = $queryWithoutWhere . ' LIMIT 1';
         }
 
-
-
+        // Executar a query
         $result = \DB::connection(mb_convert_case($report->conexao, MB_CASE_LOWER, 'utf8'))->select($queryWithLimit);
 
+        // Verificar se há resultado
         if (count($result) > 0) {
+            // Obter colunas da primeira linha do resultado
             $keys = array_keys((array) $result[0]);
 
+            // Formatar as colunas
             $keys = array_map(function ($key) {
                 return mb_convert_case($key, MB_CASE_TITLE, 'UTF-8');
             }, $keys);
@@ -208,7 +219,7 @@ class ReportsController extends Controller
         }
 
         return [];
-
     }
+
 
 }
