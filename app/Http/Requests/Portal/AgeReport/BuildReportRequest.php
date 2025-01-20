@@ -25,9 +25,6 @@ class BuildReportRequest extends FormRequest
     {
         return [
             'command' => 'required|string',
-            'dateFilter.columnFilter' => 'required|string',
-            'dateFilter.startDate' => 'required|date|before_or_equal:dateFilter.endDate',
-            'dateFilter.endDate' => 'required|date|after_or_equal:dateFilter.startDate',
             'options.columns' => 'required|array',
             'options.typeArchive' => 'required|string|in:xlsx,csv,pdf', // Adicione mais tipos de arquivos se precisar
             'reportId' => 'required|integer|exists:age_relatorios,id', // Verifica se o reportId existe na tabela `reports`

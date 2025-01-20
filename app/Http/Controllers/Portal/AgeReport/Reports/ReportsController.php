@@ -62,10 +62,12 @@ class ReportsController extends Controller
             ]);
 
 
-            if (str_contains($query, 'WHERE')) {
-                $query .= " AND DATE({$this->data['dateFilter']['columnFilter']}) BETWEEN '{$this->data['dateFilter']['startDate']}' AND '{$this->data['dateFilter']['endDate']}'";
-            } else {
-                $query .= " WHERE DATE({$this->data['dateFilter']['columnFilter']}) BETWEEN '{$this->data['dateFilter']['startDate']}' AND '{$this->data['dateFilter']['endDate']}'";
+            if($request->has('dateFilter')) {
+                if (str_contains($query, 'WHERE')) {
+                    $query .= " AND DATE({$this->data['dateFilter']['columnFilter']}) BETWEEN '{$this->data['dateFilter']['startDate']}' AND '{$this->data['dateFilter']['endDate']}'";
+                } else {
+                    $query .= " WHERE DATE({$this->data['dateFilter']['columnFilter']}) BETWEEN '{$this->data['dateFilter']['startDate']}' AND '{$this->data['dateFilter']['endDate']}'";
+                }
             }
 
             $result = \DB::connection(mb_convert_case($report->conexao, MB_CASE_LOWER, 'utf8'))->select($query);
