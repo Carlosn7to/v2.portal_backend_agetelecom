@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['services/*','api/*', 'sanctum/csrf-cookie', 'portal/*', 'integrator/*', 'health-checker/*', 'broadcasting/*'],
+    'paths' => ['services/*', 'services/blocked-screen/*','api/*', 'sanctum/csrf-cookie', 'portal/*', 'integrator/*', 'health-checker/*', 'broadcasting/*'],
 
     'allowed_methods' => ['*'],
 
