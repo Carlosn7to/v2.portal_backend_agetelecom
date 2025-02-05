@@ -46,28 +46,24 @@ class Functions extends Controller
 
 
 
-        $array = \Maatwebsite\Excel\Facades\Excel::toArray(new \stdClass(), $request->file('excel'));
-
-        $array = array_chunk($array[0], 500);
-
-
-        foreach($array as $emails) {
-
-
-            foreach($emails as $key => $email) {
-
-
-                $emailValidated = filter_var($email[0], FILTER_VALIDATE_EMAIL);
-
-                if($emailValidated) {
-
-                    $mail = (new SendMaintenanceScheduled())->onConnection('database')->onQueue('emails');
-
-                    \Mail::mailer('contact')->to($email[0])
-                        ->queue($mail);
-                }
-            }
-        }
+//        $array = \Maatwebsite\Excel\Facades\Excel::toArray(new \stdClass(), $request->file('excel'));
+//
+////        $array = array_chunk($array[0], 500);
+//
+//
+//        foreach($array[0] as $key => $email) {
+//
+//            $emailValidated = filter_var($email[0], FILTER_VALIDATE_EMAIL);
+//
+//            if($emailValidated) {
+//
+//                $mail = (new SendMaintenanceScheduled())->onConnection('database')->onQueue('emails');
+//
+//                \Mail::mailer('contact')->to($email[0])
+//                    ->queue($mail);
+//
+//            }
+//        }
 
         return response()->json('emails enviados com sucesso!');
 

@@ -65,7 +65,6 @@ class BuilderBillingRuleController extends Controller
 
         $destinations = [
             '5561984700440', // Carlos - Dev Senior / TL T.I
-            '5561998003186', // Fausto - Gerente T.I
             '5561981069695', // Arthur - Faturamento
             '5561992587560', // Rafael -  Cordenador T.I
             '5511940153666', // Douglas - Financeiro

@@ -28,7 +28,7 @@ class SendMaintenanceScheduled extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[Comunicado Importante] - Manutenção programada na Rede',
+            subject: '[Comunicado Importante] - Manutenção Programada na Rede',
         );
     }
 
